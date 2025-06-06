@@ -1,6 +1,12 @@
+
 {
-  "buildCommand": "npm run build",
-  "rewrites": [
-    { "source": "/(.*)", "destination": "/index.html" }
-  ]
+  "build": {
+    "env": {
+      "NPM_FLAGS": "--legacy-peer-deps"
+    },
+    "commands": {
+      "install": "npm install $NPM_FLAGS",
+      "build": "npm run build"
+    }
+  }
 }
