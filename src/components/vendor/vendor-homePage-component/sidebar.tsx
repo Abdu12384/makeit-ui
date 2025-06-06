@@ -6,16 +6,11 @@ import { motion, AnimatePresence } from "framer-motion"
 import {
   ChevronRight,
   LogOut,
-  Settings,
   User,
   MessageSquare,
   HelpCircle,
-  CreditCard,
   Shield,
-  Activity,
-  Heart,
   Calendar,
-  Bell,
 } from "lucide-react"
 import toast from "react-hot-toast"
 import { useSelector } from "react-redux"

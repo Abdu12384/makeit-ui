@@ -17,6 +17,7 @@ export interface ILoginData {
 
 
 export interface User{
+	_id?:string
 	userId?: string
 	name:string,
 	email:string,
@@ -48,7 +49,9 @@ export interface IClient extends User{
 export interface IVendor extends User{
 	idProof?: string,
 	vendorId?: string,
-	// vendorStatus?:'pending'| 'approved' | 'rejected'
+	rating?:number,
+	category?:string,
+	vendorStatus?:'pending'| 'approved' | 'rejected'
 	rejectionReason?:string,
 	aboutVendor?:string
 }

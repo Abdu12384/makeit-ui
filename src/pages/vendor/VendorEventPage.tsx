@@ -8,30 +8,15 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useGetAllEventsByVendorIdMutation } from "@/hooks/VendorCustomHooks";
 import EventFormPage from "@/components/vendor/events/CreateEvents";
+import { EventData } from "@/types/event";
 
-interface Event {
-  id: string;
-  title: string;
-  description: string;
-  category: string;
-  date: string[];
-  startTime: string;
-  endTime: string;
-  address: string;
-  venueName: string;
-  posterImage: string[];
-  pricePerTicket: number;
-  totalTicket: number;
-  ticketPurchased: number;
-  status: "upcoming" | "completed" | "cancelled";
-}
 
 export default function VendorEventsPage() {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<"upcoming" | "completed" | "cancelled">("upcoming");
-  const [events, setEvents] = useState<Event[]>([]);
+  const [events, setEvents] = useState<EventData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [editingEvent, setEditingEvent] = useState<Event | null>(null);
+  const [editingEvent, setEditingEvent] = useState<EventData | null>(null);
 
   const getAllEventsByVendorIdMutation = useGetAllEventsByVendorIdMutation();
 
@@ -129,7 +114,7 @@ export default function VendorEventsPage() {
               className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
             >
               {filteredEvents.map((event) => (
-                <motion.div key={event.id || `event-${Math.random()}`} variants={item}>
+                <motion.div key={event.eventId || `event-${Math.random()}`} variants={item}>
                   <Card className="overflow-hidden border border-sky-100 shadow-sm hover:shadow-md transition-all duration-300 bg-white">
                     <div className="aspect-video relative overflow-hidden">
                       <img
@@ -178,7 +163,7 @@ export default function VendorEventsPage() {
                         variant="outline"
                         className="border-sky-200 hover:bg-sky-50 transition-all duration-300"
                       >
-                        <Link to={`/vendor/events/${event.id}`}>View Details</Link>
+                        <Link to={`/vendor/events/${event.eventId}`}>View Details</Link>
                       </Button>
                       <Button
                         variant="secondary"
@@ -216,7 +201,7 @@ export default function VendorEventsPage() {
                   <h2 className="text-2xl font-semibold text-sky-700 mb-4">
                     Edit Event: {editingEvent.title}
                   </h2>
-                  <EventFormPage eventData={editingEvent} onSuccess={() => setEditingEvent(null)} onClose={() => setEditingEvent(null)} />
+                  <EventFormPage eventData={editingEvent} onSuccess={() => setEditingEvent(null)} onCancel={() => setEditingEvent(null)} />
                   <button
                     onClick={() => setEditingEvent(null)}
                     className="absolute top-3 right-3 text-gray-500 hover:text-gray-700 text-xl"

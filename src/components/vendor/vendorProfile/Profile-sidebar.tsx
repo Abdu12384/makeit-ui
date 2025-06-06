@@ -5,7 +5,7 @@ import type React from "react"
 import { useState, useEffect, useRef } from "react"
 import { NavLink, useLocation, useNavigate } from "react-router-dom"
 import { motion, AnimatePresence } from "framer-motion"
-import { Settings, User, Briefcase, ImageIcon, Calendar, Clock, Key, Wallet, Menu, ChevronRight, Ticket, LayoutDashboard, MessageCircle, User2 } from "lucide-react"
+import {  User, Briefcase, ImageIcon, Calendar, Clock, Wallet, Menu, ChevronRight, Ticket, MessageCircle, User2 } from "lucide-react"
 import { useSelector } from "react-redux"
 import { RootState } from "@/store/store"
 
@@ -167,11 +167,11 @@ export const CircularSidebar: React.FC<CircularSidebarProps> = () => {
                         }`}
                       >
                         <Icon className="h-6 w-6" />
-                        {item?.badge && (
+                        {/* {item?.badge && (
                           <div className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs font-bold flex items-center justify-center rounded-full">
                             !
                           </div>
-                        )}
+                        )} */}
                       </motion.div>
                     </NavLink>
 

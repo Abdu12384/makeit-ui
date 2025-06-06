@@ -1,6 +1,7 @@
 export interface ReviewData {
+  _id?: string
   comment: string
   rating: number
-  targetType: string
+  targetType?: string
   targetId?: string
 }

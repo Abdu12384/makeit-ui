@@ -2,25 +2,32 @@ import { useCreateTicketMutation, useConfirmTicketAndPaymentMutation } from '@/h
 import { useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import PaymentForm from './PaymentFormStripe'
-import { TicketBackendEntity } from '@/types/ticket'
 import { TicketEntity } from '@/types/ticket'
 import toast from 'react-hot-toast'
-import TicketConfirmationModal from '../event/TicketConfirmationModal'
+import TicketConfirmationModal, { ITicketConfirmationModal } from '../event/TicketConfirmationModal'
 import TicketBookingLoading from '@/utils/animations/TicketBookingLoading'
+import { IEventFormValues } from '@/types/event'
 
 function TicketPaymentForm() {
-    const [updatedTicket, setUpdatedTicket] = useState<TicketBackendEntity>()
+    const [updatedTicket, setUpdatedTicket] = useState<ITicketConfirmationModal>()
     const [isOpen, setIsOpen] = useState<boolean>(false)
     const location = useLocation()
     const [loading,setLoading] = useState<boolean>(false)
-    const data = location.state
+    const data = location.state as {
+        ticket: TicketEntity,
+        amount: number,
+        totalTicketCount: number,
+        vendorId: string,
+        event: IEventFormValues
+    }
     const createTicket = useCreateTicketMutation()
     const confirmTicket = useConfirmTicketAndPaymentMutation()
 
     const handleCreatePaymentIntent = async (paymentMethodId: string) => {
         setLoading(true)
+        const ticket = data.ticket
         const response = await createTicket.mutateAsync({
-            ticket: data.ticketData,
+            ...ticket,
             paymentIntentId: paymentMethodId,
             totalAmount: data.amount,
             totalCount: data.totalTicketCount,

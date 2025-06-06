@@ -1,17 +1,15 @@
-import { useState, useEffect, useRef } from "react" // Add useRef to imports
+import { useState, useEffect } from "react"
 import { AnimatePresence, motion } from "framer-motion"
 import { useParams, Link, useNavigate } from "react-router-dom"
-import { Clock, DollarSign, Star, Award, AlertCircle, ArrowLeft, Share2, Heart, MessageCircle, ChevronDown, ChevronUp, Calendar, User, Mail, Phone, IndianRupee, Plus } from 'lucide-react'
-import { useAddReviewMutation, useBookingServiceMutation, useClientGetServiceByIdMutation, useGetAllReviewsMutation } from "@/hooks/ClientCustomHooks"
+import { Clock, Star, Award, AlertCircle, ArrowLeft, Share2, Heart, ChevronDown, ChevronUp, Calendar, User, Mail, Phone, IndianRupee } from 'lucide-react'
+import { useBookingServiceMutation, useClientGetServiceByIdMutation, useGetAllReviewsMutation } from "@/hooks/ClientCustomHooks"
 import { IVendor } from "@/types/User"
 import { Formik, Form, Field, ErrorMessage } from "formik"
 import * as Yup from "yup"
 import toast from "react-hot-toast"
 import Navbar from "@/components/common/NavBar"
-import ReviewForm from "@/components/common/review/review-form"
 import ReviewDisplay from "@/components/common/review/review-display"
 import { ReviewData } from "@/types/worksample/review"
-import { useSelector } from "react-redux"
 import VendorDetailsPage from "@/components/client/vendor-info/VendorDetails"
 
 // Define the Service type
@@ -41,11 +39,10 @@ export const BookingPage = () => {
   const [service, setService] = useState<Service | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [vendor, setVendor] = useState<IVendor | null>(null)
-  const [isReviewFormVisible, setIsReviewFormVisible] = useState(false)
   const [activeTab, setActiveTab] = useState("description")
   const [reviews, setReviews] = useState<ReviewData[]>([])
   const [showVendorInfo, setShowVendorInfo] = useState(false)
-  const {client} = useSelector((state: any) => state.client)
+
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
     description: true,
     terms: false,
@@ -61,7 +58,6 @@ export const BookingPage = () => {
   console.log('service', service)
 
   // Create a ref for the ReviewForm container
-  const reviewFormRef = useRef<HTMLDivElement>(null)
 
   const handleBookingService = (values: any, action: any) => {
     clientBookingServiceMutation.mutate(
@@ -122,21 +118,21 @@ useEffect(() => {
 
   console.log('reviews-details page', reviews)
 
-  const handleSubmitReview = (values: any) => {
-    console.log('values', values)
-    const newReview = {
-      comment: values.comment,
-      rating: values.rating,
-      client:{
-        name: client?.name,
-        profileImage: client?.profileImage,
-      },
-      targetId: service?.id!,
-      targetType: "service",
-    }
-    setReviews([ newReview, ...reviews ])
-    console.log('reviews', values)
-  }
+  // const handleSubmitReview = (values: any) => {
+  //   console.log('values', values)
+  //   const newReview = {
+  //     comment: values.comment,
+  //     rating: values.rating,
+  //     client:{
+  //       name: client?.name,
+  //       profileImage: client?.profileImage,
+  //     },
+  //     targetId: service?.id!,
+  //     targetType: "service",
+  //   }
+  //   setReviews([ newReview, ...reviews ])
+  //   console.log('reviews', values)
+  // }
 
 
   

@@ -1,7 +1,7 @@
 import type React from "react"
 import { NavLink } from "react-router-dom"
 import { motion } from "framer-motion"
-import { LayoutDashboard, Users, Store, FolderTree, Wallet, ChevronDown, Search, BadgeAlert, LogOut, CalendarDays, ClipboardList } from "lucide-react"
+import { LayoutDashboard, Users, Store, FolderTree, Wallet, Search, BadgeAlert, LogOut, CalendarDays, ClipboardList } from "lucide-react"
 import { useDispatch } from "react-redux"
 import { adminLogout } from "@/store/slices/admin.slice"
 import toast from "react-hot-toast"

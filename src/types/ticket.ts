@@ -7,7 +7,11 @@ export interface TicketEntity {
   email: string;
   eventId: string;
   clientId: string;
-
+  // ticket?: Ticket
+  paymentIntentId?: string
+  totalAmount?:number
+  totalCount?:number
+  vendorId?:string
 }
 
 
@@ -15,7 +19,7 @@ export interface TicketEntity {
 
 // backend ticket entity
 export interface TicketBackendEntity {
-  _id?: string;
+  _id?: string; 
   ticketId: string;
   createdAt?: Date;
   totalAmount: number;
@@ -28,7 +32,8 @@ export interface TicketBackendEntity {
   clientId: string;
   ticketStatus: 'used' | 'refunded' | 'unused';
   paymentTransactionId: string;
-}
+  ticket:Ticket 
+}  
 
 
 
@@ -67,7 +72,7 @@ export interface Ticket {
     status: string;
     startTime: string;
     endTime: string;
-    venueName: string;
+    venue: string;
     posterImage: string;
     title: string;
   }

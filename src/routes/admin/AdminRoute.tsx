@@ -1,5 +1,4 @@
 import { CategoryManagement } from "@/components/admin/mangement/CategoryManagement"
-import { Dashboard } from "@/components/admin/dashboard/Dashboard"
 import { AdminLoginPage } from "@/components/admin/login/Login"
 import { AdminLayout } from "@/pages/admin/admin-home"
 import { AdminVendorApplicationPage } from "@/pages/admin/applications/AdminVendorApplicationPage"

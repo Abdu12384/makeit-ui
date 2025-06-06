@@ -13,19 +13,14 @@ import TicketScanner from "./TikcetScanner";
 interface EventDetailsProps {
   event: any;
   onClose: () => void;
-  onScanTicket: (data: { ticketId: string }) => void;
 }
 
-export function BookedEventDetails({ event, onClose, onScanTicket }: EventDetailsProps) {
+export function BookedEventDetails({ event, onClose }: EventDetailsProps) {
   const [activeTab, setActiveTab] = useState("overview");
   const [isScanning, setIsScanning] = useState(false);
   const navigate = useNavigate();
 
-  const formatDate = (dateString: string) => {
-    if (!dateString) return "";
-    const date = new Date(dateString);
-    return date.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
-  };
+
 
   const handleScanTicket = () => {
     setIsScanning(true);

@@ -127,6 +127,7 @@ export function SignupComponent() {
       console.log(error)
       message = error.response?.data.message || "An error eccurred"
     }
+    toast.error(message)
     
   }
 

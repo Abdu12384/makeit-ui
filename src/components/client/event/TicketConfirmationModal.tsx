@@ -1,33 +1,34 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { X, Calendar, Clock, MapPin, User, Phone, Check } from "lucide-react";
+import {  Calendar, Clock, MapPin, User, Phone, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { IEventFormValues } from "@/types/event";
 
+
+export interface ITicketConfirmationModal{
+  _id?:string
+  ticketId: string;
+  clientId: string;
+  email: string;
+  eventId: string;
+  ticketCount: number;
+  paymentStatus: string; 
+  phone: string;
+  qrCodeLink: string;
+  ticketStatus: string;
+  paymentTransactionId: string;
+  totalAmount: number;
+  checkInHistory?: any[];
+  createdAt?: string;
+  updatedAt?: string;
+  eventName?: string;
+  eventLocation?: string;
+  eventDate?: string;
+};
 interface TicketConfirmationModalProps {
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
-  ticket: {
-    ticketId: string;
-    clientId: string;
-    email: string;
-    eventId: string;
-    ticketCount: number;
-    paymentStatus: string;
-    phone: string;
-    qrCodeLink: string;
-    ticketStatus: string;
-    paymentTransactionId: string;
-    totalAmount: number;
-    checkInHistory: any[];
-    createdAt: string;
-    updatedAt: string;
-    eventName?: string;
-    eventLocation?: string;
-    eventDate?: string;
-    eventTime?: string;
-    eventImage?: string;
-  };
+  ticket:ITicketConfirmationModal
   event?: IEventFormValues
 }
 
@@ -36,28 +37,28 @@ export default function TicketConfirmationModal({ isOpen, setIsOpen, ticket,even
   const navigate = useNavigate();
 
   const eventName = ticket?.eventName || "EVENT NAME";
-  const eventLocation = ticket?.eventLocation || "Amazing Venue, City";
+  // const eventLocation = ticket?.eventLocation || "Amazing Venue, City";
   const eventDate =
     ticket?.eventDate ||
-    new Date(ticket.createdAt)
+    new Date(ticket.createdAt!)
       .toLocaleDateString("en-IN", {
         year: "numeric",
         month: "short",
         day: "numeric",
       })
       .toUpperCase();
-  const eventTime = ticket?.eventTime || "DOOR OPEN 09 - PM";
-  const eventImage = ticket?.eventImage || "/placeholder.svg?height=400&width=600";
+  // const eventTime = ticket?.eventTime || "DOOR OPEN 09 - PM";
+  // const eventImage = ticket?.eventImage || "/placeholder.svg?height=400&width=600";
 
   // Format data for display
-  const formattedDate = new Date(event?.date)
+  const formattedDate = new Date(event?.date as string)
     .toLocaleDateString("en-IN", {
       year: "numeric",
       month: "2-digit",
       day: "2-digit",
     })
     .replace(/\//g, ".");
-  const formattedAmount = (ticket.totalAmount / 100).toFixed(2);
+  // const formattedAmount = (ticket.totalAmount / 100).toFixed(2);
   const ticketIdShort = ticket.ticketId.substring(ticket.ticketId.length - 8);
   const transactionIdShort = ticket.paymentTransactionId.substring(0, 12);
 
@@ -211,7 +212,7 @@ export default function TicketConfirmationModal({ isOpen, setIsOpen, ticket,even
                   <div className="text-center">
                     <p className="opacity-80 text-sm">Scan this QR code at the event entrance</p>
                     <p className="mt-4 text-xs opacity-70">Transaction ID: {transactionIdShort}...</p>
-                    <p className="text-xs opacity-70">Created: {new Date(ticket.createdAt).toLocaleString()}</p>
+                    <p className="text-xs opacity-70">Created: {new Date(ticket.createdAt!).toLocaleString()}</p>
                   </div>
                 </div>
               </div>

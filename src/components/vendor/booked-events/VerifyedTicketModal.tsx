@@ -21,10 +21,10 @@ interface TicketData {
   ticketStatus: string
   paymentTransactionId: string
   totalAmount: number
-  checkInHistory: any[]
-  createdAt: string
-  updatedAt: string
-  __v: number
+  checkInHistory?: any[]
+  createdAt?: Date
+  updatedAt?: Date
+  __v?: number
 }
 
 interface TicketModalProps {
@@ -38,7 +38,7 @@ export function TicketModal({ isOpen, onClose, ticket, onCheckIn }: TicketModalP
   const [isCheckedIn, setIsCheckedIn] = useState(ticket?.ticketStatus === "used")
   const [isCheckingIn, setIsCheckingIn] = useState(false)
 
-  const formatDate = (dateString: string) => {
+  const formatDate = (dateString: Date) => {
     const date = new Date(dateString)
     return date.toLocaleDateString("en-US", {
       month: "long",
@@ -65,6 +65,18 @@ export function TicketModal({ isOpen, onClose, ticket, onCheckIn }: TicketModalP
       setIsCheckingIn(false)
       if (onCheckIn) onCheckIn()
     }, 1000)
+  }
+
+  if(!ticket){
+   return(
+    <>
+    <div>
+      <p>
+        Ticket not found
+        </p>
+    </div>
+    </>
+   )
   }
 
   return (
@@ -178,7 +190,7 @@ export function TicketModal({ isOpen, onClose, ticket, onCheckIn }: TicketModalP
                   </div>
                   <div className="flex items-center justify-between">
                     <span className="text-sm text-muted-foreground">Created</span>
-                    <span className="text-sm">{formatDate(ticket.createdAt)}</span>
+                    <span className="text-sm">{formatDate(ticket?.createdAt!)}</span>
                   </div>
                 </div>
               </div>

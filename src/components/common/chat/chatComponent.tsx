@@ -1,54 +1,3 @@
-// import React, { useState } from "react";
-// import { Socket } from "socket.io-client";
-// import ChatList from "./ChatList";
-// import ChatWindow from "./ChatWindow";
-
-// interface ChatComponentProps {
-//   userId: string;
-//   userModel: "client" | "vendors";
-//   socket: Socket;
-//   receiverId: string;
-// }
-
-// const ChatComponent: React.FC<ChatComponentProps> = ({ userId, userModel, socket, receiverId }) => {
-//   const [selectedChatId, setSelectedChatId] = useState<string | null>(null);
-
-//   return (
-//     <div className="flex h-screen font-sans bg-gray-100">
-//       <div className="w-1/3 border-r border-gray-200 p-4 bg-white shadow-sm">
-//         <ChatList
-//           userId={userId}
-//           userModel={userModel}
-//           onSelectChat={setSelectedChatId}
-//           socket={socket}
-//           receiverId={receiverId}
-//         />
-//       </div>
-//       <div className="w-2/3 p-4 flex flex-col">
-//         {selectedChatId ? (
-//           <ChatWindow
-//             chatId={selectedChatId}
-//             userId={userId}
-//             userModel={userModel}
-//             socket={socket}
-//             // receiverId={receiverId}
-//           />
-//         ) : (
-//           <div className="flex-1 flex items-center justify-center text-gray-500">
-//             <p>Select a chat to start messaging</p>
-//           </div>
-//         )}
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default ChatComponent;
-
-
-
-
-
 "use client"
 
 import type React from "react"
@@ -60,7 +9,7 @@ import { motion } from "framer-motion"
 
 interface ChatComponentProps {
   userId: string
-  userModel: "client" | "vendors"
+  userModel: "client" | "vendor"
   socket: Socket
   receiverId: string
 }

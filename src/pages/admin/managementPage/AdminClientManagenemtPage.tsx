@@ -3,7 +3,6 @@ import { debounce } from "lodash";
 // import { useToaster } from "@/hooks/ui/useToaster";
 import { ClientManagementComponent } from "@/components/admin/mangement/UserMangement";
 import { useGetAllUsers, useUpdateUserStatusMutaiion } from "@/hooks/AdminCustomHooks";
-import { IClient } from "@/types/User";
 import toast from "react-hot-toast";
 
 
@@ -22,7 +21,7 @@ export const AdminClientManagementPage: React.FC = () => {
 		return () => handler.cancel();
 	}, [searchQuery]);
 
-	const { data, isLoading, isError } = useGetAllUsers<IClient>({
+	const { data, isLoading, isError } = useGetAllUsers({
 	  page:currentPage,
 		limit,
 		search: debouncedSearch,

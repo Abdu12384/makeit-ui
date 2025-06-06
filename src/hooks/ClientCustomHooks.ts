@@ -7,11 +7,6 @@ import { ReviewData } from '@/types/worksample/review';
 import { GetAllServicesParams } from '@/types/service';
 
 
-type LoginProps = {
-  email: string;
-  password: string;
-};
-
 interface FormValues {
   name: string;
   email: string;

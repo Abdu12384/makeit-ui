@@ -1,5 +1,4 @@
 import { LoginComponent } from "@/components/client/login/Login"
-import BookingPayment from "@/components/client/profail/BookingPayment"
 import ClientBookings from "@/components/client/profail/bookings"
 import { ClientProfile } from "@/components/client/profail/ClientProfail"
 import { SignupComponent } from "@/components/client/signup/Signup"

@@ -2,7 +2,6 @@
 
 
 import axios from "axios";
-import toast from "react-hot-toast";
 // import { store } from "@/store/store";
 // import { adminLogout } from "@/store/slices/admin.slice";
 

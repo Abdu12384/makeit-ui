@@ -1,4 +1,5 @@
 export interface Booking {
+  _id?:string;
   bookingId: string;
   clientId: string;
   date: string[];
@@ -8,10 +9,15 @@ export interface Booking {
   vendorId: string;
   email: string;
   phone: string;
-  status: "Confirmed" | "Pending" | "Cancelled";
+  status: "Confirmed" | "Pending" | "Cancelled" | "Rejected";
   createdAt: string;
   isComplete: boolean;
   updatedAt: string;
   clientName?: string;
   serviceName?: string;
+  client?:{
+    name : string
+  }
 }
+
+

@@ -6,13 +6,7 @@ import WorkSampleForm from "@/components/vendor/work-sample/WorkSampleForm"
 import { useCreateWorkSampleMutation, useGetAllWorkSamplesByVendorIdMutation, useUpdateWorkSampleMutation, useUploadeImageToCloudinaryMutation } from "@/hooks/VendorCustomHooks"
 import toast from "react-hot-toast"
 import { Pagination1 } from "@/components/common/paginations/Pagination"
-
-interface WorkSample {
-  workSampleId: string
-  title: string
-  description: string
-  images: string[]
-}
+import { WorkSample } from "@/types/worksample/work-sample"
 
 const WorkSamplePage: React.FC = () => {
   const [workSamples, setWorkSamples] = useState<WorkSample[]>([])
@@ -92,7 +86,7 @@ const WorkSamplePage: React.FC = () => {
       updateWorkSampleMutation.mutate(
         {
           data:updatedWorkSample,
-          workSampleId: editingWorkSample.workSampleId,
+          workSampleId: editingWorkSample.workSampleId as string,
         },
         {
           onSuccess: (response) => {
@@ -104,7 +98,7 @@ const WorkSamplePage: React.FC = () => {
               )
             )
           },
-          onError: (error) => {
+          onError: (error:any) => {
             console.error("Error updating work sample:", error)
             toast.error(error?.response?.data?.message || "Failed to update work sample")
           },
@@ -125,7 +119,7 @@ const WorkSamplePage: React.FC = () => {
             toast.success(response.message)
             setWorkSamples((prev) => [...prev, newWorkSample])
           },
-          onError: (error) => {
+          onError: (error:any) => {
             console.error("Error creating work sample:", error)
             toast.error(error?.response?.data?.message || "Failed to create work sample")
           },

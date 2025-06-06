@@ -6,16 +6,10 @@ import { motion } from "framer-motion";
 import {
   Users,
   Calendar,
-  DollarSign,
   BookOpen,
   TrendingUp,
   TrendingDown,
   IndianRupee,
-  Wallet,
-  CreditCard,
-  ArrowUpRight,
-  ArrowDownLeft,
-  MoreHorizontal,
 } from "lucide-react";
 import DateFilter, { type FilterPeriod } from "@/components/admin/dashboard/DateFilter";
 import { useGetAllDashboardDataMutation } from "@/hooks/AdminCustomHooks";
@@ -36,19 +30,10 @@ interface DashboardData {
   totalRevenue: number;
   totalBookings: number;
   totalVendors: number;
+  transactions:[]
 }
 
-interface Transaction {
-  _id: string;
-  amount: number;
-  currency: string;
-  paymentStatus: "credit" | "debit";
-  paymentType: string;
-  walletId: string;
-  date: string;
-  createdAt: string;
-  updatedAt: string;
-}
+
 
 
 
@@ -129,7 +114,7 @@ const AdminDashboard: React.FC = () => {
     },
   };
 
-  if (getAllDashboardDataMutation.isLoading) {
+  if (getAllDashboardDataMutation.isPending) {
     return (
       <div className="min-h-screen bg-gray-900 p-6 flex items-center justify-center">
         <p className="text-white text-lg">Loading...</p>

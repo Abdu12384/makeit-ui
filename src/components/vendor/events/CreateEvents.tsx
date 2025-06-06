@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Formik, Form, Field, ErrorMessage, FieldArray } from "formik";
 import { motion, AnimatePresence } from "framer-motion";
-import { CalendarIcon, Clock, MapPin, Trash2, Upload } from "lucide-react";
+import { CalendarIcon, Clock, Trash2, Upload } from "lucide-react";
 import { EventValidationSchema } from "@/utils/validationForms/event-form.validation";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
@@ -16,28 +16,9 @@ import { cn } from "@/lib/utils";
 import { useCreateEventMutation, useEditEventMutation, useUploadeImageToCloudinaryMutation } from "@/hooks/VendorCustomHooks";
 import toast from "react-hot-toast";
 import LocationPicker from "@/components/common/location/LocationPicker";
+import { EventData } from "@/types/event";
 
-interface EventData {
-  _id?: string;
-  title: string;
-  description: string;
-  category: string;
-  date: string[];
-  startTime: string;
-  endTime: string;
-  venueName: string;
-  address: string;
-  location: {
-    type: "Point";
-    coordinates: [number, number];
-  };
-  posterImage: string[];
-  pricePerTicket: number;
-  totalTicket: number;
-  maxTicketsPerUser: number;
-  ticketPurchased?: number;
-  status: "upcoming" | "completed" | "cancelled";
-}
+
 
 interface EventFormPageProps {
   eventData?: EventData;
@@ -148,7 +129,7 @@ export default function EventFormPage({ eventData, onSuccess, onCancel }: EventF
         editEventMutation.mutate(
           {
             data:finalValues, 
-            eventId: eventData?.eventId
+            eventId: eventData?.eventId 
           }, 
           {
           onSuccess: (response: any) => {
@@ -661,10 +642,10 @@ export default function EventFormPage({ eventData, onSuccess, onCancel }: EventF
                                     type="button"
                                     variant="outline"
                                     className="w-full mt-4 border-dashed border-sky-200 hover:bg-sky-50 text-sky-700 transition-all duration-300"
-                                    disabled={uploadToCloudinary.isLoading}
+                                    disabled={uploadToCloudinary.isPending}
                                   >
                                     <Upload className="mr-2 h-4 w-4 text-sky-500" />
-                                    {uploadToCloudinary.isLoading ? "Uploading..." : "Add Image"}
+                                    {uploadToCloudinary.isPending ? "Uploading..." : "Add Image"}
                                   </Button>
                                 </div>
                               </motion.div>

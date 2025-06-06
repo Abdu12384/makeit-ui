@@ -40,7 +40,7 @@ export function VendorLoginPage() {
   const [commonLoading, setCommonLoading] = useState(false)
   const navigate = useNavigate()
   const loginMutation = useVendorLoginMutation()
-  const [formErrors, setFormErrors] = useState<FormErrors>({})
+  const [formErrors, _setFormErrors] = useState<FormErrors>({})
 
   const dispatch = useDispatch()
 

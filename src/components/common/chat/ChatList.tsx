@@ -1,147 +1,10 @@
 
-// import React, { useEffect, useState } from "react";
-// import { Socket } from "socket.io-client";
-// import { Chat } from "@/types/chat";
-
-// interface ChatListProps {
-//   userId: string;
-//   userModel: "client" | "vendor";
-//   onSelectChat: (chatId: string) => void;
-//   socket: Socket;
-//   receiverId: string;
-// }
-
-// const ChatList: React.FC<ChatListProps> = ({ userId, userModel, onSelectChat, socket, receiverId }) => {
-//   const [chats, setChats] = useState<Chat[]>([]);
-//   const receiverModel = userModel === "client" ? "vendor" : "client";
-//   const [error, setError] = useState<string | null>(null);
-//   const [loading, setLoading] = useState(false);
-
-//   useEffect(() => {
-//     // Fetch chats
-//     setLoading(true);
-//     socket.emit("get-chats", { userId }, (response: { status: string; data: Chat[] }) => {
-//       setLoading(false);
-//       if (response.status === "success") {
-//         // Sort chats by lastMessageAt (most recent first)
-//         const sortedChats = response.data.sort((a, b) => {
-//           const timeA = a.lastMessageAt ? new Date(a.lastMessageAt).getTime() : 0;
-//           const timeB = b.lastMessageAt ? new Date(b.lastMessageAt).getTime() : 0;
-//           return timeB - timeA;
-//         });
-//         setChats(sortedChats);
-
-//         // Check if a chat with the receiver already exists
-//         const existingChat = sortedChats.find(
-//           (chat) => chat.senderId === receiverId || chat.receiverId === receiverId
-//         );
-
-//         if (existingChat) {
-//           // If chat exists, select it
-//           onSelectChat(existingChat.chatId);
-//           setError(null);
-//         } else if (receiverId) {
-//           // If no chat exists, create a new one
-//           socket.emit(
-//             "start-chat",
-//             { senderId: userId, senderModel: userModel, receiverId, receiverModel },
-//             (startResponse: { status: string; chatId?: string; message?: string }) => {
-//               if (startResponse.status === "success" && startResponse.chatId) {
-//                 onSelectChat(startResponse.chatId);
-//                 socket.emit("get-chats", { userId }, (chatResponse: { status: string; data: Chat[] }) => {
-//                   if (chatResponse.status === "success") {
-//                     const sortedChatResponse = chatResponse.data.sort((a, b) => {
-//                       const timeA = a.lastMessageAt ? new Date(a.lastMessageAt).getTime() : 0;
-//                       const timeB = b.lastMessageAt ? new Date(b.lastMessageAt).getTime() : 0;
-//                       return timeB - timeA;
-//                     });
-//                     setChats(sortedChatResponse);
-//                   }
-//                 });
-//                 setError(null);
-//               } else {
-//                 setError(startResponse.message || "Failed to start chat");
-//               }
-//             }
-//           );
-//         }
-//       } else {
-//         setError(response.message);
-//       }
-//     });
-
-//     socket.on("notification", () => {
-//       socket.emit("get-chats", { userId }, (response: { status: string; data: Chat[] }) => {
-//         if (response.status === "success") {
-//           // Sort chats by lastMessageAt (most recent first)
-//           const sortedChats = response.data.sort((a, b) => {
-//             const timeA = a.lastMessageAt ? new Date(a.lastMessageAt).getTime() : 0;
-//             const timeB = b.lastMessageAt ? new Date(b.lastMessageAt).getTime() : 0;
-//             return timeB - timeA;
-//           });
-//           setChats(sortedChats);
-//         }
-//       });
-//     });
-
-//     return () => {
-//       socket.off("notification");
-//     };
-//   }, [userId, receiverId, socket, userModel, receiverModel, onSelectChat]);
-
-//   console.log('chat--------------------------------------', chats);
-
-//   return (
-//     <div className="space-y-4">
-//       <h2 className="text-xl font-semibold text-gray-800">Your Chats</h2>
-//       {loading && <p className="text-gray-500">Loading chats...</p>}
-//       {error && <p className="text-red-500">{error}</p>}
-//       <ul className="space-y-2">
-//         {chats.map((chat) => {
-//           const otherUserId = chat.senderId === userId ? chat.receiverId : chat.senderId;
-//           const otherUserName = chat.receiverName || otherUserId; // Always use receiverName, fallback to otherUserId
-//           const otherUserProfilePicture = chat.receiverProfileImage || undefined; // Always use receiverProfilePicture
-
-//           console.log('chat--------------------------------------', chat.receiverName, otherUserName, chat.receiverProfilePicture);
-          
-//           return (
-//             <li
-//               key={chat._id}
-//               onClick={() => onSelectChat(chat.chatId)}
-//               className="p-3 bg-gray-50 rounded-md hover:bg-gray-100 cursor-pointer flex items-center space-x-3 shadow-sm"
-//             >
-//               {otherUserProfilePicture ? (
-//                 <img
-//                   src={otherUserProfilePicture}
-//                   alt={otherUserName}
-//                   className="w-10 h-10 rounded-full"
-//                 />
-//               ) : (
-//                 <div className="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center">
-//                   <span className="text-gray-600">{otherUserName.charAt(0)}</span>
-//                 </div>
-//               )}
-//               <div className="flex-1">
-//                 <span className="text-gray-800">{otherUserName}</span>
-//                 <p className="text-gray-500 text-sm">
-//                   {chat.lastMessage || "No messages"}
-//                 </p>
-//               </div>
-//             </li>
-//           );
-//         })}
-//       </ul>
-//     </div>
-//   );
-// };
-
-// export default ChatList;
 import type React from "react"
 import { useEffect, useState, useRef } from "react"
 import type { Socket } from "socket.io-client"
 import type { Chat } from "@/types/chat"
-import { motion, AnimatePresence } from "framer-motion"
-import { Search, Plus, MessageSquare, X } from "lucide-react"
+import { motion } from "framer-motion"
+import { Search, MessageSquare } from "lucide-react"
 
 interface ChatListProps {
   userId: string
@@ -158,9 +21,8 @@ const ChatList: React.FC<ChatListProps> = ({ userId, userModel, onSelectChat, so
   const [loading, setLoading] = useState(false)
   const [searchTerm, setSearchTerm] = useState("")
   const [selectedChatId, setSelectedChatId] = useState<string | null>(null)
-  const [showNewChatModal, setShowNewChatModal] = useState(false)
   const [isCreatingChat, setIsCreatingChat] = useState(false)
-  
+
   // Use refs to track chat creation to prevent duplicate requests
   const chatCreationAttempted = useRef<Set<string>>(new Set())
   const initialLoadCompleted = useRef(false)
@@ -180,8 +42,8 @@ const ChatList: React.FC<ChatListProps> = ({ userId, userModel, onSelectChat, so
 
         if (!initialLoadCompleted.current && receiverId) {
           initialLoadCompleted.current = true
-          
-          const existingChat = sortedChats.find((chat) => 
+
+          const existingChat = sortedChats.find((chat) =>
             chat.senderId === receiverId || chat.receiverId === receiverId
           )
 
@@ -204,11 +66,11 @@ const ChatList: React.FC<ChatListProps> = ({ userId, userModel, onSelectChat, so
   }
 
   const createNewChat = (targetReceiverId: string) => {
-    if (isCreatingChat) return 
-    
+    if (isCreatingChat) return
+
     setIsCreatingChat(true)
     setError(null)
-    
+
     socket.emit(
       "start-chat",
       { senderId: userId, senderModel: userModel, receiverId: targetReceiverId, receiverModel },
@@ -216,7 +78,7 @@ const ChatList: React.FC<ChatListProps> = ({ userId, userModel, onSelectChat, so
         if (startResponse.status === "success" && startResponse.chatId) {
           onSelectChat(startResponse.chatId)
           setSelectedChatId(startResponse.chatId)
-          
+
 
           socket.emit("get-chats", { userId }, (chatResponse: { status: string; data: Chat[] }) => {
             if (chatResponse.status === "success") {
@@ -242,7 +104,7 @@ const ChatList: React.FC<ChatListProps> = ({ userId, userModel, onSelectChat, so
   useEffect(() => {
     chatCreationAttempted.current.clear()
     initialLoadCompleted.current = false
-    
+
     fetchChats()
 
     const handleNotification = () => {
@@ -265,32 +127,7 @@ const ChatList: React.FC<ChatListProps> = ({ userId, userModel, onSelectChat, so
     }
   }, [userId, receiverId, socket, userModel, receiverModel, onSelectChat])
 
-  const startChat = (targetReceiverId: string) => {
-    if (!targetReceiverId) {
-      setError("Receiver ID is required")
-      return
-    }
 
-    const existingChat = chats.find((chat) => 
-      chat.senderId === targetReceiverId || chat.receiverId === targetReceiverId
-    )
-    
-    if (existingChat) {
-      onSelectChat(existingChat.chatId)
-      setSelectedChatId(existingChat.chatId)
-      setShowNewChatModal(false)
-      return
-    }
-
-    const chatKey = `${userId}-${targetReceiverId}`
-    if (chatCreationAttempted.current.has(chatKey) || isCreatingChat) {
-      return
-    }
-
-    chatCreationAttempted.current.add(chatKey)
-    createNewChat(targetReceiverId)
-    setShowNewChatModal(false)
-  }
 
   const filteredChats = chats.filter((chat) => {
     const otherUserId = chat.senderId === userId ? chat.receiverId : chat.senderId
@@ -353,8 +190,8 @@ const ChatList: React.FC<ChatListProps> = ({ userId, userModel, onSelectChat, so
               {isCreatingChat ? "Creating conversation..." : "No conversations yet"}
             </h3>
             <p className="text-gray-500 text-sm mb-4">
-              {isCreatingChat 
-                ? "Please wait while we set up your chat" 
+              {isCreatingChat
+                ? "Please wait while we set up your chat"
                 : "Start chatting with vendors to discuss your requirements"
               }
             </p>
@@ -366,7 +203,7 @@ const ChatList: React.FC<ChatListProps> = ({ userId, userModel, onSelectChat, so
               const otherUserName = chat.receiverName || otherUserId
               const otherUserProfilePicture = chat.receiverProfileImage || undefined
               const isSelected = chat.chatId === selectedChatId
-              const hasUnread = !chat.seen 
+              const hasUnread = !chat.seen
 
               return (
                 <motion.li
@@ -376,9 +213,8 @@ const ChatList: React.FC<ChatListProps> = ({ userId, userModel, onSelectChat, so
                     onSelectChat(chat.chatId)
                     setSelectedChatId(chat.chatId)
                   }}
-                  className={`p-4 cursor-pointer transition-colors ${
-                    isSelected ? "bg-purple-50" : ""
-                  } ${hasUnread ? "bg-purple-50/50" : ""}`}
+                  className={`p-4 cursor-pointer transition-colors ${isSelected ? "bg-purple-50" : ""
+                    } ${hasUnread ? "bg-purple-50/50" : ""}`}
                 >
                   <div className="flex items-center gap-3">
                     <div className="relative">

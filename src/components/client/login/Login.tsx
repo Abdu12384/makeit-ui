@@ -8,16 +8,15 @@ import { Label } from "@/components/ui/label"
 import { useNavigate } from "react-router-dom"
 import Img1 from '@/assets/images/singupImg.jpeg'
 import { useClientLoginMutation } from "@/hooks/ClientCustomHooks"
-import { IClient, ILoginData, UserRoles } from "@/types/User"
+import { IClient, UserRoles } from "@/types/User"
 import toast from "react-hot-toast"
-import { setTimeout } from "timers/promises"
 import { CredentialResponse, GoogleLogin } from "@react-oauth/google"
 import { jwtDecode } from 'jwt-decode';
 import { useClientGoogleLoginMutation } from "@/hooks/ClientCustomHooks"
 import { useDispatch } from "react-redux"
 import { clientLogin } from "@/store/slices/client.slice"
 import LottieAnimation from "@/utils/animations/loatiieLoading"
-import { validateLoginSingleField, validateSingleField } from "@/utils/validationForms/validationForms"
+import { validateLoginSingleField } from "@/utils/validationForms/validationForms"
 import { initializeSocket } from "@/utils/socket/socket"
 
 
@@ -44,13 +43,6 @@ const initialValues = {
   email: "",
   password: "",
   role:'client' as UserRoles
-}
-
-type Client = {
-  email: string;
-  googleVerified: boolean;
-  name: string;
-  profileImage: string
 }
 
 export function LoginComponent() {

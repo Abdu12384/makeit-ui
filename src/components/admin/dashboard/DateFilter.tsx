@@ -3,7 +3,7 @@
 import type React from "react"
 import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { Calendar, ChevronDown, Filter } from "lucide-react"
+import {  ChevronDown, Filter } from "lucide-react"
 
 export type FilterPeriod = "day" | "week" | "month"
 
@@ -18,8 +18,6 @@ interface DateFilterProps {
 const DateFilter: React.FC<DateFilterProps> = ({
   selectedPeriod,
   onPeriodChange,
-  selectedDate,
-  onDateChange,
   theme = "light",
 }) => {
   const [isOpen, setIsOpen] = useState(false)
@@ -30,47 +28,7 @@ const DateFilter: React.FC<DateFilterProps> = ({
     { value: "month" as FilterPeriod, label: "Monthly", desc: "View monthly overview" },
   ]
 
-  const formatDateRange = () => {
-    const now = selectedDate
-    const options: Intl.DateTimeFormatOptions = {
-      month: "short",
-      day: "numeric",
-      year: now.getFullYear() !== new Date().getFullYear() ? "numeric" : undefined,
-    }
 
-    switch (selectedPeriod) {
-      case "day":
-        return now.toLocaleDateString("en-US", options)
-      case "week":
-        const startOfWeek = new Date(now)
-        startOfWeek.setDate(now.getDate() - now.getDay())
-        const endOfWeek = new Date(startOfWeek)
-        endOfWeek.setDate(startOfWeek.getDate() + 6)
-        return `${startOfWeek.toLocaleDateString("en-US", options)} - ${endOfWeek.toLocaleDateString("en-US", options)}`
-      case "month":
-        return now.toLocaleDateString("en-US", { month: "long", year: "numeric" })
-      default:
-        return ""
-    }
-  }
-
-  const navigateDate = (direction: "prev" | "next") => {
-    const newDate = new Date(selectedDate)
-
-    switch (selectedPeriod) {
-      case "day":
-        newDate.setDate(newDate.getDate() + (direction === "next" ? 1 : -1))
-        break
-      case "week":
-        newDate.setDate(newDate.getDate() + (direction === "next" ? 7 : -7))
-        break
-      case "month":
-        newDate.setMonth(newDate.getMonth() + (direction === "next" ? 1 : -1))
-        break
-    }
-
-    onDateChange(newDate)
-  }
 
   const baseClasses =
     theme === "dark" ? "bg-gray-800 border-gray-700 text-white" : "bg-white border-gray-200 text-gray-900"

@@ -1,11 +1,9 @@
-import { useState } from "react"
-import { useGetAllUsers } from "@/hooks/AdminCustomHooks"
+
 import type React from "react"
 import { motion } from "framer-motion"
-import { Search, UserPlus, Filter, MoreVertical, Ban, CheckCircle } from 'lucide-react'
+import { Search, UserPlus, Filter, Ban, CheckCircle } from 'lucide-react'
 import { Pagination1 } from "@/components/common/paginations/Pagination"
 import { IClient } from "@/types/User"
-import { Button } from "@/components/ui/button"
 import { ConfirmationButton } from "@/components/common/customButtons/ConfirmButton"
 
 

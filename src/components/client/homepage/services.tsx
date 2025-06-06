@@ -254,8 +254,8 @@
 "use client"
 
 import { useRef, useState, useEffect } from "react"
-import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion"
-import { ArrowRight, ChevronLeft, ChevronRight, Star, MapPin, Clock, Heart, Eye, Sparkles, User, Link } from "lucide-react"
+import { motion, useScroll, useTransform } from "framer-motion"
+import { ArrowRight, ChevronLeft, ChevronRight, Star, Clock, Eye, Sparkles, User } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -275,9 +275,10 @@ interface Service {
     image: string
   }
   vendor: {
-    name: string
-    rating: number
-  }
+    name: string,
+    rating: number,
+    profileImage: string
+  }[]
   servicePrice: number
   serviceDuration: string
   isPopular?: boolean
@@ -298,8 +299,8 @@ export default function EnhancedServicesCards() {
   const isMobile = useMediaQuery("(max-width: 768px)")
   const [cardsPerView, setCardsPerView] = useState(3)
   const [servicesData, setServicesData] = useState<Service[]>([])
-  const [currentPage, setCurrentPage] = useState(1)
-  const [totalPages, setTotalPages] = useState(1)
+  const [currentPage, _setCurrentPage] = useState(1)
+  const [_totalPages, setTotalPages] = useState(1)
   const limit = 10
   const {client} = useSelector((state: RootState) => state.client)
 
@@ -571,7 +572,7 @@ export default function EnhancedServicesCards() {
                               : "bg-white/80 text-gray-700 hover:bg-white"
                           }`}
                         >
-                          <Heart className={`h-4 w-4 ${likedServices.includes(service.id) ? "fill-current" : ""}`} />
+                          {/* <Heart className={`h-4 w-4 ${likedServices.includes(service.serviceId) ? "fill-current" : ""}`} /> */}
                         </motion.button>
 
                         <motion.button

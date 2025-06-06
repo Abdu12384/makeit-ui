@@ -4,7 +4,7 @@ import { Calendar, Clock, MapPin, Users, Heart, Filter, Search, ChevronRight, X 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Tabs, TabsContent } from "@/components/ui/tabs"
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
 import Navbar from "@/components/common/NavBar"
@@ -14,6 +14,7 @@ import { Pagination1 } from "@/components/common/paginations/Pagination"
 
 interface Event {
   id: string
+  eventId: string
   title: string
   description: string
   category: string

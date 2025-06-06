@@ -1,7 +1,7 @@
 "use client"
 import { motion, AnimatePresence } from "framer-motion"
 import { NavLink, useNavigate, useLocation } from "react-router-dom"
-import { User, Calendar, Home, CreditCard, HelpCircle, ChevronLeft, Wallet, LogOut, Ticket, MessageSquare, MessageCircle } from "lucide-react"
+import { User, Calendar, Home, ChevronLeft, Wallet, Ticket, MessageCircle } from "lucide-react"
 import { useSelector } from "react-redux"
 import type { RootState } from "@/store/store"
 import { useState, useEffect } from "react"

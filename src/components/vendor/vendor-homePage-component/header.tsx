@@ -2,28 +2,23 @@
 
 import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { Bell, Menu, X, LogOut } from "lucide-react"
+import { LogOut, Menu, X } from "lucide-react"
 import { useSelector } from "react-redux"
 import { RootState } from "@/store/store"
-import { useNavigate } from "react-router-dom"
 
 interface HeaderProps {
   currentTime: Date
   isLiveIndicatorVisible: boolean
-  activeNotifications: number
   openSidebar: () => void
 }
 
-export const Header = ({ currentTime, isLiveIndicatorVisible, activeNotifications, openSidebar }: HeaderProps) => {
+export const Header = ({ isLiveIndicatorVisible, openSidebar }: HeaderProps) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
    const {vendor} = useSelector((state:RootState) => state.vendor)
-   const navigate = useNavigate()
 
    console.log(vendor)
 
-  const formatTime = (date: Date) => {
-    return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
-  }
+
 
   return (
     <header className="bg-white shadow-md sticky top-0 z-20">

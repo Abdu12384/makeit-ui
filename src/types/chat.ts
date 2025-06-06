@@ -1,4 +1,6 @@
 export interface Chat {
+  seen: any;
+  receiverProfileImage: undefined;
   _id: string;
   senderId: string;
   chatId: string;
@@ -7,6 +9,8 @@ export interface Chat {
   receiverModel: "client" | "vendors";
   lastMessage: string;
   lastMessageAt: string;
+  receiverName: string;
+  receiverImage: string;
 }
 
 export interface Message {

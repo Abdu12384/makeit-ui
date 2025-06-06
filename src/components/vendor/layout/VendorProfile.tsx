@@ -1,4 +1,3 @@
-import React from "react";
 import { motion } from "framer-motion";
 import { Mail, Phone, Star, User } from "lucide-react";
 import SimpleAppLayout from "./Layout";

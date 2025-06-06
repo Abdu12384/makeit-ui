@@ -81,7 +81,7 @@ const StatusBadge = ({ status }: { status: string }) => {
   )
 }
 
-const BookingDetails = ({ booking, isOpen, onClose, onReject }: BookingDetailsProps) => {
+const BookingDetails = ({ booking, isOpen, onClose }: BookingDetailsProps) => {
   const formatDate = (dateString: string) => {
     try {
       return format(new Date(dateString), "MMM dd, yyyy 'at' h:mm a")

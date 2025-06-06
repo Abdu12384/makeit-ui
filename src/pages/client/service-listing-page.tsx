@@ -32,7 +32,7 @@ import Navbar from "@/components/common/NavBar"
 import { Pagination1 } from "@/components/common/paginations/Pagination"
 
 interface Service {
-  id: string
+  _id: string
   serviceTitle: string
   serviceDescription: string
   servicePrice: number
@@ -44,22 +44,14 @@ interface Service {
   imageUrl: string
   rating: number
   reviewCount: number
-  category: string
+  serviceId: string
+  category: {
+    _id: string
+    title: string
+    image: string
+  }
 }
 
-// Categories for filtering
-const categories = ["All", "Photography", "Development", "Design", "Fitness", "Legal"]
-
-// Category image mapping
-const categoryImages = {
-  Photography: "/images/categories/photography.jpg",
-  Development: "/images/categories/development.jpg",
-  Design: "/images/categories/design.jpg",
-  Fitness: "/images/categories/fitness.jpg",
-  Legal: "/images/categories/legal.jpg",
-  // Default image for any category not listed
-  default: "/images/categories/default.jpg",
-}
 
 export const ServiceListings = () => {
   const [services, setServices] = useState<Service[]>([])
@@ -68,7 +60,7 @@ export const ServiceListings = () => {
   const [selectedCategory, setSelectedCategory] = useState("All")
   const [isLoading, setIsLoading] = useState(true)
   const [currentPage, setCurrentPage] = useState(1)
-  const [limit, setLimit] = useState(6)
+  const limit = 6
   const [showMobileFilters, setShowMobileFilters] = useState(false)
   const [categories, setCategories] = useState<string[]>([])
   const [totalPages, setTotalPages] = useState(0)

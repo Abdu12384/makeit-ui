@@ -10,11 +10,8 @@ import {
   Heart,
   ArrowLeft,
   Info,
-  CreditCard,
   Tag,
-  MessageCircle,
   Star,
-  Check,
   Plus,
 } from "lucide-react";
 
@@ -25,8 +22,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Progress } from "@/components/ui/progress";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { useGetAllReviewsMutation, useGetEventByIdMutation } from "@/hooks/ClientCustomHooks";
 import LocationPicker from "@/components/common/location/LocationPicker";
 import EventBookingForm from "@/components/client/event/EventBookingForm";
@@ -36,7 +32,7 @@ import { useSelector } from "react-redux";
 import ReviewDisplay from "@/components/common/review/review-display";
 import VendorDetailsPage from "@/components/client/vendor-info/VendorDetails";
 
-interface Event {
+export interface Event {
   eventId: string;
   title: string;
   description: string;
@@ -52,11 +48,16 @@ interface Event {
   totalTicket: number;
   ticketPurchased: number;
   status: "upcoming" | "completed" | "cancelled";
+  location?: {
+    type: string;
+    coordinates: number[];
+  };
   vendorDetails?: {
     name: string;
-    profilePicture: string;
+    profileImage: string;
     rating: number;
     events: number;
+    userId?:string
   };
   amenities?: string[];
   faq?: Array<{ question: string; answer: string }>;
@@ -80,7 +81,6 @@ export default function EventDetailsPage() {
   const [ticketCount, setTicketCount] = useState(1);
   const [isBookingOpen, setIsBookingOpen] = useState(false);
   const [isReviewFormVisible, setIsReviewFormVisible] = useState(false)
-  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("card");
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const getEventByIdMutation = useGetEventByIdMutation()

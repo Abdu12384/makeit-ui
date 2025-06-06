@@ -4,17 +4,11 @@ import { motion } from "framer-motion"
 import { Formik, Form, Field, FieldArray, ErrorMessage } from "formik"
 import * as Yup from "yup"
 import { X, Plus, Upload, ImageIcon, ArrowLeft, Save } from "lucide-react"
-
-interface WorkSample {
-  workSampleId?: string
-  title: string
-  description: string
-  images: string[]
-}
+import { WorkSample } from "@/types/worksample/work-sample"
 
 interface WorkSampleFormProps {
   initialData?: WorkSample
-  onSubmit: (data: WorkSample) => void
+  onSubmit: (data: WorkSample) => Promise<void>
   onCancel: () => void
   isEditing?: boolean
 }
@@ -136,7 +130,7 @@ const WorkSampleForm: React.FC<WorkSampleFormProps> = ({ initialData, onSubmit, 
               setSubmitting(false)
             }}
           >
-            {({ values, isSubmitting, setFieldValue }) => (
+            {({ values, isSubmitting }) => (
               <Form className="space-y-8">
                 {/* Title Field */}
                 <motion.div variants={fieldVariants} className="space-y-2">

@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { motion } from "framer-motion"
-import { Check, Truck, EyeOff, Eye , ImageUp,FileUp} from "lucide-react"
+import { Check, Truck, EyeOff, Eye } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
@@ -64,7 +64,7 @@ export function SignupPage() {
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [selectedImage, setSelectedImage] = useState<string>("")
-  const [showCropper, setShowCropper] = useState<boolean>(false)
+  const [_showCropper, setShowCropper] = useState<boolean>(false)
   const [croppedImage, setCroppedImage] = useState<File | null>(null)
   const [isOpen, setIsOpen] = useState(false)
   const [data, setData] = useState<VendorData>()
@@ -132,7 +132,7 @@ export function SignupPage() {
       console.log(vendor)
       
       // Call the vendor signup API
-     const mutation = vendorSignupAPI.mutate(vendor, {
+      vendorSignupAPI.mutate(vendor, {
         onSuccess: () => {
           setIsOpen(true)
         },
@@ -213,7 +213,7 @@ const handleError = (error: unknown) => {
                 validationSchema={SignupSchema}
                 onSubmit={handleSubmit}
               >
-                {({ errors, touched, values, setFieldValue, isSubmitting }) => (
+                {({ values, setFieldValue, isSubmitting }) => (
                   <Form className="w-full space-y-4">
                     <motion.div variants={itemVariants}>
                       <Label htmlFor="name" className="text-sm font-medium">

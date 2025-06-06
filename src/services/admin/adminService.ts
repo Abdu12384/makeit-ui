@@ -3,14 +3,7 @@ import authAxiosInstance from "@/api/auth.axios";
 import { PaginationParams } from "@/types/event";
 import { IAllVendorResponse, IAuthResponse, IAxiosResponse } from "@/types/response";
 import {FetchVendorParams, ILoginData, IVendor } from "@/types/User";
-import axios from "axios";
-import { data } from "react-router-dom";
 
-
-interface Login {
-   email: string;
-   password: string
-}
 
 
 export interface UserQueryParams {
@@ -23,6 +16,7 @@ export interface UserQueryParams {
 export interface Category {
 	title: string;
 	description: string;
+	image?:string
 }
 
 

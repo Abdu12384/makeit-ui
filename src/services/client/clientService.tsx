@@ -27,12 +27,6 @@ type CreateAccountParams = {
 }
 
 
-type Client = {
-  email: string;
-  googleVerified: boolean;
-  name: string;
-  profileImage: string
-}
 
 
 export const refreshClientSession = async (): Promise<IAuthResponse> => {

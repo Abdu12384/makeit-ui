@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react"
-import { PenTool, Utensils, Camera, Music, Mic, Truck } from "lucide-react"
 import { Header } from "@/components/vendor/vendor-homePage-component/header"
 import { BannerCarousel } from "@/components/vendor/vendor-homePage-component/banner"
 import { Sidebar } from "@/components/vendor/vendor-homePage-component/sidebar"
@@ -36,17 +35,17 @@ const bannerImages = [
 
 
 
-const notifications = [
-  { id: 1, message: "New booking request for Corporate Summit", time: "2 hours ago", isNew: true },
-  { id: 2, message: "Payment received for Wedding Expo", time: "Yesterday", isNew: true },
-  { id: 3, message: "Client message: Need to discuss catering options", time: "2 days ago", isNew: false },
-  { id: 4, message: "Reminder: Update your availability calendar", time: "3 days ago", isNew: false },
-]
+// const notifications = [
+//   { id: 1, message: "New booking request for Corporate Summit", time: "2 hours ago", isNew: true },
+//   { id: 2, message: "Payment received for Wedding Expo", time: "Yesterday", isNew: true },
+//   { id: 3, message: "Client message: Need to discuss catering options", time: "2 days ago", isNew: false },
+//   { id: 4, message: "Reminder: Update your availability calendar", time: "3 days ago", isNew: false },
+// ]
 
 const VendorHomePage = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
   const [currentTime, setCurrentTime] = useState(new Date())
-  const [activeNotifications, setActiveNotifications] = useState(2)
+  // const [activeNotifications, setActiveNotifications] = useState(2)
   const [isLiveIndicatorVisible, setIsLiveIndicatorVisible] = useState(true)
 
   // Update time every minute to simulate real-time
@@ -72,7 +71,7 @@ const VendorHomePage = () => {
       <Header
         currentTime={currentTime}
         isLiveIndicatorVisible={isLiveIndicatorVisible}
-        activeNotifications={activeNotifications}
+        // activeNotifications={activeNotifications}
         openSidebar={() => setIsSidebarOpen(true)}
       />
 

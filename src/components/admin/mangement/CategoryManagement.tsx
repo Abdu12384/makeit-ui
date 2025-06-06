@@ -62,7 +62,7 @@ export const CategoryManagement: React.FC = () => {
   const [totalPages, setTotalPages] = useState(1);
   const limit = 10;
 
-  const { data, isLoading, isError } = useGetAllCategoriesQuery({
+  const { data } = useGetAllCategoriesQuery({
     search: searchQuery,
     page: currentPage,
     limit,
@@ -231,9 +231,7 @@ export const CategoryManagement: React.FC = () => {
     }
   };
 
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-  };
+ 
 
   const handleOpenAddModal = () => {
     resetFormState();

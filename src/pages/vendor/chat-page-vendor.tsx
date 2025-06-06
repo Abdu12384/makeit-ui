@@ -92,7 +92,7 @@ const VendorChatPage: React.FC = () => {
       <div className="max-w-7xl mx-auto">
         <h1 className="text-2xl font-semibold text-gray-800 mb-4">Client Chat</h1>
         {hasChats ? (
-          <ChatComponent userId={userId} userModel={userModel as "client" | "vendors"} socket={socket} receiverId={receiverId} />
+          <ChatComponent userId={userId} userModel={userModel as "client" | "vendor"} socket={socket} receiverId={receiverId!} />
         ) : (
           <div className="p-4 bg-white rounded-lg shadow-md">
             <h2 className="text-lg font-semibold text-gray-800 mb-2">No Chatting Has Happened Yet</h2>

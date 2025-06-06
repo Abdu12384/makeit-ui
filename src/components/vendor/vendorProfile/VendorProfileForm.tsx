@@ -1,6 +1,6 @@
 import { useMemo, useState, useRef, useEffect } from "react"
 import { motion } from "framer-motion"
-import { Camera, Save, X, Edit3, Award, Briefcase, Phone, Mail, User, KeyRound } from "lucide-react"
+import { Camera, Save, X, Edit3, Award, Phone, Mail, User, KeyRound } from "lucide-react"
 import { useSelector, useDispatch } from "react-redux"
 import { RootState } from "@/store/store"
 import dummyDP from "@/assets/images/profile-img.jpg"

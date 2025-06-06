@@ -5,12 +5,9 @@ import { Check, Truck, EyeOff, Eye } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
-import { useNavigate } from "react-router-dom"
 import Img2 from '@/assets/images/singupImages.jpeg'
 import {  IAdmin, UserRoles } from "@/types/User"
 import toast from "react-hot-toast"
-import { setTimeout } from "timers/promises"
-import { useVendorLoginMutation } from "@/hooks/VendorCustomHooks"
 import { useAdminLoginMutation } from "@/hooks/AdminCustomHooks"
 import { useAppDispatch } from "@/store/store"
 import { adminLogin } from "@/store/slices/admin.slice"
@@ -40,7 +37,6 @@ export function AdminLoginPage() {
   const [isLoading, setIsLoading] = useState(false)
   const [formData, setFormData] = useState<FormData>(initialValues)
   const [commonLoading, setCommonLoading] = useState(false)
-  const navigate = useNavigate()
   const loginMutation = useAdminLoginMutation()
   const [formErrors, setFormErrors] = useState<FormErrors>({})
   const dispatch = useAppDispatch()

@@ -477,10 +477,6 @@ import {
   TrendingUp,
   TrendingDown,
   IndianRupee,
-  Wallet,
-  CreditCard,
-  ArrowUpRight,
-  ArrowDownLeft,
   MoreHorizontal,
   Eye,
 } from "lucide-react"

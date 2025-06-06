@@ -1,8 +1,6 @@
 import PaymentForm from '../paymentForm/PaymentFormStripe'
 import { useConfirmBookingPaymentMutation, useCreateBookingPaymentMutation } from '@/hooks/ClientCustomHooks'
-import { useLocation, useNavigate } from 'react-router-dom'
-import { toast } from 'react-hot-toast'
-// import { BookingType } from '@/types/BookingType'
+import {    toast } from 'react-hot-toast'
 import { useQueryClient } from '@tanstack/react-query'
 
 function BookingPayment({booking,onClose}: {booking: any,onClose: () => void}) {
@@ -12,7 +10,6 @@ function BookingPayment({booking,onClose}: {booking: any,onClose: () => void}) {
 
     console.log('serviceprice',booking.service.servicePrice)
     console.log('booking',booking)
-    const navigate = useNavigate()
     const createBookingPayment = async (paymentMethodId: string) => {
         const response = await createBookingPaymentHook.mutateAsync({
             bookingId: booking.bookingId,

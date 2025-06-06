@@ -1,4 +1,4 @@
-import {useState, useEffect} from "react"
+
 import { Ticket } from "@/types/ticket"
 import { Calendar, Clock, User, X, Download } from "lucide-react"
 

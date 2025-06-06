@@ -26,7 +26,7 @@ export const useAdminLoginMutation = () =>{
 
 
 
-export const useGetAllUsers = <T>(params: UserQueryParams) => {
+export const useGetAllUsers = (params: UserQueryParams) => {
   return useQuery({
     queryKey: ['users', params.page, params.limit, params.search, params.userType],
     queryFn: () => getAllUsers(params)
@@ -129,8 +129,8 @@ export const useUpdateCategoryStatusMutation = () => {
 export const useEditCategoryMutation = () => {
 	const queryClient = useQueryClient();
 
-	 return useMutation<IAxiosResponse, Error, { id: string; description: string; title: string; }>({
-		mutationFn: ({ id, description,title}) => editCategory({data:{description,title},categoryId:id}),
+	 return useMutation<IAxiosResponse, Error, { id: string; description: string; title: string; image?: string }>({
+		mutationFn: ({ id, description,title,image}) => editCategory({data:{description,title,image},categoryId:id}),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ["categories"] });
 		},

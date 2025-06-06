@@ -1,6 +1,6 @@
 import type React from "react"
 import { motion } from "framer-motion"
-import { Search, Store, Filter, MoreVertical, Send, CheckCircle, Ban } from 'lucide-react'
+import { Search, CheckCircle, Ban } from 'lucide-react'
 import { IVendor } from "@/types/User"
 import { Pagination1 } from "@/components/common/paginations/Pagination"
 import { ConfirmationButton } from "@/components/common/customButtons/ConfirmButton"

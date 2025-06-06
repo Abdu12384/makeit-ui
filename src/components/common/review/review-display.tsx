@@ -3,7 +3,7 @@ import { motion } from "framer-motion"
 import { Star, User, Calendar } from "lucide-react"
 
 interface Review {
-  _id: string
+  _id?: string
   comment: string
   rating: number
   reviewerName?: string
@@ -77,7 +77,7 @@ const ReviewDisplay: React.FC<ReviewDisplayProps> = ({
       {/* Header */}
       <motion.div variants={itemVariants} className="text-center">
         <h3 className="text-2xl font-bold text-gray-800 mb-2">{title}</h3>
-        {showAverage && reviews?.length > 0 && (
+        {showAverage && reviews?.length! > 0 && (
           <div className="flex items-center justify-center gap-3">
             <StarRating rating={Math.round(averageRating)} size={24} />
             <span className="text-xl font-semibold text-gray-700">{averageRating.toFixed(1)}</span>

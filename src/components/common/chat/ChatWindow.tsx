@@ -1,143 +1,3 @@
-// import React, { useEffect, useState, useRef } from "react";
-// import { Socket } from "socket.io-client";
-// import { Message } from "@/types/chat";
-
-// interface ChatWindowProps {
-//   chatId: string;
-//   userId: string;
-//   userModel: "client" | "vendors";
-//   socket: Socket;
-// }
-
-// const ChatWindow: React.FC<ChatWindowProps> = ({ chatId, userId, userModel, socket }) => {
-//   const [messages, setMessages] = useState<Message[]>([]);
-//   const [message, setMessage] = useState("");
-//   const [isTyping, setIsTyping] = useState(false);
-//   const [error, setError] = useState<string | null>(null);
-//   const [loading, setLoading] = useState(false);
-//   const messagesEndRef = useRef<HTMLDivElement>(null);
-
-//   const scrollToBottom = () => {
-//     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-//   };
-
-//   useEffect(() => {
-//     socket.emit("join-room", { roomId: chatId, userId }, (response: any) => {
-//       if (response.status !== "success") {
-//         setError(response.message);
-//       }
-//     });
-
-//     setLoading(true);
-//     socket.emit("get-messages", { chatId }, (response: any) => {
-//       setLoading(false);
-//       if (response.status === "success") {
-//         setMessages(response.data);
-//       } else {
-//         setError(response.message);
-//       }
-//     });
-
-//     socket.on("receive-message", (data: Message) => {
-//       setMessages((prev) => [...prev, data]);
-//     });
-
-//     socket.on("typing", ({ senderId, isTyping }: { senderId: string; isTyping: boolean }) => {
-//       setIsTyping(isTyping && senderId !== userId);
-//     });
-
-//     socket.on("user-joined", () => {
-//       socket.emit("get-messages", { chatId }, (response: any) => {
-//         if (response.status === "success") {
-//           setMessages(response.data);
-//         }
-//       });
-//     });
-
-//     scrollToBottom();
-
-//     return () => {
-//       socket.off("receive-message");
-//       socket.off("typing");
-//       socket.off("user-joined");
-//     };
-//   }, [chatId, userId, socket]);
-
-//   const sendMessage = () => {
-//     if (!message.trim()) return;
-
-//     socket.emit(
-//       "send-message",
-//       { chatId, message, senderId: userId, senderModel: userModel },
-//       (response: any) => {
-//         if (response.status === "success") {
-//           setMessage("");
-//         } else {
-//           setError(response.message);
-//         }
-//       }
-//     );
-//   };
-
-//   const handleTyping = (isTyping: boolean) => {
-//     socket.emit("typing", { chatId, senderId: userId, isTyping });
-//   };
-
-//   return (
-//     <div className="flex-1 flex flex-col space-y-4">
-//       <h2 className="text-xl font-semibold text-gray-800">Chat</h2>
-//       {loading && <p className="text-gray-500">Loading messages...</p>}
-//       {error && <p className="text-red-500">{error}</p>}
-//       <div className="flex-1 overflow-y-auto border border-gray-200 rounded-md p-4 bg-white shadow-sm">
-//         {messages.map((msg, index) => (
-//           <div
-//             key={index}
-//             className={`flex mb-4 ${msg.senderId === userId ? "justify-end" : "justify-start"}`}
-//           >
-//             <div
-//               className={`max-w-[70%] p-3 rounded-lg shadow-sm ${
-//                 msg.senderId === userId
-//                   ? "bg-blue-500 text-white"
-//                   : "bg-gray-100 text-gray-800"
-//               }`}
-//             >
-//               <p>{msg.messageContent}</p>
-//               <span className="text-xs opacity-70">
-//                 {new Date(msg.sendedTime).toLocaleString()} {msg.seen ? "(Seen)" : ""}
-//               </span>
-//             </div>
-//           </div>
-//         ))}
-//         <div ref={messagesEndRef} />
-//       </div>
-//       {isTyping && <div className="text-gray-500">Someone is typing...</div>}
-//       <div className="flex space-x-2">
-//         <input
-//           value={message}
-//           onChange={(e) => {
-//             setMessage(e.target.value);
-//             handleTyping(true);
-//           }}
-//           onBlur={() => handleTyping(false)}
-//           onKeyPress={(e) => {
-//             if (e.key === "Enter") sendMessage();
-//           }}
-//           placeholder="Type a message..."
-//           className="flex-1 p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-//         />
-//         <button
-//           onClick={sendMessage}
-//           className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors"
-//         >
-//           Send
-//         </button>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default ChatWindow;
-
 
 "use client"
 
@@ -151,7 +11,7 @@ import { Send, Smile, Paperclip, Mic, ImageIcon, MoreVertical, ArrowLeft, CheckC
 interface ChatWindowProps {
   chatId: string
   userId: string
-  userModel: "client" | "vendors"
+  userModel: "client" | "vendor"
   socket: Socket
   onBackClick?: () => void
 }
@@ -386,7 +246,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ chatId, userId, userModel, sock
             <p className="text-gray-500">No messages yet. Start the conversation!</p>
           </div>
         ) : (
-          groupedMessages.map((group, groupIndex) => (
+          groupedMessages.map((group) => (
             <div key={group.date} className="mb-6">
               <div className="flex justify-center mb-4">
                 <span className="px-3 py-1 bg-gray-200 rounded-full text-xs text-gray-600">{group.date}</span>

@@ -1,5 +1,4 @@
 
-import ChatComponent from "@/components/common/chat/chatComponent"
 import ForgotPasswordEmail from "@/components/common/ForgotPassword/ForgotPassword"
 import ResetPassword from "@/components/common/ForgotPassword/ResetPassword"
 import { AttendeesList } from "@/components/vendor/booked-events/AttendeesInfo"

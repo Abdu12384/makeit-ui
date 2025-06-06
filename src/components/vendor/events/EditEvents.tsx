@@ -33,8 +33,8 @@ interface EventData {
   posterImage: string[];
   pricePerTicket: number;
   totalTicket: number;
-  maxTicketsPerUser?: number;
-  ticketPurchased?: number;
+  maxTicketsPerUser?: number | undefined;
+  ticketPurchased?: number | undefined;
   status: "upcoming" | "completed" | "cancelled";
 }
 
@@ -44,7 +44,7 @@ interface EditEventPageProps {
   onClose?: () => void;
 }
 
-export default function EditEventPage({ eventData, onSubmit , onClose}: EditEventPageProps) {
+export default function EditEventPage({ eventData, onSubmit }: EditEventPageProps) {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
   const [selectedDates, setSelectedDates] = useState<Date[]>([]);
@@ -54,9 +54,11 @@ export default function EditEventPage({ eventData, onSubmit , onClose}: EditEven
 
   useEffect(() => {
     setMounted(true);
-
+    if(!eventData){
+      return
+    }
     // Convert date strings to Date objects
-    const eventDates = eventData.date.map((dateStr: string) => new Date(dateStr));
+    const eventDates = eventData!.date.map((dateStr: string) => new Date(dateStr));
     setSelectedDates(eventDates);
 
     // Format times for input fields
@@ -75,20 +77,20 @@ export default function EditEventPage({ eventData, onSubmit , onClose}: EditEven
 
     // Set initial form values from eventData prop
     setInitialValues({
-      title: eventData.title,
-      description: eventData.description,
-      category: eventData.category,
+      title: eventData?.title,
+      description: eventData?.description,
+      category: eventData?.category,
       dates: eventDates,
       startTime: startTimeStr,
       endTime: endTimeStr,
-      venueName: eventData.venueName,
-      address: eventData.address,
-      location: eventData.location,
-      posterImage: eventData.posterImage,
+      venueName: eventData?.venueName,
+      address: eventData?.address,
+      location: eventData?.location,
+      posterImage: eventData?.posterImage,
       pricePerTicket: eventData.pricePerTicket,
       totalTicket: eventData.totalTicket,
-      maxTicketsPerUser: eventData.maxTicketsPerUser,
-      ticketPurchased: eventData.ticketPurchased,
+      maxTicketsPerUser: eventData?.maxTicketsPerUser || 0,
+      ticketPurchased: eventData?.ticketPurchased || 0,
       status: eventData.status,
     });
 
@@ -129,7 +131,7 @@ export default function EditEventPage({ eventData, onSubmit , onClose}: EditEven
         const formData = new FormData();
         formData.append("file", file);
         formData.append("upload_preset", "vendor_id"); // Replace with your upload preset
-        // formData.append("cloud_name", "your_cloud_name"); // Replace with your cloud name
+
 
         const uploadResponse = await uploadToCloudinary.mutateAsync(formData);
         push(uploadResponse.secure_url);
@@ -149,6 +151,9 @@ export default function EditEventPage({ eventData, onSubmit , onClose}: EditEven
         toast.error("Please select at least one event date");
         setSubmitting(false);
         return;
+      }
+      if(!eventData){
+        return
       }
 
       // Combine startTime and endTime with the first selected date
@@ -176,7 +181,9 @@ export default function EditEventPage({ eventData, onSubmit , onClose}: EditEven
       };
 
       // Call parent onSubmit function
-      onSubmit(updatedValues);
+      if(onSubmit){
+        onSubmit(updatedValues);
+      }
 
       toast.success("Event updated successfully");
       navigate(`/vendor/events/${eventData._id}`);
@@ -621,10 +628,10 @@ export default function EditEventPage({ eventData, onSubmit , onClose}: EditEven
                                     type="button"
                                     variant="outline"
                                     className="w-full mt-4 border-dashed border-sky-200 hover:bg-sky-50 text-sky-700 transition-all duration-300"
-                                    disabled={uploadToCloudinary.isLoading}
+                                    disabled={uploadToCloudinary.isPending}
                                   >
                                     <Upload className="mr-2 h-4 w-4 text-sky-500" />
-                                    {uploadToCloudinary.isLoading ? "Uploading..." : "Add Image"}
+                                    {uploadToCloudinary.isPending ? "Uploading..." : "Add Image"}
                                   </Button>
                                 </div>
                               </motion.div>

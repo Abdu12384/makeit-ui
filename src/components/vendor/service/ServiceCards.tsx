@@ -109,7 +109,7 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { Clock, DollarSign, Calendar, Award, MoreVertical, Edit, Trash2 } from "lucide-react"
+import { Clock, DollarSign, Calendar, Award, MoreVertical, Edit } from "lucide-react"
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -129,7 +129,7 @@ interface ServiceCardProps {
   onDelete: () => void
 }
 
-export const ServiceCard = ({ service, onEdit, onDelete }: ServiceCardProps) => {
+export const ServiceCard = ({ service, onEdit }: ServiceCardProps) => {
   const cardVariants = {
     hidden: { opacity: 0, y: 20 },
     visible: {

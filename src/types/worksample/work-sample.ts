@@ -1,7 +1,7 @@
 
 
 export interface WorkSample {
-    workSampleId:string,
+    workSampleId?:string,
     title:string,
     description:string,
     images:string[],

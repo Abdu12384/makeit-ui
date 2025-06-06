@@ -7,24 +7,25 @@ import { Phone, Mail, MapPin, Star, Eye, X, ChevronLeft, ChevronRight, ExternalL
 import { useGetAllWorkSamplesByVendorIdMutation } from "@/hooks/ClientCustomHooks"
 
 interface WorkSample {
-  id: string
+  _id: string
   title: string
   description: string
   images: string[]
 }
 
 interface Vendor {
-  id: string
+  _id?: string
+  userId?:string
   name: string
-  profileImage: string
-  phone: string
+  profileImage?: string
+  phone?: string
   email?: string
   location?: string
   rating?: number
   totalReviews?: number
   specialties?: string[]
   bio?: string
-  workSamples: WorkSample[]
+  workSamples?: WorkSample[]
 }
 
 interface VendorDetailsPageProps {
@@ -184,7 +185,7 @@ console.log('vendor',vendor)
       {
           page:1,
           limit:10,
-          vendorId:vendor.userId
+          vendorId:vendor.userId!
        },
       {
         onSuccess: (data) => {
@@ -360,7 +361,7 @@ console.log('vendor',vendor)
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {workSamples?.map((sample, index) => (
               <motion.div
-                key={sample.id}
+                key={sample._id}
                 variants={itemVariants}
                 whileHover={{ y: -5 }}
                 className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300"

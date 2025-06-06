@@ -1,13 +1,12 @@
 import type React from "react"
 import { useState } from "react"
-import { ArrowLeft, Mail, Phone, MapPin, Globe, Calendar, Store, CheckCircle, XCircle } from "lucide-react"
+import { ArrowLeft, Mail, Phone, Calendar, Store } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 // import { Separator } from "@/components/ui/separator"
 import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import type { IVendor } from "@/types/User"
-import { ConfirmationButton } from "@/components/common/customButtons/ConfirmButton"
 import {
   Dialog,
   DialogContent,
@@ -17,7 +16,6 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { Textarea } from "@/components/common/textArea/TextArea"
-import { useNavigate } from "react-router-dom"
 
 interface VendorViewProps {
   vendor: IVendor | null
@@ -29,7 +27,7 @@ export const VendorView: React.FC<VendorViewProps> = ({ vendor , onBack}) => {
   const [isRejectDialogOpen, setIsRejectDialogOpen] = useState(false)
   const [rejectionReason, setRejectionReason] = useState("")
 
-   const navigate = useNavigate()
+
 
   if (!vendor) {
     return (
@@ -43,9 +41,6 @@ export const VendorView: React.FC<VendorViewProps> = ({ vendor , onBack}) => {
     )
   }
 
-  const handleRejectClick = () => {
-    setIsRejectDialogOpen(true)
-  }
 
   return (
     <div className="p-6 bg-gray-900 min-h-screen">

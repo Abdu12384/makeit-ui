@@ -11,15 +11,9 @@ import {
   CheckCircle,
   XCircle,
   AlertCircle,
-  MapPin,
   FileText,
   Tag,
-  ChevronRight,
-  Loader2,
-  Clock,
   Building,
-  CreditCardIcon,
-  Star,
   Plus,
 } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
@@ -30,16 +24,18 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { MessageCircle } from "lucide-react";
 import BookingPayment from "./BookingPayment"
 import ReviewForm from "@/components/common/review/review-form"
-import { ReviewData } from "@/types/worksample/review"
 import { Link } from "react-router-dom";
 import { useCancelBookingMutation } from "@/hooks/ClientCustomHooks";
 import { ConfirmationButton } from "@/components/common/customButtons/ConfirmButton"
 import toast from "react-hot-toast"
 
 
-type Booking = {
+export type Booking = {
+  _id?: string
   bookingId: string
+  title?: string
   serviceTitle?: string
+  serviceId?:string
   date: string
   time?: string
   client: {
@@ -55,7 +51,7 @@ type Booking = {
     name: string
     email: string
     userId: string
-    avatar?: string
+    profileImage?: string
   }
   paymentStatus: "Pending" | "Successfull" | "Failed"
   price?: number
@@ -69,6 +65,7 @@ type Booking = {
     yearsOfExperience?: number
     additionalHourFee?: number
   }
+
 }
 
 interface BookingDetailsProps {
@@ -78,7 +75,7 @@ interface BookingDetailsProps {
 
 export default function BookingDetails({ booking, onBack }: BookingDetailsProps) {
   const [isLoading, setIsLoading] = useState(true)
-  const [activeTab, setActiveTab] = useState("details")
+  const [_activeTab, setActiveTab] = useState("details")
   const [openPaymentDialog, setOpenPaymentDialog] = useState(false)
   const [isReviewFormVisible, setIsReviewFormVisible] = useState(false)
   const cancelBookingMutation = useCancelBookingMutation()
@@ -104,7 +101,7 @@ export default function BookingDetails({ booking, onBack }: BookingDetailsProps)
     },
     vendor: {
       ...booking.vendor,
-      avatar: booking.vendor?.avatar || undefined,
+      profileImage: booking.vendor?.profileImage || undefined,
     },
     service: {
       ...booking?.service,
@@ -256,20 +253,7 @@ export default function BookingDetails({ booking, onBack }: BookingDetailsProps)
     </div>
   )
 
-  const getBookingProgress = () => {
-    switch (enhancedBooking.status.toLowerCase()) {
-      case "pending":
-        return 25
-      case "confirmed":
-        return 50
-      case "completed":
-        return enhancedBooking.paymentStatus.toLowerCase() === "paid" ? 100 : 75
-      case "cancelled":
-        return 100
-      default:
-        return 0
-    }
-  }
+ 
 
   return (
     <motion.div
@@ -555,7 +539,7 @@ export default function BookingDetails({ booking, onBack }: BookingDetailsProps)
                         className="mt-4"
                       >
                         <ReviewForm
-                          onSubmit={(data: ReviewData) => {
+                          onSubmit={() => {
                             // handleSubmitReview(data)
                             setIsReviewFormVisible(false)
                           }}
@@ -593,7 +577,7 @@ export default function BookingDetails({ booking, onBack }: BookingDetailsProps)
                         <XCircle className="h-4 w-4" /> Cancel Booking
                       </Button>
                     )}
-                    {enhancedBooking.status === "Completed" && enhancedBooking.paymentStatus === "Paid" && (
+                    {enhancedBooking.status === "Completed" && enhancedBooking.paymentStatus === "Successfull" && (
                       <Button
                         variant="outline"
                         className="gap-2 border-green-300 text-green-700 hover:bg-green-50 dark:border-green-800 dark:text-green-400 dark:hover:bg-green-900/20"

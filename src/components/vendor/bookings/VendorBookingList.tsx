@@ -139,14 +139,7 @@ const BookingList = ({ isLoading = false }: BookingListProps) => {
     }
   }
 
-  const formatTime = (dateString: string) => {
-    try {
-      return format(new Date(dateString), "h:mm a")
-    } catch (error) {
-      console.error("Error formatting time:", dateString, error)
-      return ""
-    }
-  }
+  
 
   useEffect(() => {
     getAllBookingsMutation.mutate(

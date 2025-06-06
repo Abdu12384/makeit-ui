@@ -1,9 +1,8 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Wallet, Calendar, Clock, CheckCircle2, AlertCircle, ArrowUpRight, ArrowDownLeft, DollarSign, Receipt, ShoppingCart, IndianRupee } from "lucide-react";
+import { Wallet, Calendar, ArrowUpRight, ArrowDownLeft, DollarSign, Receipt, ShoppingCart, IndianRupee } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useGetVendorWalletByIdMutation } from "@/hooks/VendorCustomHooks";
 import { Pagination1 } from "@/components/common/paginations/Pagination";
@@ -19,18 +18,7 @@ interface Transaction {
   service?: string;
 }
 
-const sampleTransactions: Transaction[] = [
-  {
-    _id: "tx-1",
-    paymentType: "payment",
-    amount: 250,
-    date: "2023-05-12T10:30:00",
-    paymentStatus: "completed",
-    description: "Payment for Web Development",
-    vendor: "John's Web Services",
-    service: "Website Redesign",
-  },
-];
+
  
 export const VendorWallet = () => {
   const [filterPeriod, setFilterPeriod] = useState("all");
@@ -149,35 +137,7 @@ export const VendorWallet = () => {
     }
   };
 
-  const getStatusBadge = (status: string) => {
-    switch (status) {
-      case "completed":
-        return (
-          <Badge variant="outline" className="bg-teal-50 text-teal-700 border-teal-200">
-            <CheckCircle2 className="mr-1 h-3 w-3" /> Completed
-          </Badge>
-        );
-      case "pending":
-        return (
-          <Badge variant="outline" className="bg-amber-50 text-amber-700 border-amber-200">
-            <Clock className="mr-1 h-3 w-3" /> Pending
-          </Badge>
-        );
-      case "failed":
-        return (
-          <Badge variant="outline" className="bg-rose-50 text-rose-700 border-rose-200">
-            <AlertCircle className="mr-1 h-3 w-3" /> Failed
-          </Badge>
-        );
-      default:
-        return (
-          <Badge variant="outline" className="bg-slate-50 text-slate-700 border-slate-200">
-            {status}
-          </Badge>
-        );
-    }
-  };
-
+ 
   return (
     <div className="container mx-auto p-4 bg-slate-50 min-h-screen">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">

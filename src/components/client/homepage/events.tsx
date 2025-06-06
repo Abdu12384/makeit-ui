@@ -10,6 +10,7 @@ import { useGetAllEventsMutation } from "@/hooks/ClientCustomHooks"
 import { useSelector } from "react-redux"
 import type { RootState } from "@/store/store"
 import { useNavigate } from "react-router-dom"
+import { IEventFormValues } from "@/types/event"
 
 
 export default function Events() {
@@ -21,11 +22,11 @@ export default function Events() {
   const isMobile = useMediaQuery("(max-width: 768px)")
   const [cardsPerView, setCardsPerView] = useState(3)
   const getAllEventsMutation = useGetAllEventsMutation()
-  const [currentPage, setCurrentPage] = useState(1)
-  const [totalPages, setTotalPages] = useState(1)
+  const [currentPage, _setCurrentPage] = useState(1)
+  const [_totalPages, setTotalPages] = useState(1)
   const limit = 6
-  const [events, setEvents] = useState([])
-  const [isLoading, setIsLoading] = useState(true)
+  const [events, setEvents] = useState<IEventFormValues[]>([])
+  const [_isLoading, setIsLoading] = useState(true)
 
   const {client} = useSelector((state: RootState) => state.client)
 
@@ -309,7 +310,7 @@ export default function Events() {
                           }}
                           transition={{ duration: 0.3 }}
                         >
-                          <Button onClick={() => handleTicketBooking(event?.eventId)} className="w-full bg-[#124E66] hover:bg-[#0e3e52] text-white rounded-full">
+                          <Button onClick={() => handleTicketBooking(event?.eventId!)} className="w-full bg-[#124E66] hover:bg-[#0e3e52] text-white rounded-full">
                             Book Now
                           </Button>
                         </motion.div>

@@ -56,7 +56,7 @@ function TicketScanner() {
           setVerifiedTicket(data.verifyTicket)
           setIsOpen(true)
         },
-        onError: (err) => {
+        onError: (err:any) => {
           console.log('error---',err)
          console.log('errcccc',err.response?.data.message)
           toast.error(err.response?.data.message)
@@ -91,7 +91,7 @@ function TicketScanner() {
     setIsOpen(false)
   scannerInstance?.clear().then(() => {
     console.log("Camera stopped.");
-  }).catch((err) => {
+  }).catch((err:any) => {
     console.error("Error stopping camera:", err);
   });
   }

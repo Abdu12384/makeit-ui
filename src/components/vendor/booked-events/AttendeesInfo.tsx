@@ -8,7 +8,6 @@ import {
   Phone,
   Ticket,
   Calendar,
-  Clock,
   MapPin,
   CheckCircle2,
   XCircle,
@@ -29,102 +28,8 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { useParams } from "react-router-dom"
 import { useGetAttendeesByIdMutation } from "@/hooks/VendorCustomHooks"
 
-// Sample attendees data - in a real app, this would come from an API or props
-const mockAttendees = [
-  {
-    id: "att-001",
-    eventId: "evt-001",
-    name: "John Smith",
-    email: "john.smith@example.com",
-    phone: "+1 (555) 123-4567",
-    address: "123 Main St, New York, NY",
-    company: "Tech Innovations Inc.",
-    jobTitle: "Senior Developer",
-    ticketId: "TKT-12345-ABCDE",
-    ticketType: "VIP Pass",
-    ticketPrice: "299.00",
-    fees: "15.95",
-    totalPaid: "314.95",
-    status: "checked-in",
-    checkedInTime: "9:15 AM, Nov 15, 2023",
-    checkedInBy: "Sarah (Staff)",
-    purchaseDate: "Oct 2, 2023",
-    paymentMethod: "Visa",
-    lastFourDigits: "4567",
-    dietaryRequirements: "Vegetarian",
-    avatarUrl: "/placeholder.svg?height=40&width=40&text=JS",
-  },
-  {
-    id: "att-002",
-    eventId: "evt-001",
-    name: "Emily Johnson",
-    email: "emily.j@example.com",
-    phone: "+1 (555) 987-6543",
-    company: "Digital Solutions LLC",
-    jobTitle: "Product Manager",
-    ticketId: "TKT-67890-FGHIJ",
-    ticketType: "Standard Pass",
-    status: "not-checked-in",
-    purchaseDate: "Oct 5, 2023",
-    paymentMethod: "Mastercard",
-    lastFourDigits: "9876",
-    avatarUrl: "/placeholder.svg?height=40&width=40&text=EJ",
-  },
-  {
-    id: "att-003",
-    eventId: "evt-001",
-    name: "Michael Chen",
-    email: "m.chen@example.com",
-    ticketId: "TKT-24680-KLMNO",
-    ticketType: "Standard Pass",
-    status: "checked-in",
-    checkedInTime: "9:45 AM, Nov 15, 2023",
-    purchaseDate: "Sep 28, 2023",
-    avatarUrl: "/placeholder.svg?height=40&width=40&text=MC",
-  },
-  {
-    id: "att-004",
-    eventId: "evt-001",
-    name: "Sophia Rodriguez",
-    email: "sophia.r@example.com",
-    phone: "+1 (555) 234-5678",
-    company: "Innovate Design Studio",
-    jobTitle: "UX Designer",
-    ticketId: "TKT-13579-PQRST",
-    ticketType: "VIP Pass",
-    status: "cancelled",
-    cancellationReason: "Schedule conflict",
-    purchaseDate: "Oct 10, 2023",
-    avatarUrl: "/placeholder.svg?height=40&width=40&text=SR",
-  },
-  {
-    id: "att-005",
-    eventId: "evt-001",
-    name: "David Kim",
-    email: "david.k@example.com",
-    ticketId: "TKT-97531-UVWXY",
-    ticketType: "Standard Pass",
-    status: "checked-in",
-    checkedInTime: "10:05 AM, Nov 15, 2023",
-    purchaseDate: "Oct 15, 2023",
-    avatarUrl: "/placeholder.svg?height=40&width=40&text=DK",
-  },
-]
 
-// Sample event data
-const mockEvents = [
-  {
-    id: "evt-001",
-    title: "Tech Conference 2023",
-    date: "2023-11-15",
-    time: "9:00 AM - 6:00 PM",
-    location: "Convention Center, New York",
-  },
-]
 
-interface AttendeesListProps {
-  eventId?: string
-}
 
 export function AttendeesList() {
 
@@ -175,11 +80,6 @@ export function AttendeesList() {
     return matchesSearch && matchesFilter
   })
 
-  const formatDate = (dateString: string) => {
-    if (!dateString) return ""
-    const date = new Date(dateString)
-    return date.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })
-  }
 
   const getInitials = (name: string) => {
     return name
@@ -309,7 +209,7 @@ export function AttendeesList() {
 
               <Separator />
 
-              <div className="space-y-4">
+              {/* <div className="space-y-4">
                 <h3 className="text-lg font-semibold">Event Information</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="flex items-center">
@@ -329,7 +229,7 @@ export function AttendeesList() {
                     <span className="font-mono">{attendee.ticketId}</span>
                   </div>
                 </div>
-              </div>
+              </div> */}
 
               <Separator />
 
@@ -374,8 +274,8 @@ export function AttendeesList() {
                 <div className="p-6 border rounded-lg">
                   <div className="flex justify-between items-start mb-6">
                     <div>
-                      <h3 className="text-xl font-bold">{event?.title || "Event"}</h3>
-                      <p className="text-muted-foreground">{formatDate(event?.date || "")}</p>
+                      {/* <h3 className="text-xl font-bold">{event?.title || "Event"}</h3>
+                      <p className="text-muted-foreground">{formatDate(event?.date || "")}</p> */}
                     </div>
                     <div className="text-right">
                       <p className="text-sm text-muted-foreground">Ticket Type</p>
@@ -579,7 +479,7 @@ export function AttendeesList() {
             <div>
               <h1 className="text-2xl font-bold">Attendees</h1>
               <p className="text-muted-foreground">
-                {event?.title || "Event"} • {filteredAttendees.length} attendees
+                {/* {event?.title || "Event"} • {filteredAttendees.length} attendees */}
               </p>
             </div>
           </div>
@@ -611,7 +511,7 @@ export function AttendeesList() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {filteredAttendees.map((attendee) => (
+            {filteredAttendees.map((attendee: any) => (
               <AttendeeCard key={attendee.id} attendee={attendee} onClick={() => setSelectedAttendee(attendee)} />
             ))}
 

@@ -2,13 +2,7 @@ import type React from "react"
 import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Edit, Plus, Trash2, Eye } from "lucide-react"
-
-interface WorkSample {
-  workSampleId: string
-  title: string
-  description: string
-  images: string[]
-}
+import { WorkSample } from "@/types/worksample/work-sample"
 
 interface WorkSamplesListProps {
   workSamples: WorkSample[]
@@ -175,7 +169,7 @@ const WorkSamplesList: React.FC<WorkSamplesListProps> = ({ workSamples, onEdit, 
                       variants={buttonVariants}
                       whileHover="hover"
                       whileTap="tap"
-                      onClick={() => onDelete(sample.workSampleId)}
+                      onClick={() => onDelete(sample.workSampleId as string)}
                       className="bg-red-50 text-red-600 px-4 py-2 rounded-lg font-medium hover:bg-red-100 transition-colors flex items-center justify-center"
                     >
                       <Trash2 size={16} />

@@ -1,6 +1,6 @@
-import { useState } from 'react'
+
 import './App.css'
-import { BrowserRouter, Route, Router, Routes } from 'react-router-dom'
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { ClientRoutes } from './routes/client/ClientRoute'
 import {Toaster} from 'react-hot-toast'
 import { VendorRoute } from './routes/vendor/VendorRoute'

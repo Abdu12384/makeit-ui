@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import { Button } from "@/components/ui/button";
@@ -8,16 +7,9 @@ import { Label } from "@/components/ui/label";
 import { DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { TicketEntity } from "@/types/ticket";
 import { useNavigate } from "react-router-dom";
+import { Event } from "@/pages/client/event-details-page";
 
-interface Event {
-  eventId: string;
-  title: string;
-  pricePerTicket: number;
-  totalTicket: number;
-  attendeesCount: number;
-}
 
-// Props for the BookingForm component
 interface BookingFormProps {
   event: Event;
   ticketCount: number;
@@ -49,12 +41,11 @@ export default function EventBookingForm({
   event,
   ticketCount,
   setTicketCount,
-  isBookingOpen,
   setIsBookingOpen,
 }: BookingFormProps) {
   // Calculate total amount
   const ticketPrice = event.pricePerTicket * ticketCount;
-  const serviceFee = event.pricePerTicket * 0.1 * ticketCount;
+  // const serviceFee = event.pricePerTicket * 0.1 * ticketCount;
   const totalAmount = (ticketPrice).toFixed(2);
 
   const navigate = useNavigate();
@@ -82,7 +73,7 @@ export default function EventBookingForm({
       state: {
         amount: event.pricePerTicket * ticketCount,
         event,
-        ticketData: ticketPaymentData,
+        ticket: ticketPaymentData,
         type: "ticketBooking",
         totalTicketCount: ticketCount,
         vendorId: event?.vendorDetails?.userId,

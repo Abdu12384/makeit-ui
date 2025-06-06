@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { debounce } from "lodash";
 // import { useToaster } from "@/hooks/ui/useToaster";
 import { useGetAllUsers, useUpdateUserStatusMutaiion } from "@/hooks/AdminCustomHooks";
-import { IVendor } from "@/types/User";
 import { VendorManagementComponent } from "@/components/admin/mangement/VendorMangement";
 import toast from "react-hot-toast";
 
@@ -21,7 +20,7 @@ export const AdminVendorManagementPage: React.FC = () => {
 		return () => handler.cancel();
 	}, [searchQuery]);
 
-	const { data, isLoading, isError } = useGetAllUsers<IVendor>({
+	const { data, isLoading, isError } = useGetAllUsers({
 		page:currentPage,
 		limit,
 		search:debouncedSearch,

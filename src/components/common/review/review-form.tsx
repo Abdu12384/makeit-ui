@@ -6,11 +6,7 @@ import * as Yup from "yup"
 import { Star, Send, MessageCircle, Sparkles } from "lucide-react"
 import { useAddReviewMutation } from "@/hooks/ClientCustomHooks"
 import toast from "react-hot-toast"
-
-interface ReviewData {
-  comment: string
-  rating: number
-}
+import { ReviewData } from "@/types/worksample/review"
 
 interface ReviewFormProps {
   onSubmit: (data: ReviewData) => Promise<void> | void

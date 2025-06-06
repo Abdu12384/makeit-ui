@@ -1,6 +1,4 @@
-import { FilterPeriod } from "@/components/admin/dashboard/DateFilter";
-import { updateUserStatus } from "@/services/admin/adminService";
-import { clientBookingService, clientGoogleLogin } from "@/services/client/clientService";
+
 import { changeBookingStatus, createEvent, createService, createWorkSample, editEvent, getAllBookings, getAllCategories, getAllEventsByVendorId, getAllServicesByVendorId, getAllWorkSamplesByVendorId, getAttendeesById, getDashboardData, getWalletById, logoutVendor, updateService, updateVendorProfile, updateWorkSample, uploadImageCloudinary, vendorChangePassword, vendorCreateAccount, VendorLogin, vendorSignup, verifyTicket } from "@/services/vendor/vendorService";
 import { IEventFormValues } from "@/types/event";
 import { ServiceFormValues } from "@/types/service";
@@ -9,13 +7,6 @@ import { WorkSample } from "@/types/worksample/work-sample";
 import { useMutation } from "@tanstack/react-query";
 
 
-
-type Client = {
-  email: string;
-  googleVerified: boolean;
-  name: string;
-  profileImage: string
-}
 
 
 

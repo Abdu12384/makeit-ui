@@ -10,7 +10,7 @@ export const CancelTicketModal: React.FC<{
   ticket: Ticket
   onClose: () => void
   onConfirm: () => void
-}> = ({ ticket, onClose, onConfirm }) => {
+}> = ({ ticket, onClose,onConfirm }) => {
   const [isVisible, setIsVisible] = useState(false)
   const cancelTicketMutation = useCancelTicketMutation()
 
@@ -29,6 +29,7 @@ export const CancelTicketModal: React.FC<{
         onSuccess: (data) => {
           console.log(data)
           toast.success(data.message)
+          onConfirm()
           onClose()
         },
         onError: (error) => {

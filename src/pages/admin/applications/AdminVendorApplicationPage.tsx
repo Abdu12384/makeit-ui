@@ -45,7 +45,6 @@ export function AdminVendorApplicationPage() {
 
 	const {
 		mutate: updateStatus,
-		isPending,
 		isError,
 	} = useUpdateVendorStatusMutation();
 

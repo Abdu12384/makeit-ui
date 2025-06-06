@@ -1,6 +1,7 @@
 export interface ServiceFormValues {
   serviceTitle: string
   yearsOfExperience: number
+  serviceId?:string
   categoryId: string
   serviceDescription: string
   cancellationPolicy: string

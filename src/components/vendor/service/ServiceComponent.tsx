@@ -9,15 +9,15 @@ import { Pagination1 } from "@/components/common/paginations/Pagination"
 
 export const ServiceListingPage = () => {
   const [isFormOpen, setIsFormOpen] = useState(false)
-  const [searchQuery, setSearchQuery] = useState("")
-  const [sortBy, setSortBy] = useState<"serviceTitle" | "servicePrice" | "serviceCategory" | null>(null)
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc")
+  const [searchQuery, _setSearchQuery] = useState("")
+  const [sortBy, _setSortBy] = useState<"serviceTitle" | "servicePrice" | "serviceCategory" | null>(null)
+  const [sortOrder, _setSortOrder] = useState<"asc" | "desc">("asc")
   const [allServices, setAllServices] = useState<any>([])
   const [serviceToEdit, setServiceToEdit] = useState<any>(null)
   const [currentPage, setCurrentPage] = useState(1)
   const [isEdit, setIsEdit] = useState(false);
   const [totalPages, setTotalPages] = useState(1)
-  const [limit, setLimit] = useState(6)
+  const [limit, _setLimit] = useState(6)
 
 
   const getAllServicesByVendorId = useGetAllServicesByVendorIdMutation()
@@ -70,14 +70,7 @@ export const ServiceListingPage = () => {
     setIsEdit(false)
   }
 
-  const toggleSort = (field: "serviceTitle" | "servicePrice" | "serviceCategory") => {
-    if (sortBy === field) {
-      setSortOrder(sortOrder === "asc" ? "desc" : "asc")
-    } else {
-      setSortBy(field)
-      setSortOrder("asc")
-    }
-  }
+
 
   const filteredServices = allServices.filter(
     (service:any) =>

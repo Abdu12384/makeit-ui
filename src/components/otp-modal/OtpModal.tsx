@@ -6,7 +6,6 @@ import { X, CheckCircle, AlertCircle, RefreshCw } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import type { UseMutationResult } from "@tanstack/react-query"
-import type { AxiosResponse } from "axios"
 import toast from "react-hot-toast"
 
 
@@ -165,7 +164,7 @@ export function OTPModal({
   const handleResendOtp = async () => {
     try {
       setIsLoading(true)
-     resendOtp.mutate(email,{
+     resendOtp.mutate(email!,{
        onSuccess: (data) => {
         setTimeLeft(60)
         toast.success(data)
@@ -321,7 +320,11 @@ export function OTPModal({
                           custom={index}
                         >
                           <Input
-                            ref={(el) => (inputRefs.current[index] = el)}
+                            ref={(el) => {
+                              if (el) {
+                                inputRefs.current[index] = el
+                              }
+                            }}
                             type="text"
                             inputMode="numeric"
                             maxLength={1}
