@@ -1,9 +1,36 @@
 import * as React from "react"
 import { ChevronLeft, ChevronRight } from "lucide-react"
-import { DayPicker } from "react-day-picker"
+import { DayPicker, NavProps } from "react-day-picker"
 
 import { cn } from "@/lib/utils"
 import { buttonVariants } from "@/components/ui/button"
+
+function CustomNavbar({ onPreviousClick, onNextClick }: NavProps) {
+  return (
+    <div className="flex justify-between mb-2">
+      <button
+        onClick={onPreviousClick}
+        className={cn(
+          buttonVariants({ variant: "outline" }),
+          "size-7 bg-transparent p-0 opacity-50 hover:opacity-100"
+        )}
+        aria-label="Previous Month"
+      >
+        <ChevronLeft className="size-4" />
+      </button>
+      <button
+        onClick={onNextClick}
+        className={cn(
+          buttonVariants({ variant: "outline" }),
+          "size-7 bg-transparent p-0 opacity-50 hover:opacity-100"
+        )}
+        aria-label="Next Month"
+      >
+        <ChevronRight className="size-4" />
+      </button>
+    </div>
+  )
+}
 
 function Calendar({
   className,
@@ -58,12 +85,7 @@ function Calendar({
         ...classNames,
       }}
       components={{
-        IconLeft: ({ className, ...props }) => (
-          <ChevronLeft className={cn("size-4", className)} {...props} />
-        ),
-        IconRight: ({ className, ...props }) => (
-          <ChevronRight className={cn("size-4", className)} {...props} />
-        ),
+        Nav: CustomNavbar,
       }}
       {...props}
     />
