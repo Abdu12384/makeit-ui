@@ -35,17 +35,25 @@ export const useGetAllUsers = (params: UserQueryParams) => {
 
 
 
-export const useUpdateUserStatusMutaiion = <T = IAxiosResponse>() =>{
-     const  queryClient = useQueryClient()
 
-     return useMutation<T, Error, {userType: string; userId: string}>({
-         mutationFn: updateUserStatus as (data: {userType: string; userId:string}) => Promise<T>,
-         onSuccess:()=>{
-          queryClient.invalidateQueries({queryKey: ['users']})
-         }
-     })
-}
+// export const useUpdateUserStatusMutaiion = <T = IAxiosResponse>() =>{
+//      const  queryClient = useQueryClient()
 
+//      return useMutation<T, Error, {userType: string; userId: string}>({
+//          mutationFn: updateUserStatus as (data: {userType: string; userId:string}) => Promise<T>,
+//          onSuccess:()=>{
+//           queryClient.invalidateQueries({queryKey: ['users']})
+//          }
+//      })
+// }
+
+
+export const useUpdateUserStatusMutaiion = <T = IAxiosResponse>() => {
+  return useMutation<T, Error, { userType: string; userId: string }>({
+    mutationFn: updateUserStatus as (data: { userType: string; userId: string }) => Promise<T>,
+
+  });
+};
 
 
 
@@ -113,16 +121,23 @@ export const useGetAllCategoriesQuery = (params: QueryParams) => {
 
 
 
-export const useUpdateCategoryStatusMutation = () => {
-  const queryClient = useQueryClient();
+// export const useUpdateCategoryStatusMutation = () => {
+//   const queryClient = useQueryClient();
 
-  return useMutation<IAxiosResponse, Error, { id: string; status: string; }>({
-    mutationFn: ({ id, status}) => updateCategoryStatus(id, status),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["categories"] });
-    },
+//   return useMutation<IAxiosResponse, Error, { id: string; status: string; }>({
+//     mutationFn: ({ id, status}) => updateCategoryStatus(id, status),
+//     onSuccess: () => {
+//       queryClient.invalidateQueries({ queryKey: ["categories"] });
+//     },
+//   });
+// };    
+
+
+export const useUpdateCategoryStatusMutation = () => {
+  return useMutation<IAxiosResponse, Error, { id: string; status: string }>({
+    mutationFn: ({ id, status }) => updateCategoryStatus(id, status),
   });
-};    
+};
 
 
 

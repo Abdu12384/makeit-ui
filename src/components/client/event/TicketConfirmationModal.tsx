@@ -2,35 +2,9 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {  Calendar, Clock, MapPin, User, Phone, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { IEventFormValues } from "@/types/event";
+import {  TicketConfirmationModalProps } from "@/types/ticket";
 
 
-export interface ITicketConfirmationModal{
-  _id?:string
-  ticketId: string;
-  clientId: string;
-  email: string;
-  eventId: string;
-  ticketCount: number;
-  paymentStatus: string; 
-  phone: string;
-  qrCodeLink: string;
-  ticketStatus: string;
-  paymentTransactionId: string;
-  totalAmount: number;
-  checkInHistory?: any[];
-  createdAt?: string;
-  updatedAt?: string;
-  eventName?: string;
-  eventLocation?: string;
-  eventDate?: string;
-};
-interface TicketConfirmationModalProps {
-  isOpen: boolean;
-  setIsOpen: (isOpen: boolean) => void;
-  ticket:ITicketConfirmationModal
-  event?: IEventFormValues
-}
 
 export default function TicketConfirmationModal({ isOpen, setIsOpen, ticket,event }: TicketConfirmationModalProps) {
   const [isAnimating, setIsAnimating] = useState(false);

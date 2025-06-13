@@ -19,3 +19,28 @@ export interface GetAllServicesParams {
    sortBy?: string; 
    sortOrder?: 'asc' | 'desc'; 
  }
+
+
+
+
+// Define the Service type
+export interface Service {
+  id: string
+  serviceId: string
+  serviceTitle: string
+  serviceDescription: string
+  servicePrice: number
+  serviceDuration: string
+  yearsOfExperience: number
+  additionalHourFee: number
+  cancellationPolicy: string
+  termsAndCondition: string
+  imageUrl: string
+  rating: number
+  reviewCount: number
+  category: string
+  providerName: string
+  providerImage: string
+  providerRating: number
+  gallery: string[]
+}

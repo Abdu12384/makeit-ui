@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
-import { Calendar, Clock, MapPin, Users, Heart, Filter, Search, ChevronRight, X } from "lucide-react"
+import { Calendar, Clock, MapPin, Users, Filter, Search, ChevronRight, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
@@ -11,25 +11,9 @@ import Navbar from "@/components/common/NavBar"
 import { useGetAllEventsMutation } from "@/hooks/ClientCustomHooks"
 import { Link } from "react-router-dom"
 import { Pagination1 } from "@/components/common/paginations/Pagination"
+import { Event } from "@/types/event"
+import { container, item } from "@/animations/variants"
 
-interface Event {
-  id: string
-  eventId: string
-  title: string
-  description: string
-  category: string
-  date: string[]
-  startTime: string
-  endTime: string
-  address: string
-  venueName: string
-  posterImage: string[]
-  pricePerTicket: number
-  totalTicket: number
-  attendeesCount: number
-  ticketPurchased: number
-  status: "upcoming" | "completed" | "cancelled"
-}
 
 const categories = [
   { name: "All", value: "all", color: "bg-gradient-to-r from-purple-500 to-blue-500" },
@@ -49,7 +33,7 @@ export default function EventsPage() {
   const [isLoading, setIsLoading] = useState(true)
   const [searchQuery, setSearchQuery] = useState("")
   const [selectedCategory, setSelectedCategory] = useState("all")
-  const [favorites, setFavorites] = useState<string[]>([])
+  // const [favorites, setFavorites] = useState<string[]>([])
   const getAllEventsMutation = useGetAllEventsMutation()
   const [currentPage, setCurrentPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
@@ -81,9 +65,9 @@ export default function EventsPage() {
     fetchEvents()
   }, [searchQuery])
 
-  const toggleFavorite = (id: string) => {
-    setFavorites((prev) => (prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]))
-  }
+  // const toggleFavorite = (id: string) => {
+  //   setFavorites((prev) => (prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]))
+  // }
 
   const handleCategorySelect = (category: string) => {
     setSelectedCategory(category)
@@ -95,10 +79,9 @@ export default function EventsPage() {
   }
 
   const filteredEvents = events.filter((event) => {
-    // Category filter
+
     const categoryMatch = selectedCategory === "all" || event.category.toLowerCase() === selectedCategory.toLowerCase()
 
-    // Search filter
     const searchMatch =
       !searchQuery ||
       event.title.toLowerCase().startsWith(searchQuery.toLowerCase()) ||
@@ -108,26 +91,9 @@ export default function EventsPage() {
     return categoryMatch && searchMatch
   })
 
-
-  // Get category counts
   const getCategoryCount = (categoryValue: string) => {
     if (categoryValue === "all") return events.length
     return events.filter((event) => event.category.toLowerCase() === categoryValue.toLowerCase()).length
-  }
-
-  const container = {
-    hidden: { opacity: 0 },
-    show: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1,
-      },
-    },
-  }
-
-  const item = {
-    hidden: { y: 20, opacity: 0 },
-    show: { y: 0, opacity: 1, transition: { type: "spring", stiffness: 100 } },
   }
 
   return (
@@ -166,7 +132,6 @@ export default function EventsPage() {
         <div className="container mx-auto px-4 py-12">
           {/* Tabs */}
           <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as typeof activeTab)} className="mb-8">
-           
 
             {/* Active Filters Display */}
             {(selectedCategory !== "all" || searchQuery) && (
@@ -305,15 +270,6 @@ export default function EventsPage() {
                               whileHover={{ scale: 1.05 }}
                               transition={{ duration: 0.3 }}
                             />
-                          </div>
-                          <div className="absolute top-4 right-4 z-10">
-                            <motion.button
-                              whileTap={{ scale: 0.9 }}
-                              onClick={() => toggleFavorite(event.id)}
-                              className={`p-2 rounded-full ${favorites.includes(event.id) ? "bg-red-500 text-white" : "bg-white/80 text-[#212A31]"}`}
-                            >
-                              <Heart className={favorites.includes(event.id) ? "fill-white" : ""} size={18} />
-                            </motion.button>
                           </div>
                           <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-[#212A31]/80 to-transparent p-4">
                             <Badge className="bg-[#124E66] hover:bg-[#124E66]/90 text-white border-none">
@@ -509,7 +465,6 @@ export default function EventsPage() {
             </motion.div>
           </div>
         </div>
-
       </div>
     </>
   )

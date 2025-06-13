@@ -1,9 +1,4 @@
 import { useState, useEffect } from "react";
-// import { useToaster } from "@/hooks/ui/useToaster";
-// import {
-// 	useAllShopsQuery,
-// 	useUpdateShopStatusMutation,
-// } from "@/hooks/barber/useAllBarberShops";
 import { debounce } from "lodash";
 import { VendorApplicationList } from "@/components/admin/application/AdminVendorApplication";
 import { useAllVendorQueryMutation, useUpdateVendorStatusMutation } from "@/hooks/AdminCustomHooks";

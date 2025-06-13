@@ -132,7 +132,6 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
                       <User className="w-6 h-6 text-white" />
                     )}
                   </div>
-                  <div className="absolute bottom-0 right-0 w-3.5 h-3.5 bg-green-500 rounded-full border-2 border-white"></div>
                 </div>
 
                 <div className="flex flex-col">

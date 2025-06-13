@@ -1,28 +1,14 @@
 import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import {
-  Calendar,
-  Clock,
-  MapPin,
-  Ticket,
-  Share2,
-  Heart,
-  ArrowLeft,
-  Info,
-  Tag,
-  Star,
-  Plus,
-} from "lucide-react";
-
+import { Calendar,Clock,MapPin,Ticket,ArrowLeft,Tag,Star,Plus,} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Progress } from "@/components/ui/progress";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Dialog } from "@/components/ui/dialog";
 import { useGetAllReviewsMutation, useGetEventByIdMutation } from "@/hooks/ClientCustomHooks";
 import LocationPicker from "@/components/common/location/LocationPicker";
 import EventBookingForm from "@/components/client/event/EventBookingForm";
@@ -30,53 +16,18 @@ import ReviewForm from "@/components/common/review/review-form";
 import { ReviewData } from "@/types/worksample/review";
 import { useSelector } from "react-redux";
 import ReviewDisplay from "@/components/common/review/review-display";
-import VendorDetailsPage from "@/components/client/vendor-info/VendorDetails";
-
-export interface Event {
-  eventId: string;
-  title: string;
-  description: string;
-  category: string;
-  date: string[];
-  startTime: string;
-  endTime: string;
-  address: string;
-  venueName: string;
-  attendeesCount: number;
-  posterImage: string[];
-  pricePerTicket: number;
-  totalTicket: number;
-  ticketPurchased: number;
-  status: "upcoming" | "completed" | "cancelled";
-  location?: {
-    type: string;
-    coordinates: number[];
-  };
-  vendorDetails?: {
-    name: string;
-    profileImage: string;
-    rating: number;
-    events: number;
-    userId?:string
-  };
-  amenities?: string[];
-  faq?: Array<{ question: string; answer: string }>;
-  reviews?: Array<{
-    reviewId: string;
-    user: string;
-    avatar: string;
-    rating: number;
-    comment: string;
-    date: string;
-  }>;
-}
+import { Event } from "@/types/event";
+import BookingCard from "@/components/client/event/BookingCard";
+import EventGalleryDialog from "@/components/client/event/EventGallery";
+import { VendorDetailsDialog } from "@/components/client/vendor-info/VendorInfoDialog";
+import { EventDetailsPageSkeleton } from "@/components/common/skelton/SkeltonLoading";
+import { EventNF } from "@/components/common/NotFound/ItemsNotFound";
 
 export default function EventDetailsPage() {
-  const { eventId } = useParams<{ eventId: string }>(); // Get event ID from URL
-  const navigate = useNavigate(); // For navigation
+  const { eventId } = useParams<{ eventId: string }>(); 
+  const navigate = useNavigate();
   const [event, setEvent] = useState<Event | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [isFavorite, setIsFavorite] = useState(false);
   const [activeTab, setActiveTab] = useState("details");
   const [ticketCount, setTicketCount] = useState(1);
   const [isBookingOpen, setIsBookingOpen] = useState(false);
@@ -88,11 +39,9 @@ export default function EventDetailsPage() {
   const [reviews, setReviews] = useState<ReviewData[]>([])
   const {client} = useSelector((state: any) => state.client)
   const getAllReviewsMutation = useGetAllReviewsMutation()
-
-
     const reviewFormRef = useRef<HTMLDivElement>(null)
-  console.log('eventId',eventId)
-  // Simulated data fetch
+
+
   useEffect(() => {
     const fetchEvent = async () => {
       setIsLoading(true);
@@ -116,19 +65,9 @@ export default function EventDetailsPage() {
     fetchEvent();
   }, [eventId]);
 
-  const toggleFavorite = () => {
-    setIsFavorite(!isFavorite);
-  };
 
   const handleBookNow = () => {
     setIsBookingOpen(true);
-  };
-
-  const handleTicketChange = (change: number) => {
-    const newCount = ticketCount + change;
-    if (newCount >= 1 && newCount <= 10) {
-      setTicketCount(newCount);
-    }
   };
 
   useEffect(() => {
@@ -168,7 +107,6 @@ export default function EventDetailsPage() {
   
   }
 
-
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("en-US", {
       weekday: "long",
@@ -191,33 +129,14 @@ export default function EventDetailsPage() {
   };
 
   if (isLoading) {
-    return (
-      <div className="min-h-screen bg-[#D3D9D4]/10 flex items-center justify-center">
-        <div className="flex flex-col items-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-[#124E66] mb-4"></div>
-          <p className="text-[#2E3944]">Loading event details...</p>
-        </div>
-      </div>
-    );
+    return <EventDetailsPageSkeleton/>
   }
 
   if (!event) {
-    return (
-      <div className="min-h-screen bg-[#D3D9D4]/10 flex items-center justify-center">
-        <div className="text-center p-8 bg-white rounded-lg shadow-md max-w-md">
-          <h2 className="text-2xl font-bold text-[#212A31] mb-4">Event Not Found</h2>
-          <p className="text-[#748D92] mb-6">The event you're looking for doesn't exist or has been removed.</p>
-          <Button onClick={() => navigate("/events")} className="bg-[#124E66] hover:bg-[#124E66]/90">
-            Back to Events
-          </Button>
-        </div>
-      </div>
-    );
+    return <EventNF/>
   }
-
   return (
     <div className="min-h-screen bg-[#D3D9D4]/10">
-      {/* Header with back button */}
       <div className="bg-white sticky top-0 z-30 shadow-sm">
         <div className="container mx-auto px-4 py-4 flex items-center">
           <Button
@@ -232,7 +151,6 @@ export default function EventDetailsPage() {
         </div>
       </div>
 
-      {/* Hero Section */}
       <div className="relative">
         <div className="aspect-[21/9] w-full relative overflow-hidden">
           <motion.img
@@ -274,26 +192,6 @@ export default function EventDetailsPage() {
               </div>
             </div>
           </motion.div>
-        </div>
-
-        <div className="absolute top-4 right-4 flex gap-2 z-10">
-          <motion.button
-            whileTap={{ scale: 0.9 }}
-            className="p-2.5 rounded-full bg-white/90 text-[#212A31] shadow-md hover:bg-white"
-            aria-label="Share event"
-          >
-            <Share2 size={20} />
-          </motion.button>
-          <motion.button
-            whileTap={{ scale: 0.9 }}
-            className={`p-2.5 rounded-full ${
-              isFavorite ? "bg-red-500 text-white" : "bg-white/90 text-[#212A31]"
-            } shadow-md hover:bg-white`}
-            onClick={toggleFavorite}
-            aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
-          >
-            <Heart className={isFavorite ? "fill-white" : ""} size={20} />
-          </motion.button>
         </div>
       </div>
 
@@ -381,9 +279,7 @@ export default function EventDetailsPage() {
                           </div>
                         </div>
                       </div>
-
                       <Separator className="my-6 bg-[#D3D9D4]/50" />
-
                       <h3 className="text-lg font-semibold text-[#212A31] mb-4">Organizer</h3>
                       {event.vendorDetails && (
                         <div className="flex items-center mb-6">
@@ -411,7 +307,6 @@ export default function EventDetailsPage() {
                         </div>
                       )}
 
-                
                       <Separator className="my-6 bg-[#D3D9D4]/50" />
 
                       <h3 className="text-lg font-semibold text-[#212A31] mb-4">Location</h3>
@@ -519,7 +414,7 @@ export default function EventDetailsPage() {
                       </motion.div>
                     )}
                   </AnimatePresence>
-                </>
+                    </>
                     </CardContent>
                   </Card>
                 </motion.div>
@@ -529,101 +424,12 @@ export default function EventDetailsPage() {
 
           {/* Right Column - Booking Card */}
           <div className="lg:col-span-1">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2, duration: 0.5 }}
-              className="sticky top-24"
-            >
-              <Card className="bg-white border-none shadow-md overflow-hidden">
-                <div className="p-6">
-                  <h2 className="text-xl font-bold text-[#212A31] mb-4">Book Tickets</h2>
-                  <div className="flex justify-between items-center mb-4">
-                    <div>
-                      <p className="text-[#748D92] text-sm">Price per ticket</p>
-                      <p className="text-2xl font-bold text-[#212A31]">₹{event.pricePerTicket}</p>
-                    </div>
-                    <Badge variant="outline" className="bg-[#124E66]/10 text-[#124E66] border-[#124E66]/20 px-3 py-1">
-                      {event.totalTicket - (event.ticketPurchased || 0)} left
-                    </Badge>
-                  </div>
-
-                  <div className="mb-6">
-                    <p className="text-[#748D92] text-sm mb-2">Tickets sold</p>
-                    <div className="flex items-center justify-between mb-1.5 text-xs text-[#2E3944]">
-                      <span>{Math.round(((event.ticketPurchased || 0) / event.totalTicket) * 100)}% Booked</span>
-                      <span>
-                        {(event.ticketPurchased || 0)} / {event.totalTicket}
-                      </span>
-                    </div>
-                    <Progress
-                      value={((event.ticketPurchased || 0) / event.totalTicket) * 100}
-                      className="h-2 bg-[#D3D9D4]/30"
-                    />
-                  </div>
-
-                  <Separator className="my-6 bg-[#D3D9D4]/50" />
-
-                  <div className="mb-6">
-                    <div className="flex justify-between items-center mb-4">
-                      <p className="font-medium text-[#212A31]">Number of tickets</p>
-                      <div className="flex items-center">
-                        <Button
-                          variant="outline"
-                          size="icon"
-                          className="h-8 w-8 rounded-full border-[#748D92]/30"
-                          onClick={() => handleTicketChange(-1)}
-                          disabled={ticketCount <= 1}
-                        >
-                          -
-                        </Button>
-                        <span className="mx-4 font-medium text-[#212A31]">{ticketCount}</span>
-                        <Button
-                          variant="outline"
-                          size="icon"
-                          className="h-8 w-8 rounded-full border-[#748D92]/30"
-                          onClick={() => handleTicketChange(1)}
-                          disabled={ticketCount >= 10 || ticketCount >= event.totalTicket - (event.ticketPurchased || 0)}
-                        >
-                          +
-                        </Button>
-                      </div>
-                    </div>
-
-                    <div className="bg-[#D3D9D4]/10 rounded-lg p-4">
-                      <div className="flex justify-between mb-2">
-                        <span className="text-[#2E3944]">Ticket price</span>
-                        <span className="text-[#212A31] font-medium">
-                          ₹{event.pricePerTicket} x {ticketCount}
-                        </span>
-                      </div>
-                      {/* <div className="flex justify-between mb-2">
-                        <span className="text-[#2E3944]">Service fee</span>
-                        <span className="text-[#212A31] font-medium">
-                          ₹{(event.pricePerTicket * 0.1 * ticketCount).toFixed(2)}
-                        </span>
-                      </div> */}
-                      <Separator className="my-3 bg-[#D3D9D4]/50" />
-                      <div className="flex justify-between font-bold">
-                        <span className="text-[#212A31]">Total</span>
-                        <span className="text-[#124E66]">
-                          ₹{(event.pricePerTicket * ticketCount).toFixed(2)}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <Button className="w-full bg-[#124E66] hover:bg-[#124E66]/90 text-white py-6" onClick={handleBookNow}>
-                    Book Now
-                  </Button>
-
-                  <div className="mt-4 flex items-center justify-center text-xs text-[#748D92]">
-                    <Info className="h-3 w-3 mr-1" />
-                    <span>Tickets are non-refundable after 14 days before the event</span>
-                  </div>
-                </div>
-              </Card>
-            </motion.div>
+            <BookingCard
+              event={event}
+              ticketCount={ticketCount}
+              setTicketCount={setTicketCount}
+              handleBookNow={handleBookNow}
+            />
           </div>
         </div>
       </div>
@@ -640,134 +446,20 @@ export default function EventDetailsPage() {
       </Dialog>
       </div>
 
-      <Dialog open={isGalleryOpen} onOpenChange={setIsGalleryOpen}>
-        <DialogContent className="sm:max-w-4xl p-0 bg-[#212A31] border-none">
-          <div className="relative">
-            <div className="aspect-video w-full overflow-hidden">
-              <AnimatePresence mode="wait">
-                <motion.img
-                  key={currentImageIndex}
-                  src={event.posterImage[currentImageIndex]}
-                  alt={`Gallery image ${currentImageIndex + 1}`}
-                  className="w-full h-full object-contain"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.3 }}
-                />
-              </AnimatePresence>
-            </div>
-
-            <Button
-              variant="ghost"
-              size="icon"
-              className="absolute top-4 right-4 text-white hover:bg-white/20 rounded-full"
-              onClick={() => setIsGalleryOpen(false)}
-            >
-              ✕
-            </Button>
-
-            <Button
-              variant="ghost"
-              size="icon"
-              className="absolute left-4 top-1/2 transform -translate-y-1/2 text-white hover:bg-white/20 rounded-full"
-              onClick={() => changeImage(-1)}
-            >
-              <ChevronLeft size={24} />
-            </Button>
-
-            <Button
-              variant="ghost"
-              size="icon"
-              className="absolute right-4 top-1/2 transform -translate-y-1/2 text-white hover:bg-white/20 rounded-full"
-              onClick={() => changeImage(1)}
-            >
-              <ChevronRight size={24} />
-            </Button>
-
-            <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-2">
-              {event.posterImage.map((_, index) => (
-                <button
-                  key={index}
-                  className={`w-2 h-2 rounded-full ${index === currentImageIndex ? "bg-white" : "bg-white/40"}`}
-                  onClick={() => setCurrentImageIndex(index)}
-                />
-              ))}
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
-      <AnimatePresence>
-        {showVendorInfo && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
-            className="fixed inset-0 z-50 flex items-center justify-center"
-          >
-            {/* Backdrop */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 0.5 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.3 }}
-              className="absolute inset-0 bg-black"
-              onClick={() => setShowVendorInfo(false)} // Close on backdrop click
-            />
-
-            {/* Vendor Details Content */}
-            <motion.div
-              initial={{ scale: 0.95, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.95, opacity: 0 }}
-              transition={{ duration: 0.3 }}
-              className="relative bg-white rounded-xl shadow-xl  w-full mx-4 max-h-[100vh] overflow-y-auto"
-            >
-              <VendorDetailsPage vendor={event?.vendorDetails!} onClose={() => setShowVendorInfo(false)} />
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <EventGalleryDialog
+        isOpen={isGalleryOpen}
+        onOpenChange={setIsGalleryOpen}
+        images={event.posterImage}
+        currentImageIndex={currentImageIndex}
+        setCurrentImageIndex={setCurrentImageIndex}
+        changeImage={changeImage}
+      />
+     <VendorDetailsDialog
+        isOpen={showVendorInfo}
+        onClose={() => setShowVendorInfo(false)}
+        vendor={event?.vendorDetails || null} 
+      />
     </div>
   );
 }
 
-// Chevron icons for gallery navigation
-function ChevronLeft(props: any) {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      {...props}
-    >
-      <path d="m15 18-6-6 6-6" />
-    </svg>
-  );
-}
-
-function ChevronRight(props: any) {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      {...props}
-    >
-      <path d="m9 18 6-6-6-6" />
-    </svg>
-  );
-}

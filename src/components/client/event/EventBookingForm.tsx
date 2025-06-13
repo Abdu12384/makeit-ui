@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { TicketEntity } from "@/types/ticket";
 import { useNavigate } from "react-router-dom";
-import { Event } from "@/pages/client/event-details-page";
+import { Event } from "@/types/event";
 
 
 interface BookingFormProps {

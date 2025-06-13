@@ -10,6 +10,8 @@ export const AdminClientManagementPage: React.FC = () => {
 	const [searchQuery, setSearchQuery] = useState("");
 	const [debouncedSearch, setDebouncedSearch] = useState(searchQuery);
 	const [currentPage, setCurrentPage] = useState(1);
+	const [clients, setClients] = useState<any[]>([]);
+
 	const limit = 10;
 
  const { mutate: updateUserStatus} = useUpdateUserStatusMutaiion()
@@ -28,7 +30,13 @@ export const AdminClientManagementPage: React.FC = () => {
 		userType:"client"
 });
 
-	const clients = data?.users || [];
+
+useEffect(() => {
+	if (data?.users) {
+		setClients(data.users);
+	}
+}, [data]);
+
 	const totalPages = data?.totalPages || 1;
 
 	const handleStatusClick = async (userId: string) => {
@@ -41,6 +49,16 @@ export const AdminClientManagementPage: React.FC = () => {
 				{
 					onSuccess: (data) => {
 						toast.success(data.message);
+									setClients((prevClients) =>
+										prevClients.map((client) =>
+											client.userId === userId
+												? {
+														...client,
+														status: client.status === "active" ? "inactive" : "active",
+													}
+												: client
+										)
+									);
 					},
 					onError: (error: any) => {
 						toast.error(error.response.data.message);

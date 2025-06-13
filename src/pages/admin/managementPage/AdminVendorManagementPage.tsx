@@ -9,25 +9,34 @@ export const AdminVendorManagementPage: React.FC = () => {
 	const [searchQuery, setSearchQuery] = useState("");
 	const [debouncedSearch, setDebouncedSearch] = useState(searchQuery);
 	const [currentPage, setCurrentPage] = useState(1);
+	const [vendors, setVendors] = useState<any[]>([]);
 	const limit = 10;
 
  const {mutate: updateUserStatus} = useUpdateUserStatusMutaiion()
 	// const { errorToast, successToast } = useToaster();
 
+	
+	
 	useEffect(() => {
 		const handler = debounce(() => setDebouncedSearch(searchQuery), 300);
 		handler();
-		return () => handler.cancel();
+		return () => handler.cancel();	
 	}, [searchQuery]);
-
+	
 	const { data, isLoading, isError } = useGetAllUsers({
 		page:currentPage,
 		limit,
 		search:debouncedSearch,
 		userType:"vendor"
-});
+	});
+	
 
-	const vendor = data?.users || [];
+	useEffect(() => {
+		if (data?.users) {
+			setVendors(data.users);
+		}
+	}, [data]);
+
 	const totalPages = data?.totalPages || 1;
 
 	const handleStatusClick = async (userId: string) => {
@@ -40,6 +49,13 @@ export const AdminVendorManagementPage: React.FC = () => {
 				{
 					onSuccess: (data) => {
 						toast.success(data.message);
+						setVendors((prevVendors) =>
+							prevVendors.map((vendor) =>
+								vendor.userId === userId
+									? { ...vendor, status: vendor.status === "active" ? "inactive" : "active" }
+									: vendor
+							)
+						);
 					},
 					onError: (error: any) => {
 						toast.error(error.response.data.message);
@@ -55,7 +71,7 @@ export const AdminVendorManagementPage: React.FC = () => {
 
 	return (
 		<VendorManagementComponent
-			vendor={vendor}
+			vendor={vendors}
 			totalPages={totalPages}
 			currentPage={currentPage}
 			isLoading={isLoading}

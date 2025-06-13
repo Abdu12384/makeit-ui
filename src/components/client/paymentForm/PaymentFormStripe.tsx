@@ -71,10 +71,10 @@ const PaymentForm: React.FC<PaymentFormProps> = ({
           onConfirmSuccess(payload, paymentIntent.id);
           toast.success("Payment successful!");
         }
-      } catch (err) {
+      } catch (err:any) {
         console.error("Error during payment:", err);
         setPaymentStatus("Payment Failed");
-        toast.error(err instanceof Error ? err.message : "Something went wrong during payment.");
+        toast.error(err.response.data.message);
       }
     }
 

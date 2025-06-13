@@ -201,8 +201,8 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ chatId, userId, userModel, sock
           <div>
             <h3 className="font-medium text-gray-900">{chatInfo?.name}</h3>
             <div className="flex items-center gap-1">
-              <span className="w-2 h-2 rounded-full bg-green-500"></span>
-              <span className="text-xs text-gray-500">{chatInfo?.status}</span>
+              {/* <span className="w-2 h-2 rounded-full bg-green-500"></span> */}
+              {/* <span className="text-xs text-gray-500">{chatInfo?.status}</span> */}
             </div>
           </div>
         </div>

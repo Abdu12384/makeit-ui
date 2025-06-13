@@ -1,3 +1,4 @@
+import { IEventFormValues } from "./event";
 
 
 
@@ -77,4 +78,35 @@ export interface Ticket {
     title: string;
   }
   djs?: string[]
+}
+
+
+
+
+
+export interface ITicketConfirmationModal{
+  _id?:string
+  ticketId: string;
+  clientId: string;
+  email: string;
+  eventId: string;
+  ticketCount: number;
+  paymentStatus: string; 
+  phone: string;
+  qrCodeLink: string;
+  ticketStatus: string;
+  paymentTransactionId: string;
+  totalAmount: number;
+  checkInHistory?: any[];
+  createdAt?: string;
+  updatedAt?: string;
+  eventName?: string;
+  eventLocation?: string;
+  eventDate?: string;
+};
+export interface TicketConfirmationModalProps {
+  isOpen: boolean;
+  setIsOpen: (isOpen: boolean) => void;
+  ticket:ITicketConfirmationModal
+  event?: IEventFormValues
 }

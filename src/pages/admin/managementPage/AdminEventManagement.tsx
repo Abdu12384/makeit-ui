@@ -9,45 +9,14 @@ import { Input } from "@/components/ui/input"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { useGetAllEventsMutation } from "@/hooks/AdminCustomHooks"
 import { Pagination1 } from "@/components/common/paginations/Pagination"
-
-// Event Type
-interface Location {
-  type: string
-  coordinates: number[]
-}
-
-interface Event {
-  _id: string
-  eventId: string
-  title: string
-  category: string
-  description: string
-  venueName: string
-  address: string
-  location: Location
-  date: string[]
-  startTime: string
-  endTime: string
-  pricePerTicket: number
-  totalTicket: number
-  ticketPurchased: number
-  maxTicketsPerUser: number
-  posterImage: string[]
-  hostedBy: string
-  attendees: string[]
-  attendeesCount: number
-  status: string
-  isActive: boolean
-  createdAt: string
-  __v: number
-}
+import { AdEvent } from "@/types/event"
 
 export default function AdminEventsPage() {
   const [searchQuery, setSearchQuery] = useState("")
-  const [events, setEvents] = useState<Event[]>([])
+  const [events, setEvents] = useState<AdEvent[]>([])
   const [currentPage, setCurrentPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
-  const [selectedEvent, setSelectedEvent] = useState<Event | null>(null)
+  const [selectedEvent, setSelectedEvent] = useState<AdEvent | null>(null)
   const limit = 10
 
   const getAllEventsMutation = useGetAllEventsMutation()
@@ -78,7 +47,7 @@ export default function AdminEventsPage() {
       event.venueName.toLowerCase().includes(searchQuery.toLowerCase())
   )
 
-  const handleViewDetails = (event: Event) => {
+  const handleViewDetails = (event: AdEvent) => {
     setSelectedEvent(event)
   }
 

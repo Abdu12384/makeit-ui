@@ -1,38 +1,18 @@
-import { useState, useEffect } from "react"
-import { AnimatePresence, motion } from "framer-motion"
+import { useState, useEffect, useCallback } from "react"
+import {motion } from "framer-motion"
 import { useParams, Link, useNavigate } from "react-router-dom"
-import { Clock, Star, Award, AlertCircle, ArrowLeft, Share2, Heart, ChevronDown, ChevronUp, Calendar, User, Mail, Phone, IndianRupee } from 'lucide-react'
-import { useBookingServiceMutation, useClientGetServiceByIdMutation, useGetAllReviewsMutation } from "@/hooks/ClientCustomHooks"
+import { ArrowLeft, Share2, Heart, ChevronDown, ChevronUp, Star } from 'lucide-react'
+import { useClientGetServiceByIdMutation, useGetAllReviewsMutation } from "@/hooks/ClientCustomHooks"
 import { IVendor } from "@/types/User"
-import { Formik, Form, Field, ErrorMessage } from "formik"
-import * as Yup from "yup"
-import toast from "react-hot-toast"
 import Navbar from "@/components/common/NavBar"
 import ReviewDisplay from "@/components/common/review/review-display"
 import { ReviewData } from "@/types/worksample/review"
-import VendorDetailsPage from "@/components/client/vendor-info/VendorDetails"
-
-// Define the Service type
-interface Service {
-  id: string
-  serviceId: string
-  serviceTitle: string
-  serviceDescription: string
-  servicePrice: number
-  serviceDuration: string
-  yearsOfExperience: number
-  additionalHourFee: number
-  cancellationPolicy: string
-  termsAndCondition: string
-  imageUrl: string
-  rating: number
-  reviewCount: number
-  category: string
-  providerName: string
-  providerImage: string
-  providerRating: number
-  gallery: string[]
-}
+import { Service } from "@/types/service"
+import { containerVariants, itemVariants } from "@/animations/variants"
+import { VendorDetailsDialog } from "@/components/client/vendor-info/VendorInfoDialog"
+import { ServiceDetailsSkeleton } from "@/components/common/skelton/SkeltonLoading"
+import { ServiceNF } from "@/components/common/NotFound/ItemsNotFound"
+import { BookingFormComponent } from "@/components/client/service/ServiceBookingForm"
 
 export const BookingPage = () => {
   const { id } = useParams<{ id: string }>()
@@ -51,45 +31,13 @@ export const BookingPage = () => {
 
   const navigate = useNavigate()
   const clientGetServiceByIdMutation = useClientGetServiceByIdMutation()
-  const clientBookingServiceMutation = useBookingServiceMutation()
 
-  console.log('reviews', reviews)
+  const handleBookingSuccess = useCallback(() => {
 
-  console.log('service', service)
-
-  // Create a ref for the ReviewForm container
-
-  const handleBookingService = (values: any, action: any) => {
-    clientBookingServiceMutation.mutate(
-      {
-        id: service?.serviceId!,
-        bookingData: {
-          name: values.name,
-          email: values.email,
-          phone: values.phone,
-          date: values.date,
-          vendorId: vendor?.userId!
-        }
-      },
-      {
-        onSuccess: (data) => {
-          toast.success(data.message)
-          action.resetForm()
-          action.setSubmitting(false)
-          setTimeout(() => {
-            navigate(`/services`)
-          }, 1000)
-        },
-        onError: (error: any) => {
-          console.log('error while booking service',error)
-          toast.error(error.response.data.message)
-          action.setSubmitting(false)
-        }
-      }
-    )
-  }
-
-
+    setTimeout(() => {
+      navigate(`/services`); 
+    }, 1000);
+  }, [navigate])
 
   const getAllReviewsMutation = useGetAllReviewsMutation()  
 
@@ -112,33 +60,6 @@ useEffect(() => {
     }
   )
 }, [activeTab])
-
-
-
-
-  console.log('reviews-details page', reviews)
-
-  // const handleSubmitReview = (values: any) => {
-  //   console.log('values', values)
-  //   const newReview = {
-  //     comment: values.comment,
-  //     rating: values.rating,
-  //     client:{
-  //       name: client?.name,
-  //       profileImage: client?.profileImage,
-  //     },
-  //     targetId: service?.id!,
-  //     targetType: "service",
-  //   }
-  //   setReviews([ newReview, ...reviews ])
-  //   console.log('reviews', values)
-  // }
-
-
-  
-
-
-
 
   useEffect(() => {
     if (id) {
@@ -167,74 +88,14 @@ useEffect(() => {
     }))
   }
 
-  // Animation variants
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1,
-      },
-    },
-  }
-
-  const itemVariants = {
-    hidden: { y: 20, opacity: 0 },
-    visible: {
-      y: 0,
-      opacity: 1,
-      transition: {
-        type: "spring",
-        stiffness: 100,
-      },
-    },
-  }
-
-  // Formik validation schema
-  const validationSchema = Yup.object({
-    name: Yup.string().required("Name is required"),
-    email: Yup.string().email("Invalid email address").required("Email is required"),
-    phone: Yup.string()
-      .matches(/^[0-9]{10}$/, "Phone number must be 10 digits")
-      .required("Phone number is required"),
-    date: Yup.date().required("Date is required").min(new Date(), "Date must be in the future"),
-  })
 
   if (isLoading) {
-    return (
-      <div className="max-w-7xl mx-auto px-4 py-12">
-        <div className="animate-pulse">
-          <div className="h-8 bg-gray-200 rounded w-1/3 mb-6"></div>
-          <div className="h-96 bg-gray-200 rounded-xl mb-8"></div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="md:col-span-2">
-              <div className="h-8 bg-gray-200 rounded w-1/2 mb-4"></div>
-              <div className="h-4 bg-gray-200 rounded w-full mb-2"></div>
-              <div className="h-4 bg-gray-200 rounded w-full mb-2"></div>
-              <div className="h-4 bg-gray-200 rounded w-3/4 mb-6"></div>
-              <div className="h-40 bg-gray-200 rounded w-full"></div>
-            </div>
-            <div className="h-80 bg-gray-200 rounded-xl"></div>
-          </div>
-        </div>
-      </div>
-    )
+    return <ServiceDetailsSkeleton/>
   }
-
   if (!service) {
-    return (
-      <div className="max-w-7xl mx-auto px-4 py-12 text-center">
-        <h2 className="text-2xl font-bold text-gray-800 mb-4">Service not found</h2>
-        <p className="text-gray-600 mb-6">The service you're looking for doesn't exist or has been removed.</p>
-        <Link to="/services">
-          <button className="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors">
-            Back to Services
-          </button>
-        </Link>
-      </div>
-    )
+    return <ServiceNF/>
   }
-
+  
   return (
     <>
       <Navbar />
@@ -467,167 +328,31 @@ useEffect(() => {
             </div>
           </motion.div>
 
-          {/* Right column - Booking form */}
           <motion.div variants={itemVariants}>
-            <div className="bg-white rounded-xl shadow-md p-6 sticky top-6">
-              {/* Service Info */}
-              <div className="mb-6">
-                <div className="flex items-center justify-between mb-4">
-                  <div className="flex items-center">
-                    <IndianRupee className="h-6 w-6 text-blue-500 mr-2" />
-                    <span className="text-2xl font-bold text-gray-800">₹{service.servicePrice}</span>
-                  </div>
-                  <div className="flex items-center text-gray-600">
-                    <Clock className="h-5 w-5 mr-1" />
-                    <span>{service.serviceDuration}</span>
-                  </div>
-                </div>
-                <div className="space-y-3">
-                  <div className="flex items-center">
-                    <Clock className="h-5 w-5 text-gray-500 mr-3" />
-                    <div>
-                      <h4 className="text-sm font-medium text-gray-800">Duration</h4>
-                      <p className="text-sm text-gray-600">{service.serviceDuration}</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center">
-                    <IndianRupee className="h-5 w-5 text-gray-500 mr-3" />
-                    <div>
-                      <h4 className="text-sm font-medium text-gray-800">Additional Hour</h4>
-                      <p className="text-sm text-gray-600">₹{service.additionalHourFee} per hour</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center">
-                    <Award className="h-5 w-5 text-gray-500 mr-3" />
-                    <div>
-                      <h4 className="text-sm font-medium text-gray-800">Experience</h4>
-                      <p className="text-sm text-gray-600">{service.yearsOfExperience} years</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center">
-                    <AlertCircle className="h-5 w-5 text-gray-500 mr-3" />
-                    <div>
-                      <h4 className="text-sm font-medium text-gray-800">Cancellation</h4>
-                      <p className="text-sm text-gray-600">{service.cancellationPolicy.slice(0, 20)}...</p>
-                    </div>
-                  </div>
-                </div>
+            {service && vendor ? (
+              <BookingFormComponent
+                serviceId={service.serviceId}
+                vendorId={vendor.userId!}
+                servicePrice={service.servicePrice}
+                serviceDuration={service.serviceDuration}
+                additionalHourFee={service.additionalHourFee}
+                yearsOfExperience={service.yearsOfExperience}
+                cancellationPolicySnippet={service.cancellationPolicy.slice(0, 50) + '...'}
+                onBookingSuccess={handleBookingSuccess}
+              />
+            ) : (
+              <div className="bg-white rounded-xl shadow-md p-6 sticky top-6 text-center text-gray-500">
+                Booking form could not be loaded. Service or vendor data is missing.
               </div>
-
-              {/* Booking Form */}
-              <Formik
-                initialValues={{ name: "", email: "", phone: "", date: "" }}
-                validationSchema={validationSchema}
-                onSubmit={(values, action) => handleBookingService(values, action)}
-              >
-                {({ isSubmitting }) => (
-                  <Form className="space-y-4">
-                    <div>
-                      <label htmlFor="name" className="flex items-center text-sm font-medium text-gray-700 mb-1">
-                        <User className="h-4 w-4 mr-1" />
-                        Full Name
-                      </label>
-                      <Field
-                        type="text"
-                        name="name"
-                        className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                        placeholder="Enter your name"
-                      />
-                      <ErrorMessage name="name" component="div" className="text-red-500 text-sm mt-1" />
-                    </div>
-                    <div>
-                      <label htmlFor="email" className="flex items-center text-sm font-medium text-gray-700 mb-1">
-                        <Mail className="h-4 w-4 mr-1" />
-                        Email
-                      </label>
-                      <Field
-                        type="email"
-                        name="email"
-                        className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                        placeholder="Enter your email"
-                      />
-                      <ErrorMessage name="email" component="div" className="text-red-500 text-sm mt-1" />
-                    </div>
-                    <div>
-                      <label htmlFor="phone" className="flex items-center text-sm font-medium text-gray-700 mb-1">
-                        <Phone className="h-4 w-4 mr-1" />
-                        Phone Number
-                      </label>
-                      <Field
-                        type="tel"
-                        name="phone"
-                        className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                        placeholder="Enter your phone number"
-                      />
-                      <ErrorMessage name="phone" component="div" className="text-red-500 text-sm mt-1" />
-                    </div>
-                    <div>
-                      <label htmlFor="date" className="flex items-center text-sm font-medium text-gray-700 mb-1">
-                        <Calendar className="h-4 w-4 mr-1" />
-                        Preferred Date
-                      </label>
-                      <Field
-                        type="date"
-                        name="date"
-                        className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                      />
-                      <ErrorMessage name="date" component="div" className="text-red-500 text-sm mt-1" />
-                    </div>
-                    <motion.button
-                      type="submit"
-                      disabled={isSubmitting}
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                      className="w-full py-3 bg-blue-500 text-white rounded-lg font-medium hover:bg-blue-600 transition-colors disabled:bg-blue-300"
-                    >
-                      Book Now
-                    </motion.button>
-                  </Form>
-                )}
-              </Formik>
-
-              <div className="mt-6 text-center">
-                <p className="text-sm text-gray-500">Not ready to book? Save this service for later</p>
-                <button className="mt-2 text-blue-500 font-medium text-sm hover:text-blue-700 transition-colors">
-                  Add to Wishlist
-                </button>
-              </div>
-            </div>
+            )}
           </motion.div>
         </div>
       </motion.div>
-      <AnimatePresence>
-        {showVendorInfo && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
-            className="fixed inset-0 z-50 flex items-center justify-center"
-          >
-            {/* Backdrop */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 0.5 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.3 }}
-              className="absolute inset-0 bg-black"
-              onClick={() => setShowVendorInfo(false)} // Close on backdrop click
-            />
-
-            {/* Vendor Details Content */}
-            <motion.div
-              initial={{ scale: 0.95, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.95, opacity: 0 }}
-              transition={{ duration: 0.3 }}
-              className="relative bg-white rounded-xl shadow-xl  w-full mx-4 max-h-[100vh] overflow-y-auto"
-            >
-              <VendorDetailsPage vendor={vendor!} onClose={() => setShowVendorInfo(false)} />
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <VendorDetailsDialog
+            isOpen={showVendorInfo}
+            onClose={() => setShowVendorInfo(false)}
+            vendor={vendor || null} 
+          />
     </>
   )
 }

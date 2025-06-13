@@ -30,6 +30,7 @@ import {
 import { useClientGetAllServicesMutation } from "@/hooks/ClientCustomHooks"
 import Navbar from "@/components/common/NavBar"
 import { Pagination1 } from "@/components/common/paginations/Pagination"
+import { containerVariants, itemVariants } from "@/animations/variants"
 
 interface Service {
   _id: string
@@ -52,7 +53,6 @@ interface Service {
   }
 }
 
-
 export const ServiceListings = () => {
   const [services, setServices] = useState<Service[]>([])
   const [filteredServices, setFilteredServices] = useState<Service[]>([])
@@ -65,12 +65,7 @@ export const ServiceListings = () => {
   const [categories, setCategories] = useState<string[]>([])
   const [totalPages, setTotalPages] = useState(0)
 
-  
   const clientGetAllServicesMutationn = useClientGetAllServicesMutation()
-
-  console.log('categories',categories)
-
-  // Fetch services
   useEffect(() => {
       clientGetAllServicesMutationn.mutate(
         {
@@ -91,7 +86,6 @@ export const ServiceListings = () => {
           },
         },
       )
-
   }, [currentPage, limit])
 
 
@@ -106,7 +100,6 @@ export const ServiceListings = () => {
       )
     }
 
-
     if (selectedCategory !== "All") {
       filtered = filtered.filter((service) => service.category.title === selectedCategory)
     }
@@ -114,35 +107,11 @@ export const ServiceListings = () => {
     setFilteredServices(filtered)
   }, [searchTerm, selectedCategory, services])
 
-  
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1,
-      },
-    },
-  }
-
-  const itemVariants = {
-    hidden: { y: 20, opacity: 0 },
-    visible: {
-      y: 0,
-      opacity: 1,
-      transition: {
-        type: "spring",
-        stiffness: 100,
-      },
-    },
-  }
-
   const handleClearFilters = () => {
     setSearchTerm("")
     setSelectedCategory("All")
   }
 
-  
   return (
     <>
     <Navbar/>
@@ -393,13 +362,3 @@ export const ServiceListings = () => {
   )
 }
 export default ServiceListings
-
-
-
-
-
-
-
-
-
-

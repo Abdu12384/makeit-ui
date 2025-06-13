@@ -1,8 +1,7 @@
-
 import { useEffect, useState } from "react";
 import type React from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, FolderPlus, Filter, MoreVertical, Check, AlertCircle, X, Image as ImageIcon } from "lucide-react";
+import { Search, FolderPlus, MoreVertical, Check, AlertCircle, X, Image as ImageIcon } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,16 +13,7 @@ import toast from "react-hot-toast";
 import { useUploadeImageToCloudinaryMutation } from "@/hooks/VendorCustomHooks";
 import SquareImageCropper from "@/components/common/imageCropper/ImageCropper";
 import { Pagination1 } from "@/components/common/paginations/Pagination";
-
-interface Category {
-  title: string;
-  description: string;
-  image?: string;
-  _id?: string;
-  categoryId?: string;
-  status?: string;
-  events?: number;
-}
+import { Category } from "@/types/category";
 
 export const CategoryManagement: React.FC = () => {
   const [categories, setCategories] = useState<Category[]>([]);
@@ -45,7 +35,6 @@ export const CategoryManagement: React.FC = () => {
   const [editingCategoryId, setEditingCategoryId] = useState<string | null>(null);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [croppedImageBlob, setCroppedImageBlob] = useState<Blob | null>(null);
-
 
   const createCategoryMutation = useCreateCategoryMutation();
   const updateCategoryStatusMutation = useUpdateCategoryStatusMutation();
@@ -231,8 +220,6 @@ export const CategoryManagement: React.FC = () => {
     }
   };
 
- 
-
   const handleOpenAddModal = () => {
     resetFormState();
     setIsAddModalOpen(true);
@@ -299,10 +286,6 @@ export const CategoryManagement: React.FC = () => {
               className="bg-transparent border-none w-full ml-2 focus:outline-none text-gray-200"
             />
           </div>
-          <Button variant="outline" className="bg-gray-700/50 hover:bg-gray-700 border-gray-700">
-            <Filter size={16} className="mr-2" />
-            Filter
-          </Button>
         </div>
 
         <div className="overflow-x-auto">

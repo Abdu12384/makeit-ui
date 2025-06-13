@@ -1,24 +1,3 @@
-// import React from "react"
-// import { motion } from "framer-motion"
-// import { CircularSidebar } from "@/components/vendor/vendorProfile/Profile-sidebar"
-// import { Outlet } from "react-router-dom" // Import the Outlet component
-
-// export const VendorProfilePage: React.FC = () => {
-//   return (
-//     <div className="flex min-h-screen bg-white text-white">
-//       <CircularSidebar />
-//       <motion.main
-//         className="flex-1 overflow-y-auto p-4"
-//         initial={{ opacity: 0 }}
-//         animate={{ opacity: 1 }}
-//         transition={{ duration: 0.3 }}
-//       >
-//         {/* The Outlet will render the child route components here */}
-//         <Outlet />
-//       </motion.main>
-//     </div>
-//   )
-// }
 
 import React, { useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
