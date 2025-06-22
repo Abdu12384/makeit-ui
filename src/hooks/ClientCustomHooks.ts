@@ -1,5 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
-import { addReview, cancelBooking, cancelTicket, clientBookingService, clientChangePassword, clientCreateAccount, clientForgotPassword, clientGetAllServices, clientGetServiceById, clientGoogleLogin, clientLogin, clientProfileEdit, clientResendOtp, clientResetPassword, clientSignup, confirmBookingPayment, confirmTicketAndPayment, createBookingPayment, createTicket, getAllEvents, getAllReviews, getAllTickets, getAllWorkSamplesByVendorId, getBookings, getEventById, getWalletById, logoutClient } from '@/services/client/clientService';
+import { addReview, cancelBooking, cancelTicket, clientBookingService, clientChangePassword, clientCreateAccount, clientForgotPassword, clientGetAllServices, clientGetServiceById, clientGoogleLogin, clientLogin, clientProfileEdit, clientResendOtp, clientResetPassword, clientSignup, confirmBookingPayment, confirmTicketAndPayment, createBookingPayment, createTicket, getAllEvents, getAllReviews, getAllTickets, getAllWorkSamplesByVendorId, getBookings, getEventById, getWalletById, logoutClient, saveClientFCMToken, getClientNotifications, markNotificationAsRead   } from '@/services/client/clientService';
 import { ILoginData } from '@/types/User';
 import { PaginationParams } from '@/types/event';
 import { TicketEntity } from '@/types/ticket';
@@ -36,6 +36,12 @@ export const useClientSignupMutation = () =>{
   })
 }
 
+export const useSaveClientFCMTokenMutation = () => {
+  return useMutation({
+    mutationFn: (token:string) => saveClientFCMToken(token)
+  })
+}
+
 
 export const useCreateAccountMutation = () => {
   return useMutation({
@@ -44,6 +50,18 @@ export const useCreateAccountMutation = () => {
   })
 }
 
+
+export const useGetClientNotificationsMutation = () => {
+  return useMutation({
+    mutationFn: () => getClientNotifications()
+  })
+}
+
+export const useMarkNotificationAsReadMutation = () => {
+  return useMutation({
+    mutationFn: () => markNotificationAsRead()
+  })
+}
 
 
 export const useClientLoginMutation = () =>{
@@ -195,7 +213,7 @@ export const useConfirmTicketAndPaymentMutation = () => {
 
 export const useCancelTicketMutation = () => {
   return useMutation({
-    mutationFn: (ticketId:string) => cancelTicket(ticketId)
+    mutationFn: ({ticketId,cancelCount}: {ticketId:string,cancelCount:number}) => cancelTicket({ticketId,cancelCount})
   })
 }
 

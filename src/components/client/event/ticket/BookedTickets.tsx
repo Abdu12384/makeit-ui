@@ -89,7 +89,7 @@ export const MyTickets: React.FC = () => {
       case "used":
         return tickets.filter((ticket) => ticket.ticketStatus === "used")
       case "unused":
-        return tickets.filter((ticket) => ticket.ticketStatus === "unused" || ticket.ticketStatus === "active")
+        return tickets.filter((ticket) => ticket.ticketStatus === "unused" || ticket.ticketStatus === "active" || ticket.ticketStatus === "partially_refunded")
       case "cancelled":
         return tickets.filter((ticket) => ticket.ticketStatus === "refunded")
       default:

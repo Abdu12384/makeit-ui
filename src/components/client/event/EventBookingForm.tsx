@@ -13,7 +13,6 @@ import { Event } from "@/types/event";
 interface BookingFormProps {
   event: Event;
   ticketCount: number;
-  setTicketCount: (count: number) => void;
   isBookingOpen: boolean;
   setIsBookingOpen: (open: boolean) => void;
 }
@@ -40,7 +39,6 @@ const validationSchema = Yup.object({
 export default function EventBookingForm({
   event,
   ticketCount,
-  setTicketCount,
   setIsBookingOpen,
 }: BookingFormProps) {
   // Calculate total amount
@@ -49,14 +47,6 @@ export default function EventBookingForm({
   const totalAmount = (ticketPrice).toFixed(2);
 
   const navigate = useNavigate();
-
-  // Handle ticket count change
-  const handleTicketChange = (change: number) => {
-    const newCount = ticketCount + change;
-    if (newCount >= 1 && newCount <= 10 && newCount <= event.totalTicket - event.attendeesCount) {
-      setTicketCount(newCount);
-    }
-  };
 
 
   const handlePayment = (values: { email: string; phone: string }) => {
@@ -134,30 +124,7 @@ export default function EventBookingForm({
 
             <div className="space-y-2">
               <Label>Number of tickets</Label>
-              <div className="flex items-center justify-between">
-                <Button
-                  variant="outline"
-                  size="icon"
-                  className="h-8 w-8 rounded-full border-[#748D92]/30"
-                  onClick={() => handleTicketChange(-1)}
-                  disabled={ticketCount <= 1}
-                  type="button"
-                >
-                  -
-                </Button>
-                <span className="mx-4 font-medium text-[#212A31]">{ticketCount}</span>
-                <Button
-                  variant="outline"
-                  size="icon"
-                  className="h-8 w-8 rounded-full border-[#748D92]/30"
-                  onClick={() => handleTicketChange(1)}
-                  disabled={ticketCount >= 10 || ticketCount >= event.totalTicket - event.attendeesCount}
-                  type="button"
-                >
-                  +
-                </Button>
-              </div>
-            </div>
+           </div>
 
             <Separator className="my-4" />
 
@@ -168,10 +135,6 @@ export default function EventBookingForm({
                   ₹{event.pricePerTicket} x {ticketCount}
                 </span>
               </div>
-              {/* <div className="flex justify-between mb-2">
-                <span className="text-[#2E3944]">Service fee</span>
-                <span className="text-[#212A31] font-medium">₹{serviceFee.toFixed(2)}</span>
-              </div> */}
               <Separator className="my-3 bg-[#D3D9D4]/50" />
               <div className="flex justify-between font-bold">
                 <span className="text-[#212A31]">Total</span>

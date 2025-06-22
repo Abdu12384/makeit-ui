@@ -156,7 +156,7 @@ export const VendorWallet = () => {
           <CardHeader className="pb-2">
             <CardDescription className="text-sm font-medium text-slate-500">Wallet Balance</CardDescription>
             <CardTitle className="text-3xl font-bold text-slate-800 flex items-baseline">
-              ₹{balance !== undefined ? balance : 0}
+              ₹{balance !== undefined ? balance.toFixed(2) : 0}
             </CardTitle>
           </CardHeader>
           <CardContent>

@@ -397,16 +397,17 @@ export default function EditEventPage({ eventData, onSubmit }: EditEventPageProp
                               )}
                             >
                               <CalendarIcon className="mr-2 h-4 w-4 text-sky-500" />
-                              {selectedDates.length > 0 ? selectedDates.map(formatDate).join(", ") : "Select date(s)"}
-                            </Button>
+                              {selectedDates[0] ? formatDate(selectedDates[0]) : "Select date"}
+                              </Button>
                           </PopoverTrigger>
                           <PopoverContent className="w-auto p-0 bg-white border border-sky-100">
                             <Calendar
-                              mode="multiple"
-                              selected={selectedDates}
-                              onSelect={(dates) => {
-                                setSelectedDates(dates || []);
-                                setFieldValue("dates", dates || []);
+                              mode="single"
+                              selected={selectedDates[0]}
+                              onSelect={(date) => {
+                                const selected = date ? [date] : []
+                                setSelectedDates(selected)
+                                setFieldValue("dates", selected)
                               }}
                               initialFocus
                               className="bg-white"

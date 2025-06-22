@@ -7,7 +7,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { CheckCheck, X, Bell, Calendar, User } from "lucide-react"
 import { cn } from "@/lib/utils"
-import { useGetVendorNotificationsMutation, useMarkVendorNotificationAsReadMutation } from "@/hooks/VendorCustomHooks"
+import { useGetClientNotificationsMutation, useMarkNotificationAsReadMutation } from "@/hooks/ClientCustomHooks"
 
 interface Notification {
   _id?: string
@@ -59,12 +59,12 @@ const getNotificationColor = (title: string) => {
   }
 }
 
-export default function VendorNotificationDropdown() {
+export default function NotificationDropdown() {
   const [notifications, setNotifications] = useState<Notification[]>([])
   const [isOpen, setIsOpen] = useState(false)
 
-  const notificationMutation = useGetVendorNotificationsMutation()
-  const markNotificationAsReadMutation = useMarkVendorNotificationAsReadMutation()
+  const notificationMutation = useGetClientNotificationsMutation()
+  const markNotificationAsReadMutation = useMarkNotificationAsReadMutation()
 
   useEffect(() => {
     notificationMutation.mutate(

@@ -1,17 +1,18 @@
 "use client"
-
 import type React from "react"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { useSelector } from "react-redux"
 import type { RootState } from "@/store/store"
 import { CalendarCheck, FileBarChart2, Home, UserCircle, Menu, X, ChevronDown, LogOut } from "lucide-react"
 import { useNavigate, useLocation } from "react-router-dom"
-import { useLogoutClient } from "@/hooks/ClientCustomHooks"
+import { useLogoutClient, useSaveClientFCMTokenMutation } from "@/hooks/ClientCustomHooks"
 import { useDispatch } from "react-redux"
 import { clientLogout } from "@/store/slices/client.slice"
 import toast from "react-hot-toast"
 import { Link } from "react-router-dom"
 import { disconnectSocket } from "@/utils/socket/socket"
+import { listenForForegroundMessages, requestNotificationPermission } from "@/services/firebase/messaging"
+import NotificationDropdown from "./notification/notification"
 
 interface NavbarProps {
   variant?: "transparent" | "solid"
@@ -31,10 +32,47 @@ export const Navbar: React.FC<NavbarProps> = ({ variant = "solid" }) => {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false)
+  const {mutate:saveFCMTokenMutation} = useSaveClientFCMTokenMutation()
 
   const { mutate: logout } = useLogoutClient()
 
-  // Handle scroll effect for transparent navbar
+
+
+  const setupFCM = useCallback(async () => {
+    if (!isLoggedIn) return;
+  
+    try {
+      // Check if notifications are blocked
+      if (Notification.permission === 'denied') {
+        console.log('Notifications are blocked by user');
+        return;
+      }
+  
+      const cachedToken = localStorage.getItem("fcmToken");
+      const token = await requestNotificationPermission();
+  
+      if (token && token !== cachedToken) {
+        saveFCMTokenMutation(token, {
+          onSuccess: () => {
+            localStorage.setItem("fcmToken", token);
+          },
+          onError: (err: any) => {
+            console.error("Failed to save token:", err);
+          },
+        });
+      }
+  
+      listenForForegroundMessages();
+    } catch (error) {
+      console.error('FCM setup error:', error);
+    }
+  }, [isLoggedIn, saveFCMTokenMutation]);
+  
+  useEffect(() => {
+    setupFCM();
+  }, [setupFCM]);
+
+  
   useEffect(() => {
     const handleScroll = () => {
       if (window.scrollY > 20) {
@@ -51,6 +89,7 @@ export const Navbar: React.FC<NavbarProps> = ({ variant = "solid" }) => {
   const handleLogout = () => {
     logout(undefined, {
       onSuccess: (data) => {
+        localStorage.removeItem("fcmToken");
         setTimeout(() => {
           dispatch(clientLogout())
            disconnectSocket()
@@ -122,6 +161,9 @@ export const Navbar: React.FC<NavbarProps> = ({ variant = "solid" }) => {
 
           {/* User Auth Section - Desktop */}
           <div className="hidden md:flex items-center">
+            {isLoggedIn && (
+            <NotificationDropdown />
+            )}
             {isLoggedIn ? (
               <div className="relative">
                 <button

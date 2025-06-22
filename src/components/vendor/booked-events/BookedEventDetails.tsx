@@ -26,8 +26,9 @@ export function BookedEventDetails({ event, onClose }: EventDetailsProps) {
     setIsScanning(true);
   };
 
+  console.log('event details',event)
   // Calculate stats for the table
-  const totalAttendees = event?.attendeeCount || 0;
+  const totalAttendees = event?.attendeesCount|| 0;
   const totalCapacity = event?.totalTicket || 1;
   const checkedIn = event?.checkedInCount || 0;
   const ticketsAvailable = totalCapacity - totalAttendees;

@@ -1,5 +1,5 @@
 
-import { changeBookingStatus, createEvent, createService, createWorkSample, editEvent, getAllBookings, getAllCategories, getAllEventsByVendorId, getAllServicesByVendorId, getAllWorkSamplesByVendorId, getAttendeesById, getDashboardData, getWalletById, logoutVendor, updateService, updateVendorProfile, updateWorkSample, uploadImageCloudinary, vendorChangePassword, vendorCreateAccount, VendorLogin, vendorSignup, verifyTicket } from "@/services/vendor/vendorService";
+import { changeBookingStatus, createEvent, createService, createWorkSample, editEvent, getAllBookings, getAllCategories, getAllEventsByVendorId, getAllServicesByVendorId, getAllWorkSamplesByVendorId, getAttendeesById, getDashboardData, getWalletById, logoutVendor, saveVendorFCMToken, updateService, updateVendorProfile, updateWorkSample, uploadImageCloudinary, vendorCancelBooking, vendorChangePassword, vendorCreateAccount, VendorLogin, vendorSignup, verifyTicket, getVendorNotifications, markVendorNotificationAsRead } from "@/services/vendor/vendorService";
 import { IEventFormValues } from "@/types/event";
 import { ServiceFormValues } from "@/types/service";
 import { ILoginData } from "@/types/User";
@@ -30,7 +30,26 @@ export const useUploadeImageToCloudinaryMutation = () => {
   })
 }
 
+export const useSaveVendorFCMTokenMutation = () => {
+  return useMutation({
+    mutationFn: async (token: string) => {
+      return await saveVendorFCMToken(token)
+    },
+  })
+}
 
+
+export const useGetVendorNotificationsMutation = () => {
+  return useMutation({
+    mutationFn: getVendorNotifications,
+  })
+}
+
+export const useMarkVendorNotificationAsReadMutation = () => {
+  return useMutation({
+    mutationFn: markVendorNotificationAsRead,
+  })
+}
 
 export const useVendorSignupMutation = () =>{
    return useMutation({
@@ -131,6 +150,12 @@ export const useGetAllBookingsMutation = () => {
   });
 }
 
+
+export const useVendorCancelBookingMutation = () => {
+  return useMutation({
+    mutationFn: ({bookingId,status,reason}: {bookingId:string,status:string,reason?:string}) => vendorCancelBooking({bookingId,status,reason}),
+  });
+}
 
 
 

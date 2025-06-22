@@ -37,6 +37,36 @@ export const refreshClientSession = async (): Promise<IAuthResponse> => {
 };
 
 
+export const saveClientFCMToken = async (token:string) => {
+  try {
+     const response = await clientAxiosInstance.post("/client/save-fcm-token", { token });
+     return response.data;
+   } catch (error) {
+     console.log(error);
+     throw error;
+   }
+ };
+
+ export const getClientNotifications = async () => {
+   try {
+     const response = await clientAxiosInstance.get("/client/notifications");
+     return response.data;
+   } catch (error) {
+     console.log(error);
+     throw error;
+   }
+ }
+
+ export const markNotificationAsRead = async () => {
+   try {
+     const response = await clientAxiosInstance.put(`/client/notifications/read`);
+     return response.data;
+   } catch (error) {
+     console.log(error);
+     throw error;
+   }
+ }
+
 
 export const clientSignup = async (values: SignupPayload): Promise<SingupResponse> =>{
    try {
@@ -356,10 +386,10 @@ export const  getAllTickets = async ({page = 1,limit = 10}:PaginationParams) => 
 }
 
 
-export const cancelTicket = async (ticketId:string) => {
+export const cancelTicket = async ({ticketId,cancelCount}: {ticketId:string,cancelCount:number}) => {
   try {
     console.log('send -ticketId',ticketId)
-    const response = await clientAxiosInstance.put(`/client/cancel-ticket/${ticketId}`)
+    const response = await clientAxiosInstance.put(`/client/cancel-ticket/${ticketId}`,{cancelCount})
     return response.data
   } catch (error) {
     console.log('error while client cancel ticket',error)

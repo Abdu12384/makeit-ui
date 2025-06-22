@@ -83,6 +83,7 @@ export const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
   const handleLogout = () => {
     logout(undefined, {
       onSuccess: (data) => {
+        localStorage.removeItem("fcmToken");
         disconnectSocket()
         setTimeout(() => {
           dispatch(vendorLogout())
@@ -94,7 +95,6 @@ export const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
 			},
 		});
 	};
-
 
 
 

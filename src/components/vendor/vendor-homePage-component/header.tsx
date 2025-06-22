@@ -1,10 +1,9 @@
-
-
 import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { LogOut, Menu, X } from "lucide-react"
 import { useSelector } from "react-redux"
 import { RootState } from "@/store/store"
+import VendorNotificationDropdown from "./notifcation"
 
 interface HeaderProps {
   currentTime: Date
@@ -15,9 +14,6 @@ interface HeaderProps {
 export const Header = ({ isLiveIndicatorVisible, openSidebar }: HeaderProps) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
    const {vendor} = useSelector((state:RootState) => state.vendor)
-
-   console.log(vendor)
-
 
 
   return (
@@ -49,11 +45,8 @@ export const Header = ({ isLiveIndicatorVisible, openSidebar }: HeaderProps) => 
                 opacity: isLiveIndicatorVisible ? [1, 0.8, 1] : 1,
               }}
               transition={{ duration: 1.5, repeat: Number.POSITIVE_INFINITY }}
-              // className="h-2 w-2 rounded-full bg-green-500 mr-2"
             ></motion.div>
-            {/* <span className="text-xs text-gray-500">LIVE</span> */}
           </div>
-          {/* <span className="text-sm text-gray-600">{formatTime(currentTime)}</span> */}
         </motion.div>
 
         {/* Desktop Navigation */}
@@ -83,18 +76,8 @@ export const Header = ({ isLiveIndicatorVisible, openSidebar }: HeaderProps) => 
           transition={{ duration: 0.5 }}
           className="flex items-center space-x-4"
         >
-          {/* <div className="relative">
-            <Bell className="h-6 w-6 text-gray-600 cursor-pointer hover:text-purple-600 transition-colors" />
-            {activeNotifications > 0 && (
-              <motion.span
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-red-500 flex items-center justify-center text-white text-xs"
-              >
-                {activeNotifications}
-              </motion.span>
-            )}
-          </div> */}
+
+          <VendorNotificationDropdown/>
           <motion.div
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}

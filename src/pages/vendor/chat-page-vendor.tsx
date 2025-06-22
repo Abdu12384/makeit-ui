@@ -18,17 +18,14 @@ const VendorChatPage: React.FC = () => {
       try {
         let currentSocket = getSocket();
         
-        // If no socket exists or it's not connected, initialize it
         if (!currentSocket || !currentSocket.connected) {
           console.log("Initializing socket in VendorChatPage");
           currentSocket = await initializeSocket();
         } else {
-          // Wait for existing socket to be ready
           currentSocket = await waitForSocketConnection();
         }
 
         setSocketReady(true);
-        // Fetch chat history
         if (userId) {
           console.log("Fetching chat history for userId:", userId);
           currentSocket.emit("get-chats", { userId }, (response: { status: string; data: any[]; message?: string }) => {
@@ -85,7 +82,7 @@ const VendorChatPage: React.FC = () => {
     );
   }
 
-  const socket = getSocket()!; // We know it exists because socketReady is true
+  const socket = getSocket()!;
 
   return (
     <div className="min-h-screen bg-gray-100 p-4">

@@ -63,7 +63,7 @@ export default function EventsPage() {
     }
 
     fetchEvents()
-  }, [searchQuery])
+  }, [searchQuery,currentPage])
 
   // const toggleFavorite = (id: string) => {
   //   setFavorites((prev) => (prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]))

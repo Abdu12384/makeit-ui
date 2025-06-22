@@ -22,6 +22,7 @@ import EventGalleryDialog from "@/components/client/event/EventGallery";
 import { VendorDetailsDialog } from "@/components/client/vendor-info/VendorInfoDialog";
 import { EventDetailsPageSkeleton } from "@/components/common/skelton/SkeltonLoading";
 import { EventNF } from "@/components/common/NotFound/ItemsNotFound";
+import toast from "react-hot-toast";
 
 export default function EventDetailsPage() {
   const { eventId } = useParams<{ eventId: string }>(); 
@@ -40,6 +41,8 @@ export default function EventDetailsPage() {
   const {client} = useSelector((state: any) => state.client)
   const getAllReviewsMutation = useGetAllReviewsMutation()
     const reviewFormRef = useRef<HTMLDivElement>(null)
+
+    const isSoldOut = event ? event.attendeesCount >= event.totalTicket : false;
 
 
   useEffect(() => {
@@ -67,6 +70,10 @@ export default function EventDetailsPage() {
 
 
   const handleBookNow = () => {
+    if (isSoldOut) {
+      toast.error("Ticket is sold out")
+      return;
+    }
     setIsBookingOpen(true);
   };
 
@@ -439,7 +446,6 @@ export default function EventDetailsPage() {
         <EventBookingForm
           event={event}
           ticketCount={ticketCount}
-          setTicketCount={setTicketCount}
           isBookingOpen={isBookingOpen}
           setIsBookingOpen={setIsBookingOpen}
         />

@@ -6,7 +6,7 @@ import { useEffect, useState, useRef } from "react"
 import type { Socket } from "socket.io-client"
 import type { Message } from "@/types/chat"
 import { motion, AnimatePresence } from "framer-motion"
-import { Send, Smile, Paperclip, Mic, ImageIcon, MoreVertical, ArrowLeft, CheckCheck, Check } from "lucide-react"
+import { Send, ImageIcon, MoreVertical, ArrowLeft, CheckCheck, Check } from "lucide-react"
 
 interface ChatWindowProps {
   chatId: string
@@ -28,8 +28,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ chatId, userId, userModel, sock
   })
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const messageInputRef = useRef<HTMLInputElement>(null)
-  const [showEmojiPicker, setShowEmojiPicker] = useState(false)
-  const [showAttachMenu, setShowAttachMenu] = useState(false)
+  const [showAttachMenu, _setShowAttachMenu] = useState(false)
 
   console.log('chatInfo', chatInfo)
   const scrollToBottom = () => {
@@ -336,23 +335,23 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ chatId, userId, userModel, sock
       >
         <div className="relative flex items-center gap-2">
           <div className="flex">
-            <motion.button
+            {/* <motion.button
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
               onClick={() => setShowEmojiPicker(!showEmojiPicker)}
               className="p-2 rounded-full hover:bg-gray-100 transition-colors"
             >
               <Smile size={22} className="text-gray-500" />
-            </motion.button>
+            </motion.button> */}
             <div className="relative">
-              <motion.button
+              {/* <motion.button
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
                 onClick={() => setShowAttachMenu(!showAttachMenu)}
                 className="p-2 rounded-full hover:bg-gray-100 transition-colors"
               >
                 <Paperclip size={22} className="text-gray-500" />
-              </motion.button>
+              </motion.button> */}
               <AnimatePresence>
                 {showAttachMenu && (
                   <motion.div
@@ -408,7 +407,6 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ chatId, userId, userModel, sock
             placeholder="Type a message..."
             className="flex-1 py-3 px-4 bg-gray-100 rounded-full focus:outline-none focus:ring-2 focus:ring-purple-500 focus:bg-white transition-all"
           />
-          {message.trim() ? (
             <motion.button
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
@@ -417,15 +415,6 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ chatId, userId, userModel, sock
             >
               <Send size={18} />
             </motion.button>
-          ) : (
-            <motion.button
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.9 }}
-              className="p-3 bg-purple-600 text-white rounded-full shadow-md hover:bg-purple-700 transition-colors"
-            >
-              <Mic size={18} />
-            </motion.button>
-          )}
         </div>
       </motion.div>
     </div>

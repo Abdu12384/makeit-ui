@@ -1,17 +1,16 @@
 import type React from "react"
 import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { Edit, Plus, Trash2, Eye } from "lucide-react"
+import { Edit, Plus, Eye } from "lucide-react"
 import { WorkSample } from "@/types/worksample/work-sample"
 
 interface WorkSamplesListProps {
   workSamples: WorkSample[]
   onEdit: (workSample: WorkSample) => void
-  onDelete: (id: string) => void
   onAdd: () => void
 }
 
-const WorkSamplesList: React.FC<WorkSamplesListProps> = ({ workSamples, onEdit, onDelete, onAdd }) => {
+const WorkSamplesList: React.FC<WorkSamplesListProps> = ({ workSamples, onEdit, onAdd }) => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null)
 
   const containerVariants = {
@@ -164,15 +163,6 @@ const WorkSamplesList: React.FC<WorkSamplesListProps> = ({ workSamples, onEdit, 
                     >
                       <Edit size={16} />
                       Edit
-                    </motion.button>
-                    <motion.button
-                      variants={buttonVariants}
-                      whileHover="hover"
-                      whileTap="tap"
-                      onClick={() => onDelete(sample.workSampleId as string)}
-                      className="bg-red-50 text-red-600 px-4 py-2 rounded-lg font-medium hover:bg-red-100 transition-colors flex items-center justify-center"
-                    >
-                      <Trash2 size={16} />
                     </motion.button>
                   </div>
                 </div>

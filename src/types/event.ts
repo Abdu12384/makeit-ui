@@ -35,6 +35,7 @@ export interface Event {
   venueName: string
   posterImage: string[]
   pricePerTicket: number
+  maxTicketsPerUser?: number
   totalTicket: number
   attendeesCount: number
   ticketPurchased: number

@@ -86,8 +86,8 @@ export default function AdminBookingsPage() {
 
   const filteredBookings = bookings.filter(
     (booking) =>
-      booking.bookingId.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      booking.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      booking.bookingId.toLowerCase().startsWith(searchQuery.toLowerCase()) ||
+      booking.email.toLowerCase().startsWith(searchQuery.toLowerCase()) ||
       booking.phone.includes(searchQuery) ||
       booking.status.toLowerCase().includes(searchQuery.toLowerCase())
   )

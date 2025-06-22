@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { Header } from "@/components/vendor/vendor-homePage-component/header"
 import { BannerCarousel } from "@/components/vendor/vendor-homePage-component/banner"
 import { Sidebar } from "@/components/vendor/vendor-homePage-component/sidebar"
@@ -7,6 +7,8 @@ import image1 from "@/assets/images/event.avif"
 import image2 from "@/assets/images/vendorhomebanner.avif"
 import image3 from "@/assets/images/grow bussiness.webp"
 import { VendorDashboard } from "@/components/vendor/vendor-dashboard/VendorDashboard"
+import { useSaveVendorFCMTokenMutation } from "@/hooks/VendorCustomHooks"
+import { listenForForegroundMessages, requestNotificationPermission } from "@/services/firebase/messaging"
 
 // Import components
 
@@ -35,36 +37,51 @@ const bannerImages = [
 
 
 
-// const notifications = [
-//   { id: 1, message: "New booking request for Corporate Summit", time: "2 hours ago", isNew: true },
-//   { id: 2, message: "Payment received for Wedding Expo", time: "Yesterday", isNew: true },
-//   { id: 3, message: "Client message: Need to discuss catering options", time: "2 days ago", isNew: false },
-//   { id: 4, message: "Reminder: Update your availability calendar", time: "3 days ago", isNew: false },
-// ]
+
 
 const VendorHomePage = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
-  const [currentTime, setCurrentTime] = useState(new Date())
-  // const [activeNotifications, setActiveNotifications] = useState(2)
-  const [isLiveIndicatorVisible, setIsLiveIndicatorVisible] = useState(true)
+  const [currentTime, _setCurrentTime] = useState(new Date())
+  const [isLiveIndicatorVisible, _setIsLiveIndicatorVisible] = useState(true)
 
-  // Update time every minute to simulate real-time
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentTime(new Date())
-    }, 60000)
+  const {mutate:saveVendorFCMToken} = useSaveVendorFCMTokenMutation()
+ 
 
-    // Simulate real-time notifications
-    const notificationTimer = setInterval(() => {
-      // Randomly toggle the live indicator to simulate activity
-      setIsLiveIndicatorVisible((prev) => !prev)
-    }, 3000)
+    const setupFCM = useCallback(async () => {
+      try {
+        if (Notification.permission === 'denied') {
+          console.log('Notifications are blocked by user');
+          return;
+        }
+    
+        const cachedToken = localStorage.getItem("fcmToken");
+        const token = await requestNotificationPermission();
+    
+        if (token && token !== cachedToken) {
+          saveVendorFCMToken(token, {
+            onSuccess: () => {
+              localStorage.setItem("fcmToken", token);
+            },
+            onError: (err: any) => {
+              console.error("Failed to save token:", err);
+            },
+          });
+        }
+        listenForForegroundMessages();
+      } catch (error) {
+        console.error('FCM setup error:', error);
+      }
+    }, [saveVendorFCMToken]);
+    
+    useEffect(() => {
+      setupFCM();
+    }, [setupFCM]);
 
-    return () => {
-      clearInterval(timer)
-      clearInterval(notificationTimer)
-    }
-  }, [])
+
+
+
+
+
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 text-gray-800 relative overflow-x-hidden">

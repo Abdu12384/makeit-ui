@@ -131,9 +131,6 @@ const WorkSamplePage: React.FC = () => {
   }
 
 
-  const handleDeleteWorkSample = (id: string) => {
-    setWorkSamples((prev) => prev.filter((sample) => sample.workSampleId !== id))
-  }
 
   const handleCancel = () => {
     setCurrentView("list")
@@ -148,7 +145,6 @@ const WorkSamplePage: React.FC = () => {
             key="list"
             workSamples={workSamples}
             onEdit={handleEditWorkSample}
-            onDelete={handleDeleteWorkSample}
             onAdd={handleAddWorkSample}
           />
         )}

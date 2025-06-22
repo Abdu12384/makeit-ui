@@ -6,6 +6,7 @@ import { Progress } from "@/components/ui/progress";
 import { Info } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Event } from "@/types/event";
+import toast from "react-hot-toast";
 
 interface BookingCardProps {
   event: Event;
@@ -17,11 +18,25 @@ interface BookingCardProps {
 export default function BookingCard({ event, ticketCount, setTicketCount, handleBookNow }: BookingCardProps) {
   const handleTicketChange = (change: number) => {
     const newCount = ticketCount + change;
-    if (newCount >= 1 && newCount <= 10) {
-      setTicketCount(newCount);
+  const remainingTickets = event.totalTicket - (event.ticketPurchased || 0);
+
+  if (change > 0) {
+    if (newCount >= remainingTickets) {
+      toast.error(`${remainingTickets} tickets left.`);
+      return;
     }
+    if (newCount > event.maxTicketsPerUser!) {
+      toast.error(`You can only book up to ${event.maxTicketsPerUser} tickets.`);
+      return;
+    }
+  }
+
+  if (newCount >= 1) {
+    setTicketCount(newCount);
+  }
   };
 
+  console.log('event in booking form',event)
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -77,7 +92,7 @@ export default function BookingCard({ event, ticketCount, setTicketCount, handle
                   size="icon"
                   className="h-8 w-8 rounded-full border-[#748D92]/30"
                   onClick={() => handleTicketChange(1)}
-                  disabled={ticketCount >= 10 || ticketCount >= event.totalTicket - (event.ticketPurchased || 0)}
+                  // disabled={ticketCount >= event.maxTicketsPerUser! || ticketCount >= event.totalTicket - (event.ticketPurchased || 0)}
                 >
                   +
                 </Button>

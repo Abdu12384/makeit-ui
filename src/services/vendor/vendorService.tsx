@@ -28,6 +28,16 @@ export const refreshVendorSession = async (): Promise<IAuthResponse> => {
  };
 
 
+ export const  saveVendorFCMToken = async (token:string) => {
+   try {
+      const response = await VendorAxiosInstance.post("/vendor/fcm-token", { token });
+      return response.data;
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+  };
+
 
 
 const CLOUDINARY_URL = "https://api.cloudinary.com/v1_1/dujuwqvz5/image/upload";
@@ -43,6 +53,25 @@ export const uploadImageCloudinary = async (formdata: FormData) => {
 }
 
 
+export const getVendorNotifications = async () => {
+   try {
+   const response = await VendorAxiosInstance.get("/vendor/notifications");
+   return response.data;
+ } catch (error) {
+   console.log(error)
+   throw error
+ }
+}
+
+export const markVendorNotificationAsRead = async () => {
+   try {
+   const response = await VendorAxiosInstance.put(`/vendor/notifications/read`);
+   return response.data;
+ } catch (error) {
+   console.log(error)
+   throw error
+ }
+}
 
 
 export const vendorSignup  = async (formdata: VendorData) =>{
@@ -219,6 +248,19 @@ export const getAllBookings = async (limit:number,skip:number) => {
 }
 
 
+export const vendorCancelBooking = async ({bookingId,status,reason}: {bookingId:string,status:string,reason?:string}) => {
+   try {
+      const response = await VendorAxiosInstance.patch(`/vendor/bookings/${bookingId}`,{
+        status,
+        reason
+      });
+      return response.data;
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+}
+
 
 export const createEvent = async (data:IEventFormValues)=>{
    try {
@@ -252,10 +294,11 @@ export const editEvent = async ({data,eventId}: {data:IEventFormValues,eventId:s
      const response = await VendorAxiosInstance.put(`/vendor/event/${eventId}`,data)
      return response.data
    } catch (error) {
-    console.log(error)
+    console.log(error) 
     throw error
    }
 }
+
 
 
 

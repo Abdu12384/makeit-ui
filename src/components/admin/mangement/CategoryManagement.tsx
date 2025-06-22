@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import type React from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, FolderPlus, MoreVertical, Check, AlertCircle, X, Image as ImageIcon } from "lucide-react";
+import { FolderPlus, MoreVertical, Check, AlertCircle, X, Image as ImageIcon } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -18,7 +18,7 @@ import { Category } from "@/types/category";
 export const CategoryManagement: React.FC = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, _setSearchQuery] = useState("");
   const [newCategory, setNewCategory] = useState({
     title: "",
     description: "",
@@ -41,11 +41,11 @@ export const CategoryManagement: React.FC = () => {
   const editCategoryMutation = useEditCategoryMutation();
   const uploadToCloudinaryMutation = useUploadeImageToCloudinaryMutation();
 
-  const filteredCategories = categories.filter(
-    (category) =>
-      category.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      category.description.toLowerCase().includes(searchQuery.toLowerCase()),
-  );
+  // const filteredCategories = categories.filter(
+  //   (category) =>
+  //     category.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+  //     category.description.toLowerCase().includes(searchQuery.toLowerCase()),
+  // );
 
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -275,19 +275,6 @@ export const CategoryManagement: React.FC = () => {
       </div>
 
       <div className="bg-gray-800 rounded-xl p-6 shadow-xl">
-        <div className="flex flex-col md:flex-row justify-between mb-6 gap-4">
-          <div className="flex items-center bg-gray-700/50 rounded-lg px-3 py-2 flex-1 border border-gray-700 focus-within:border-indigo-500 transition-colors">
-            <Search size={18} className="text-gray-400" />
-            <input
-              type="text"
-              placeholder="Search categories..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="bg-transparent border-none w-full ml-2 focus:outline-none text-gray-200"
-            />
-          </div>
-        </div>
-
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
@@ -300,7 +287,7 @@ export const CategoryManagement: React.FC = () => {
               </tr>
             </thead>
             <tbody className="text-sm">
-              {filteredCategories.map((category) => (
+              {categories.map((category) => (
                 <tr
                   key={category._id}
                   className="border-b border-gray-700/50 hover:bg-gray-700/20 transition-colors"
@@ -375,7 +362,7 @@ export const CategoryManagement: React.FC = () => {
           </table>
         </div>
 
-        {filteredCategories.length === 0 && (
+        {categories.length === 0 && (
           <div className="text-center py-8 text-gray-400">
             <motion.div
               initial={{ opacity: 0, y: 10 }}
@@ -389,7 +376,7 @@ export const CategoryManagement: React.FC = () => {
 
         <div className="flex flex-col md:flex-row justify-between items-center mt-6 text-sm text-gray-400">
           <span>
-            Showing {filteredCategories.length} of {categories.length} categories
+            Showing {categories.length} of {categories.length} categories
           </span>
           <div className="flex mt-4 md:mt-0">
             <Button

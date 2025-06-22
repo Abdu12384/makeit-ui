@@ -366,16 +366,17 @@ export default function EventFormPage({ eventData, onSuccess, onCancel }: EventF
                               )}
                             >
                               <CalendarIcon className="mr-2 h-4 w-4 text-sky-500" />
-                              {selectedDates.length > 0 ? selectedDates.map(formatDate).join(", ") : "Select date(s)"}
+                              {selectedDates.length > 0 ? formatDate(selectedDates[0]) : "Select date(s)"}
                             </Button>
                           </PopoverTrigger>
                           <PopoverContent className="w-auto p-0 bg-white border border-sky-100">
                             <Calendar
-                              mode="multiple"
-                              selected={selectedDates}
-                              onSelect={(dates) => {
-                                setSelectedDates(dates || []);
-                                setFieldValue("date", dates || []);
+                              mode="single"
+                              selected={selectedDates[0]}
+                              onSelect={(date) => {
+                                const selected = date ? [date] : []
+                                setSelectedDates(selected)
+                                setFieldValue("date", selected)
                               }}
                               initialFocus
                               className="bg-white"
@@ -714,11 +715,11 @@ export default function EventFormPage({ eventData, onSuccess, onCancel }: EventF
                             <Input
                               id="totalTicket"
                               type="number"
-                              min={isEditing ? eventData?.totalTicket : 1}
+                              min={isEditing ? eventData?.ticketPurchased! : 1}
                               placeholder="100"
                               {...field}
                               onChange={(e) => {
-                                const value = e.target.value || (isEditing ? eventData?.totalTicket : "");
+                                const value = e.target.value || (isEditing ? eventData?.totalTicket! : "");
                                 setFieldValue("totalTicket", value);
                               }}
                               className={`transition-all duration-300 focus:ring-sky-300 ${
@@ -732,7 +733,7 @@ export default function EventFormPage({ eventData, onSuccess, onCancel }: EventF
                           component="div"
                           className="text-red-500 text-sm mt-1 animate-pulse"
                         />
-                        {isEditing && eventData?.ticketPurchased ? (
+                        {isEditing && eventData?.ticketPurchased! < eventData?.totalTicket! ? (
                           <p className="text-xs text-sky-500">
                             Note: {eventData.ticketPurchased} tickets already sold. You can only increase the total.
                           </p>
