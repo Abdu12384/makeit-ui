@@ -1,5 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
-import { addReview, cancelBooking, cancelTicket, clientBookingService, clientChangePassword, clientCreateAccount, clientForgotPassword, clientGetAllServices, clientGetServiceById, clientGoogleLogin, clientLogin, clientProfileEdit, clientResendOtp, clientResetPassword, clientSignup, confirmBookingPayment, confirmTicketAndPayment, createBookingPayment, createTicket, getAllEvents, getAllReviews, getAllTickets, getAllWorkSamplesByVendorId, getBookings, getEventById, getWalletById, logoutClient, saveClientFCMToken, getClientNotifications, markNotificationAsRead   } from '@/services/client/clientService';
+import { addReview, cancelBooking, cancelTicket, clientBookingService, clientChangePassword, clientCreateAccount, clientForgotPassword, clientGetAllServices, clientGetServiceById, clientGoogleLogin, clientLogin, clientProfileEdit, clientResendOtp, clientResetPassword, clientSignup, confirmBookingPayment, confirmTicketAndPayment, createBookingPayment, createTicket, getAllEvents, getAllReviews, getAllTickets, getAllWorkSamplesByVendorId, getBookings, getEventById, getWalletById, logoutClient, saveClientFCMToken, getClientNotifications, markNotificationAsRead, checkEventBookingAvailability   } from '@/services/client/clientService';
 import { ILoginData } from '@/types/User';
 import { PaginationParams } from '@/types/event';
 import { TicketEntity } from '@/types/ticket';
@@ -186,6 +186,13 @@ export const useGetAllEventsMutation = () => {
 export const useGetEventByIdMutation = () => {
   return useMutation({
     mutationFn: (eventId:string) => getEventById(eventId)
+  })
+}
+
+
+export const useCheckEventBookingAvailabilityMutation = () => {
+  return useMutation({
+    mutationFn: ({eventId,ticketCount}: {eventId:string,ticketCount:number}) => checkEventBookingAvailability({id: eventId,ticketCount})
   })
 }
 

@@ -97,7 +97,6 @@ export const ServiceListingPage = () => {
     return 0
   })
 
-  console.log("sortedServices", sortedServices)
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -163,6 +162,7 @@ export const ServiceListingPage = () => {
               service={service}
               onEdit={() => handleEditService(service._id)}
               onDelete={() => handleDeleteService(service._id)}
+              setService={setAllServices}
             />
           ))}
         

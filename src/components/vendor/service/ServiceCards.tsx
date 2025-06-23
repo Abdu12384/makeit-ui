@@ -6,22 +6,29 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import { useBlockServiceMutation } from "@/hooks/VendorCustomHooks"
+import toast from "react-hot-toast"
 
 interface ServiceCardProps {
   service: {
     _id: string
+    serviceId: string
     serviceTitle: string
     serviceCategory: string
     yearsOfExperience: number
     servicePrice: number
     serviceDuration: number
     serviceDescription: string
+    status: string
   }
   onEdit: () => void
   onDelete: () => void
+  setService: (service: any) => void
 }
 
-export const ServiceCard = ({ service, onEdit }: ServiceCardProps) => {
+export const ServiceCard = ({ service, onEdit,setService }: ServiceCardProps) => {
+
+  const blockService = useBlockServiceMutation()
   const cardVariants = {
     hidden: { opacity: 0, y: 20 },
     visible: {
@@ -40,8 +47,37 @@ export const ServiceCard = ({ service, onEdit }: ServiceCardProps) => {
     },
   }
 
+  const handleBlockService = (serviceId: string) => {
+    blockService.mutate(
+      serviceId,
+      {
+        onSuccess: (data) => {
+          toast.success(data.message);
+          setService((prevService:any) =>
+            prevService.map((service:any) =>
+              service.serviceId === serviceId ? { ...service, status: data.status } : service
+            )
+          );
+        },
+        onError: (error: any) => {
+          toast.error(error.response?.data?.message);
+        }
+      }
+    );
+  };
+
+
   return (
     <motion.div variants={cardVariants} whileHover="hover" layout>
+        <div className="relative h-full">
+        {!service.status || service.status !== "active" && (
+      <div className="absolute inset-0 bg-black/40 z-10 flex items-center justify-center">
+        <div className="bg-red-600 text-white px-4 py-1 rounded shadow font-semibold">
+          Blocked
+        </div>
+      </div>
+    )}
+
       <Card className="h-full overflow-hidden border-gray-200 shadow-sm hover:shadow-md transition-all duration-300">
         <CardContent className="p-0">
           <div className="bg-gradient-to-r from-purple-500 to-violet-600 h-2.5 w-full"></div>
@@ -58,7 +94,7 @@ export const ServiceCard = ({ service, onEdit }: ServiceCardProps) => {
               </div>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full hover:bg-purple-50">
+                  <Button variant="ghost" size="icon" className="h-8 w-8 z-20 rounded-full hover:bg-purple-50">
                     <MoreVertical className="h-4 w-4 text-gray-500" />
                     <span className="sr-only">Open menu</span>
                   </Button>
@@ -66,6 +102,12 @@ export const ServiceCard = ({ service, onEdit }: ServiceCardProps) => {
                 <DropdownMenuContent align="end" className="w-[160px]">
                   <DropdownMenuItem onClick={onEdit} className="cursor-pointer">
                     <Edit className="mr-2 h-4 w-4 text-purple-500" /> Edit
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={() => handleBlockService(service.serviceId!)}
+                    className={service.status === "active" ? "text-red-600 hover:bg-red-50 cursor-pointer" : "text-green-600 hover:bg-green-50 cursor-pointer"}
+                  >
+                   {service.status === "active" ? "Block Service" : "Unblock Service"}
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -104,6 +146,7 @@ export const ServiceCard = ({ service, onEdit }: ServiceCardProps) => {
           </div>
         </CardFooter>
       </Card>
+      </div>
     </motion.div>
   )
 }

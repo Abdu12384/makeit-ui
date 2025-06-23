@@ -76,6 +76,7 @@ export interface EventData {
   maxTicketsPerUser: number;
   ticketPurchased?: number;
   status: "upcoming" | "completed" | "cancelled";
+  isActive?: boolean
 }
 
 

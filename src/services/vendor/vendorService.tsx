@@ -194,6 +194,17 @@ export const updateService = async ({serviceId,data}: {serviceId:string,data:Ser
 }
 
 
+export const blockService = async (serviceId:string) => {
+   try {
+   const response = await VendorAxiosInstance.patch(`/vendor/service/block/${serviceId}`);
+   return response.data;
+ } catch (error) {
+   console.log(error)
+   throw error
+ }
+}
+
+
 
 
 export const getAllCategories = async () => {
@@ -297,6 +308,16 @@ export const editEvent = async ({data,eventId}: {data:IEventFormValues,eventId:s
     console.log(error) 
     throw error
    }
+}
+
+export const blockEvent = async (eventId:string) => {
+   try {
+   const response = await VendorAxiosInstance.patch(`/vendor/event/block/${eventId}`);
+   return response.data;
+ } catch (error) {
+   console.log(error)
+   throw error
+ }
 }
 
 

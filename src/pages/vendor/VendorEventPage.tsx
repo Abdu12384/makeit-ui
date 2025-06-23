@@ -1,14 +1,21 @@
 import { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import {  useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { CalendarDays, MapPin, Plus, Tag, Ticket } from "lucide-react";
-
+import { CalendarDays, MapPin, MoreVertical, Plus, Tag, Ticket } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useGetAllEventsByVendorIdMutation } from "@/hooks/VendorCustomHooks";
 import EventFormPage from "@/components/vendor/events/CreateEvents";
 import { EventData } from "@/types/event";
+import { useBlockEventMutation } from "@/hooks/VendorCustomHooks";
+import toast from "react-hot-toast";
 
 
 export default function VendorEventsPage() {
@@ -19,6 +26,7 @@ export default function VendorEventsPage() {
   const [editingEvent, setEditingEvent] = useState<EventData | null>(null);
 
   const getAllEventsByVendorIdMutation = useGetAllEventsByVendorIdMutation();
+  const blockEventMutation = useBlockEventMutation();
 
   useEffect(() => {
     setIsLoading(true);
@@ -29,23 +37,39 @@ export default function VendorEventsPage() {
       },
       {
         onSuccess: (data) => {
-          console.log("API response:", data.events);
           setEvents(data.events.events);
           setIsLoading(false);
         },
-        onError: (error) => {
-          console.log("Error fetching events:", error);
+        onError: (error: any) => {
           setIsLoading(false);
+         console.log(error)
         }
       }
     );
   }, []);
 
-  console.log('Current activeTab:', activeTab);
-  console.log('All events:', events);
+
+  const handleBlockEvent = (eventId: string) => {
+    blockEventMutation.mutate(
+      eventId,
+      {
+        onSuccess: (data) => {
+          toast.success(data.message);
+          setEvents((prevEvents) =>
+            prevEvents.map((event) =>
+              event.eventId === eventId ? { ...event, isActive: !event.isActive } : event
+            )
+          );
+        },
+        onError: (error: any) => {
+          toast.error(error.response?.data?.message);
+        }
+      }
+    );
+  };
+
   
   const filteredEvents = events.filter((event) => event.status === activeTab);
-  console.log('Filtered events:', filteredEvents);
 
   const container = {
     hidden: { opacity: 0 },
@@ -120,8 +144,9 @@ export default function VendorEventsPage() {
                       <img
                         src={event.posterImage?.[0] || "/placeholder.svg"}
                         alt={event.title}
-                        className="object-cover w-full h-full transition-transform duration-500 hover:scale-105"
-                      />
+                        className={`object-cover w-full h-full transition-transform duration-500 ${
+                          event.isActive ? "hover:scale-105" : "grayscale opacity-60"
+                        }`}                      />
                       <div className="absolute top-2 right-2 bg-gradient-to-r from-sky-500 to-indigo-500 text-white px-3 py-1 rounded-full text-sm shadow-md">
                         ₹{event.pricePerTicket}
                       </div>
@@ -159,19 +184,27 @@ export default function VendorEventsPage() {
                       </div>
                     </CardContent>
                     <CardFooter className="p-4 pt-0 flex justify-between">
-                      <Button
-                        variant="outline"
-                        className="border-sky-200 hover:bg-sky-50 transition-all duration-300"
-                      >
-                        <Link to={`/vendor/events/${event.eventId}`}>View Details</Link>
-                      </Button>
-                      <Button
-                        variant="secondary"
-                        className="bg-sky-100 hover:bg-sky-200 text-sky-700 transition-all duration-300"
-                        onClick={() => setEditingEvent(event)}
-                      >
-                        Edit Event
-                      </Button>
+                      <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" size="icon" className="hover:bg-sky-100">
+                          <MoreVertical className="h-5 w-5 text-sky-600" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent className="w-40 bg-white border border-sky-100">
+                        <DropdownMenuItem
+                          onClick={() => setEditingEvent(event)}
+                          className="text-sky-700 hover:bg-sky-100 cursor-pointer"
+                        >
+                          Edit Event
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                          onClick={() => handleBlockEvent(event.eventId)}
+                          className={event.isActive ? "text-red-600 hover:bg-red-50 cursor-pointer" : "text-green-600 hover:bg-green-50 cursor-pointer"}
+                        >
+                          {event.isActive ? "Block Event" : "Unblock Event"}
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
                     </CardFooter>
                   </Card>
                 </motion.div>
@@ -211,7 +244,6 @@ export default function VendorEventsPage() {
                 </div>
               </div>
             )}
-
       </Tabs>
     </div>
   );

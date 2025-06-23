@@ -235,7 +235,6 @@ export const clientGetServiceById = async (id:string) => {
 
 
 
-
 export const clientBookingService = async (id:string,bookingData:Record<string, string|number|boolean>) => {
   try {
     console.log('client booking service',id,bookingData)
@@ -341,6 +340,22 @@ export const getEventById = async (eventId:string) => {
     return response.data
   } catch (error) {
     console.log('error while client get event by id',error)
+    throw error
+  }
+}
+
+
+
+export const checkEventBookingAvailability = async ({id,ticketCount}: {id:string,ticketCount:number}):Promise<any|string> => {
+  try {
+    const response = await clientAxiosInstance.get(`/client/events/${id}/check-booking`,{
+      params:{
+        ticketCount
+      }
+    })
+    return response.data
+  } catch (error) {
+    console.log('error while client check event booking availability',error)
     throw error
   }
 }

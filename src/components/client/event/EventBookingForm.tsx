@@ -8,6 +8,8 @@ import { DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/c
 import { TicketEntity } from "@/types/ticket";
 import { useNavigate } from "react-router-dom";
 import { Event } from "@/types/event";
+import { useCheckEventBookingAvailabilityMutation } from "@/hooks/ClientCustomHooks";
+import toast from "react-hot-toast";
 
 
 interface BookingFormProps {
@@ -43,9 +45,11 @@ export default function EventBookingForm({
 }: BookingFormProps) {
   // Calculate total amount
   const ticketPrice = event.pricePerTicket * ticketCount;
-  // const serviceFee = event.pricePerTicket * 0.1 * ticketCount;
   const totalAmount = (ticketPrice).toFixed(2);
 
+
+  const checkEventBookingAvailabilityMutation = useCheckEventBookingAvailabilityMutation();
+ 
   const navigate = useNavigate();
 
 
@@ -59,16 +63,31 @@ export default function EventBookingForm({
       eventId: event.eventId,
     };
 
-    navigate("/ticket-payment", {
-      state: {
-        amount: event.pricePerTicket * ticketCount,
-        event,
-        ticket: ticketPaymentData,
-        type: "ticketBooking",
-        totalTicketCount: ticketCount,
-        vendorId: event?.vendorDetails?.userId,
+    checkEventBookingAvailabilityMutation.mutate(
+      {
+        eventId: event.eventId,
+        ticketCount
       },
-    });
+      {
+        onSuccess: (response) => {
+          console.log('data',response)
+          navigate("/ticket-payment", {
+              state: {
+            amount: event.pricePerTicket * ticketCount,
+            event,
+            ticket: ticketPaymentData,
+            type: "ticketBooking",
+            totalTicketCount: ticketCount,
+            vendorId: event?.vendorDetails?.userId,
+            },
+          });
+        },
+        onError: (error:any) => {
+          console.log('error',error)
+          toast.error(error.response?.data?.message)
+        }
+     });
+
   }
 
   return (

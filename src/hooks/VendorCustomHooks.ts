@@ -1,5 +1,5 @@
 
-import { changeBookingStatus, createEvent, createService, createWorkSample, editEvent, getAllBookings, getAllCategories, getAllEventsByVendorId, getAllServicesByVendorId, getAllWorkSamplesByVendorId, getAttendeesById, getDashboardData, getWalletById, logoutVendor, saveVendorFCMToken, updateService, updateVendorProfile, updateWorkSample, uploadImageCloudinary, vendorCancelBooking, vendorChangePassword, vendorCreateAccount, VendorLogin, vendorSignup, verifyTicket, getVendorNotifications, markVendorNotificationAsRead } from "@/services/vendor/vendorService";
+import { changeBookingStatus, createEvent, createService, createWorkSample, editEvent, getAllBookings, getAllCategories, getAllEventsByVendorId, getAllServicesByVendorId, getAllWorkSamplesByVendorId, getAttendeesById, getDashboardData, getWalletById, logoutVendor, saveVendorFCMToken, updateService, updateVendorProfile, updateWorkSample, uploadImageCloudinary, vendorCancelBooking, vendorChangePassword, vendorCreateAccount, VendorLogin, vendorSignup, verifyTicket, getVendorNotifications, markVendorNotificationAsRead, blockEvent, blockService } from "@/services/vendor/vendorService";
 import { IEventFormValues } from "@/types/event";
 import { ServiceFormValues } from "@/types/service";
 import { ILoginData } from "@/types/User";
@@ -124,8 +124,11 @@ export const useUpdateServiceMutation = () => {
   });
 }
 
-
-
+export const useBlockServiceMutation = () => {
+   return useMutation({
+     mutationFn: (serviceId:string) => blockService(serviceId)
+   })
+}
 
 
 export const useGetAllCategoriesMutation = () => {
@@ -165,6 +168,11 @@ export const useCreateEventMutation = () => {
    })
 }
 
+export const useBlockEventMutation = () => {
+   return useMutation({
+     mutationFn: (eventId:string) => blockEvent(eventId)
+   })
+}
 
 export const useGetAllEventsByVendorIdMutation = () => {
   return useMutation({
