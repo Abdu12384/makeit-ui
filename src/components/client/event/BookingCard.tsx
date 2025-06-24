@@ -18,13 +18,13 @@ interface BookingCardProps {
 export default function BookingCard({ event, ticketCount, setTicketCount, handleBookNow }: BookingCardProps) {
   const handleTicketChange = (change: number) => {
     const newCount = ticketCount + change;
-  const remainingTickets = event.totalTicket - (event.ticketPurchased || 0);
+  // const remainingTickets = event.totalTicket - (event.ticketPurchased || 0);
 
   if (change > 0) {
-    if (newCount >= remainingTickets) {
-      toast.error(`${remainingTickets} tickets left.`);
-      return;
-    }
+    // if (newCount >= remainingTickets) {
+    //   toast.error(`${remainingTickets} tickets left.`);
+    //   return;
+    // }
     if (newCount > event.maxTicketsPerUser!) {
       toast.error(`You can only book up to ${event.maxTicketsPerUser} tickets.`);
       return;

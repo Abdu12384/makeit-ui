@@ -17,6 +17,7 @@ import { MyTickets } from "@/components/client/event/ticket/BookedTickets"
 import ForgotPasswordEmail from "@/components/common/ForgotPassword/ForgotPassword"
 import ResetPassword from "@/components/common/ForgotPassword/ResetPassword"
 import ClientChatPage from "@/pages/client/chat-page-client"
+import BookingPayment from "@/components/client/profail/BookingPayment"
 
 
  export const ClientRoutes = () =>{
@@ -51,6 +52,10 @@ import ClientChatPage from "@/pages/client/chat-page-client"
 
             <Route path="/ticket-payment" element={
                        <ProtectedRoute allowedRoles={["client"]} element={<TicketPaymentForm />} />
+                       } />
+
+            <Route path="/booking-payment" element={
+                       <ProtectedRoute allowedRoles={["client"]} element={<BookingPayment />} />
                        } />
 
 

@@ -11,7 +11,6 @@ import {
   CheckCircle,
   XCircle,
   AlertCircle,
-  FileText,
   Tag,
   Building,
   Plus,
@@ -22,9 +21,8 @@ import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { MessageCircle } from "lucide-react";
-import BookingPayment from "./BookingPayment"
 import ReviewForm from "@/components/common/review/review-form"
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useCancelBookingMutation } from "@/hooks/ClientCustomHooks";
 import { ConfirmationButton } from "@/components/common/customButtons/ConfirmButton"
 import toast from "react-hot-toast"
@@ -53,7 +51,7 @@ export type Booking = {
     userId: string
     profileImage?: string
   }
-  paymentStatus: "Pending" | "Successfull" | "Failed"
+  paymentStatus: "Pending" | "Successfull" | "Failed" | "AdvancePaid"
   price?: number
   serviceType?: string
   vendorApproval?: "Pending" | "Approved" | "Rejected"
@@ -65,7 +63,8 @@ export type Booking = {
     yearsOfExperience?: number
     additionalHourFee?: number
   }
-
+  balanceAmount?: number
+  
 }
 
 interface BookingDetailsProps {
@@ -76,10 +75,11 @@ interface BookingDetailsProps {
 export default function BookingDetails({ booking, onBack }: BookingDetailsProps) {
   const [isLoading, setIsLoading] = useState(true)
   const [_activeTab, setActiveTab] = useState("details")
-  const [openPaymentDialog, setOpenPaymentDialog] = useState(false)
+  // const [openPaymentDialog, setOpenPaymentDialog] = useState(false)
   const [isReviewFormVisible, setIsReviewFormVisible] = useState(false)
   const cancelBookingMutation = useCancelBookingMutation()
   const reviewFormRef = useRef<HTMLDivElement>(null)
+  const navigate = useNavigate()
 
   console.log('booking', booking)
   // Simulate loading
@@ -88,7 +88,7 @@ export default function BookingDetails({ booking, onBack }: BookingDetailsProps)
     return () => clearTimeout(timer)
   }, [])
 
-  // Fill in missing data with defaults for demo
+
   const enhancedBooking: Booking = {
     ...booking,
     serviceTitle: booking.service?.serviceTitle || "Professional Consultation",
@@ -106,12 +106,70 @@ export default function BookingDetails({ booking, onBack }: BookingDetailsProps)
     service: {
       ...booking?.service,
     },
+    balanceAmount: booking.balanceAmount || 0
   }
+
+
+  const handlePayAdvance = () => {
+    const bookingPaymentData = {
+      bookingId: enhancedBooking.bookingId,
+      serviceId: enhancedBooking.serviceId,
+      date: enhancedBooking.date,
+      time: enhancedBooking.time,
+      client: enhancedBooking.client,
+      vendor: enhancedBooking.vendor,
+      service: enhancedBooking.service,
+      status: enhancedBooking.status,
+      paymentStatus: enhancedBooking.paymentStatus,
+      vendorApproval: enhancedBooking.vendorApproval,
+    }
+
+    console.log('navigating to booking payment with data:', bookingPaymentData)
+    
+    navigate("/booking-payment", {
+      state: {
+        booking: bookingPaymentData,
+        amount: enhancedBooking.service?.servicePrice! * 0.3 || 0,
+        type: "serviceBooking",
+        serviceId: enhancedBooking.serviceId,
+        vendorId: enhancedBooking.vendor?.userId,
+        clientId: enhancedBooking.client?.email,
+        serviceTitle: enhancedBooking.service?.serviceTitle || enhancedBooking.serviceTitle,
+      },
+    });
+    
+  }
+
 
   const handlePayNow = () => {
-    setOpenPaymentDialog(true)
-  }
+    const bookingPaymentData = {
+      bookingId: enhancedBooking.bookingId,
+      serviceId: enhancedBooking.serviceId,
+      date: enhancedBooking.date,
+      time: enhancedBooking.time,
+      client: enhancedBooking.client,
+      vendor: enhancedBooking.vendor,
+      service: enhancedBooking.service,
+      status: enhancedBooking.status,
+      paymentStatus: enhancedBooking.paymentStatus,
+      vendorApproval: enhancedBooking.vendorApproval,
+      balanceAmount: enhancedBooking.balanceAmount
+    }
 
+    console.log('navigating to booking payment with data:', bookingPaymentData)
+    
+    navigate("/booking-payment", {
+      state: {
+        booking: bookingPaymentData,
+        amount:  enhancedBooking.balanceAmount || 0,
+        type: "serviceBooking",
+        serviceId: enhancedBooking.serviceId,
+        vendorId: enhancedBooking.vendor?.userId,
+        clientId: enhancedBooking.client?.email, // or use a client ID if available
+        serviceTitle: enhancedBooking.service?.serviceTitle || enhancedBooking.serviceTitle,
+      },
+    });
+  }
 
 
   const handleCancelBooking = (bookingId: string) => {
@@ -322,19 +380,10 @@ export default function BookingDetails({ booking, onBack }: BookingDetailsProps)
 
                   <div className="flex flex-col items-center justify-center bg-white dark:bg-gray-800 p-4 rounded-xl shadow-sm">
                     <div className="text-3xl font-bold text-indigo-600 dark:text-indigo-400">
-                      ₹{enhancedBooking?.service?.servicePrice?.toFixed(2)}
+                      ₹{ enhancedBooking.balanceAmount ? enhancedBooking.balanceAmount : enhancedBooking?.service?.servicePrice?.toFixed(2)}
                     </div>
-                    <p className="text-gray-500 dark:text-gray-400">Service Fee</p>
+                    <p className="text-gray-500 dark:text-gray-400">{ enhancedBooking.balanceAmount ? "Balance Amount" : "Total Amount"}</p>
 
-                    {/* {enhancedBooking.paymentStatus === "Pending" && (
-                      <Button
-                        onClick={handlePayNow}
-                        className="mt-3 bg-indigo-600 hover:bg-indigo-700 text-white"
-                        size="sm"
-                      >
-                        <CreditCardIcon className="mr-2 h-4 w-4" /> Pay Now
-                      </Button>
-                    )} */}
                   </div>
                 </div>
               </CardContent>
@@ -567,22 +616,18 @@ export default function BookingDetails({ booking, onBack }: BookingDetailsProps)
                     <ArrowLeft className="h-4 w-4" /> Back to Bookings
                   </Button>
                   <div className="flex flex-wrap gap-3">
-                    {enhancedBooking.paymentStatus === "Pending" && enhancedBooking.status === "Completed" && (
+                      {enhancedBooking.paymentStatus === "Pending" && enhancedBooking.vendorApproval === "Approved" && (
+                        <Button
+                          onClick={handlePayAdvance}
+                          className="gap-2 bg-blue-600 hover:bg-blue-700 text-white"
+                        >
+                          <CreditCard className="h-4 w-4" /> Pay Advance
+                        </Button>
+                      )}
+
+                    {enhancedBooking.paymentStatus === "Pending"|| enhancedBooking.paymentStatus === "AdvancePaid" && enhancedBooking.status === "Confirmed" && (
                       <Button onClick={handlePayNow} className="gap-2 bg-indigo-600 hover:bg-indigo-700">
-                        <CreditCard className="h-4 w-4" /> Pay Now
-                      </Button>
-                    )}
-                    {enhancedBooking.status === "Confirmed" && (
-                      <Button variant="destructive" className="gap-2">
-                        <XCircle className="h-4 w-4" /> Cancel Booking
-                      </Button>
-                    )}
-                    {enhancedBooking.status === "Completed" && enhancedBooking.paymentStatus === "Successfull" && (
-                      <Button
-                        variant="outline"
-                        className="gap-2 border-green-300 text-green-700 hover:bg-green-50 dark:border-green-800 dark:text-green-400 dark:hover:bg-green-900/20"
-                      >
-                        <FileText className="h-4 w-4" /> Download Receipt
+                        <CreditCard className="h-4 w-4" /> Pay Balance
                       </Button>
                     )}
                   </div>
@@ -591,13 +636,13 @@ export default function BookingDetails({ booking, onBack }: BookingDetailsProps)
             </Card>
           </div>
  
-          {openPaymentDialog && (
+          {/* {openPaymentDialog && (
             <div className="fixed inset-0 z-50 bg-opacity-20 backdrop-blur-sm flex items-center justify-center">
               <div className="bg-white w-full max-w-2xl mx-4 md:mx-auto p-6 rounded-xl shadow-xl z-10">
                 <BookingPayment booking={enhancedBooking} onClose={() => setOpenPaymentDialog(false)} />
               </div>
             </div>
-          )}
+          )} */}
         </>
       )}
     </motion.div>

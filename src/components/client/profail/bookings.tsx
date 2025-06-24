@@ -51,6 +51,7 @@ export default function ClientBookings() {
             phone: booking.phone,
             vendor: booking.vendor,
             paymentStatus: booking.paymentStatus,
+            balanceAmount: booking.balanceAmount,
             vendorApproval: booking.vendorApproval,
             isComplete: booking.isComplete,
             serviceId: booking.serviceId,

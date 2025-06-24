@@ -55,7 +55,7 @@ export const BookingFormComponent: React.FC<BookingFormProps> = ({
           toast.success(data.message);
           action.resetForm();
           action.setSubmitting(false);
-          onBookingSuccess(); // Call the success callback passed from the parent
+          onBookingSuccess(); 
         },
         onError: (error: any) => {
           console.error('Error while booking service:', error); // Use console.error for errors

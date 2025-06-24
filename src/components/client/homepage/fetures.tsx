@@ -1,21 +1,26 @@
+"use client"
+
 import { useRef } from "react"
 import { motion, useScroll, useTransform } from "framer-motion"
 import { CheckCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import fetureIMG from '@/assets/images/feturepageIMG.jpg'
+import fetureIMG from "@/assets/images/feturepageIMG.jpg"
+import { useNavigate } from "react-router-dom"
 
 const features = [
-  "Connect with verified vendors",
-  "Browse upcoming events in your area",
-  "Secure bookings with instant confirmation",
-  "Read authentic reviews from real customers",
-  "Get personalized recommendations",
-  "Manage all your events in one place",
+  "Join our network of verified vendors",
+  "Get direct bookings from local clients",
+  "Manage your services and availability",
+  "Receive secure payments instantly",
+  "Build your reputation with client reviews",
+  "Access vendor dashboard and analytics",
 ]
 
-export default function Features() {
+export default function VendorFeatures() {
   const sectionRef = useRef<HTMLElement>(null)
   const imageRef = useRef<HTMLDivElement>(null)
+
+  const navigate = useNavigate()
 
   // Scroll-based animations
   const { scrollYProgress } = useScroll({
@@ -78,7 +83,7 @@ export default function Features() {
               viewport={{ once: true }}
               transition={{ duration: 0.5 }}
             >
-              Why Choose Our Platform?
+              Why Become a Vendor?
             </motion.h2>
             <motion.ul
               className="space-y-4"
@@ -128,8 +133,11 @@ export default function Features() {
                   y: { type: "spring", stiffness: 300, damping: 10 },
                 }}
               >
-                <Button className="bg-[#124E66] hover:bg-[#0e3e52] text-white rounded-full px-8 py-6 text-lg">
-                  Get Started Today
+                <Button 
+                 className="bg-[#124E66] hover:bg-[#0e3e52] text-white rounded-full px-8 py-6 text-lg"
+                 onClick={() => navigate("/vendor/login")}
+                 >
+                  Join as Vendor
                 </Button>
               </motion.div>
             </motion.div>
@@ -147,11 +155,7 @@ export default function Features() {
               boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25)",
             }}
           >
-            <img
-              src={fetureIMG}
-              alt="Platform features"
-              className="h-full w-full object-cover"
-            />
+            <img src={fetureIMG || "/placeholder.svg"} alt="Platform features" className="h-full w-full object-cover" />
             <div className="absolute inset-0 bg-gradient-to-br from-[#124E66]/70 to-transparent"></div>
             <div className="absolute inset-0 flex items-center justify-center p-8">
               <div className="text-center">
@@ -161,7 +165,7 @@ export default function Features() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: 0.2 }}
                 >
-                  Ready to elevate your events?
+                  Ready to grow your business?
                 </motion.h3>
                 <motion.p
                   className="text-white/80 mb-6"
@@ -169,7 +173,8 @@ export default function Features() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: 0.3 }}
                 >
-                  Join thousands of satisfied customers who have transformed their event experiences with our platform.
+                  Join hundreds of successful vendors who are expanding their reach and growing their business with our
+                  platform.
                 </motion.p>
                 <motion.div
                   whileHover={{ scale: 1.05 }}
@@ -178,7 +183,7 @@ export default function Features() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: 0.4 }}
                 >
-                  <Button className="bg-white text-[#124E66] hover:bg-white/90 rounded-full">Sign Up Now</Button>
+                  <Button className="bg-white text-[#124E66] hover:bg-white/90 rounded-full">Become a Vendor</Button>
                 </motion.div>
               </div>
             </div>

@@ -53,6 +53,7 @@ const PaymentForm: React.FC<PaymentFormProps> = ({
     } else {
       try {
         const { clientSecret, payload } = await onCreatePaymentIntent(paymentMethod.id);
+        console.log('card data 1 ', clientSecret, payload)
         const { error: confirmError, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
           payment_method: {
             card: cardElement,

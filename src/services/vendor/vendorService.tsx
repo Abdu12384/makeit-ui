@@ -321,6 +321,20 @@ export const blockEvent = async (eventId:string) => {
 }
 
 
+export const RescheduleBooking = async ({bookingId,selectedDate,rescheduleReason}: {bookingId:string,selectedDate:string,rescheduleReason:string}) => {
+   try {
+      const response = await VendorAxiosInstance.patch(`/vendor/bookings/${bookingId}/reschedule`,{
+        selectedDate,
+        rescheduleReason
+      });
+      return response.data;
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+}
+
+
 
 
 

@@ -144,9 +144,9 @@ export const useBookingServiceMutation = () => {
 
 
 
-export const useCreateBookingPaymentMutation = () => {
+export const  useCreateBookingPaymentMutation = () => {
   return useMutation({
-    mutationFn: ({bookingId,paymentIntentId}: {bookingId:string,paymentIntentId:string}) => createBookingPayment(bookingId,paymentIntentId)
+    mutationFn: ({bookingId,paymentIntentId,bookingDetails}: {bookingId:string,paymentIntentId:string,bookingDetails:Record<string, string|number|boolean>}) => createBookingPayment(bookingId,paymentIntentId,bookingDetails)
   })
 }
 

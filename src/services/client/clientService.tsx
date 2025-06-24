@@ -275,9 +275,9 @@ export const getBookings = async ({
 
 
 
-export const createBookingPayment = async (bookingId:string,paymentIntentId:string) => {
+export const createBookingPayment = async (bookingId:string,paymentIntentId:string,bookingDetails:Record<string, string|number|boolean>) => {
   try {
-    const response = await clientAxiosInstance.post(`/client/create-booking-payment`,{bookingId,paymentIntentId})
+    const response = await clientAxiosInstance.post(`/client/create-booking-payment`,{bookingId,paymentIntentId,bookingDetails})
     return response.data
   } catch (error) {
     console.log('error while client create booking payment',error)

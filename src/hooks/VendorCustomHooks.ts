@@ -1,5 +1,5 @@
 
-import { changeBookingStatus, createEvent, createService, createWorkSample, editEvent, getAllBookings, getAllCategories, getAllEventsByVendorId, getAllServicesByVendorId, getAllWorkSamplesByVendorId, getAttendeesById, getDashboardData, getWalletById, logoutVendor, saveVendorFCMToken, updateService, updateVendorProfile, updateWorkSample, uploadImageCloudinary, vendorCancelBooking, vendorChangePassword, vendorCreateAccount, VendorLogin, vendorSignup, verifyTicket, getVendorNotifications, markVendorNotificationAsRead, blockEvent, blockService } from "@/services/vendor/vendorService";
+import { changeBookingStatus, createEvent, createService, createWorkSample, editEvent, getAllBookings, getAllCategories, getAllEventsByVendorId, getAllServicesByVendorId, getAllWorkSamplesByVendorId, getAttendeesById, getDashboardData, getWalletById, logoutVendor, saveVendorFCMToken, updateService, updateVendorProfile, updateWorkSample, uploadImageCloudinary, vendorCancelBooking, vendorChangePassword, vendorCreateAccount, VendorLogin, vendorSignup, verifyTicket, getVendorNotifications, markVendorNotificationAsRead, blockEvent, blockService, RescheduleBooking } from "@/services/vendor/vendorService";
 import { IEventFormValues } from "@/types/event";
 import { ServiceFormValues } from "@/types/service";
 import { ILoginData } from "@/types/User";
@@ -184,6 +184,12 @@ export const useGetAllEventsByVendorIdMutation = () => {
 export const useEditEventMutation = () => {
   return useMutation({
     mutationFn: ({data,eventId}: {data:IEventFormValues,eventId:string}) => editEvent({data,eventId}),
+  });
+}
+
+export const useRescheduleBookingMutation = () => {
+  return useMutation({
+    mutationFn: ({bookingId,selectedDate,rescheduleReason}: {bookingId:string,selectedDate:string,rescheduleReason:string}) => RescheduleBooking({bookingId,selectedDate,rescheduleReason}),
   });
 }
 
