@@ -20,7 +20,7 @@ export default function ClientBookings() {
   const [currentPage, setCurrentPage] = useState<number>(1)
   const [totalPages, setTotalPages] = useState<number>(1)
   const [activeTab, setActiveTab] = useState("pending")
-  const limit = 10
+  const limit = 20
 
   console.log(bookings)
   const clientGetBookingsMutation = useGetBookingsMutation()
@@ -90,9 +90,11 @@ export default function ClientBookings() {
     switch (type) {
       case "completed":
         return bookings.filter((booking) => booking.status.toLowerCase() === "completed")
+      case "rescheduled":
+        return bookings.filter((booking) => booking.status.toLowerCase() === "rescheduled")
       case "pending":
         return bookings.filter(
-          (booking) => booking.status.toLowerCase() === "pending" || booking.status.toLowerCase() === "confirmed"||booking.status.toLowerCase() === "rescheduled",
+          (booking) => booking.status.toLowerCase() === "pending" || booking.status.toLowerCase() === "confirmed",
         )
       case "cancelled":
         return bookings.filter((booking) => booking.status.toLowerCase() === "cancelled")
@@ -107,6 +109,7 @@ export default function ClientBookings() {
       pending: bookings.filter(
         (booking) => booking.status.toLowerCase() === "pending" || booking.status.toLowerCase() === "confirmed",
       ).length,
+      rescheduled: bookings.filter((booking) => booking.status.toLowerCase() === "rescheduled").length,
       cancelled: bookings.filter((booking) => booking.status.toLowerCase() === "cancelled").length,
     }
   }
@@ -144,7 +147,8 @@ export default function ClientBookings() {
 
   const renderBookingCard = (booking: Booking, index: number) => {
     const isCompleted = booking.status.toLowerCase() === "completed"
-    const isPending = booking.status.toLowerCase() === "pending"||"Rescheduled"
+    const isPending = booking.status.toLowerCase() === "pending"
+    const isRescheduled = booking.status.toLowerCase() === "rescheduled"
     const isConfirmed = booking.status.toLowerCase() === "confirmed"
     const isCancelled = booking.status.toLowerCase() === "cancelled"
 
@@ -171,7 +175,9 @@ export default function ClientBookings() {
                         ? "bg-yellow-100 text-yellow-600"
                         : isConfirmed
                           ? "bg-blue-100 text-blue-600"
-                          : "bg-red-100 text-red-600"
+                          : isRescheduled
+                            ? "bg-blue-100 text-blue-600"
+                            : "bg-red-100 text-red-600"
                   }`}
                 >
                   {isCompleted ? (
@@ -301,7 +307,7 @@ export default function ClientBookings() {
 
       {/* Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-3 mb-8">
+        <TabsList className="grid w-full grid-cols-4 mb-8">
           <TabsTrigger value="pending" className="relative">
             <ClockIcon className="h-4 w-4 mr-2" />
             Pending
@@ -323,6 +329,13 @@ export default function ClientBookings() {
               <Badge className="ml-2 bg-red-500 text-white text-xs px-2 py-0.5">{bookingCounts.cancelled}</Badge>
             )}
           </TabsTrigger>
+          <TabsTrigger value="rescheduled" className="relative">
+            <XCircle className="h-4 w-4 mr-2" />
+            Rescheduled
+            {bookingCounts.rescheduled > 0 && (
+              <Badge className="ml-2 bg-red-500 text-white text-xs px-2 py-0.5">{bookingCounts.rescheduled}</Badge>
+            )}
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="pending" className="space-y-6">
@@ -342,6 +355,47 @@ export default function ClientBookings() {
             <div className="flex items-center">
               <ClockIcon className="h-5 w-5 text-yellow-600 mr-2" />
               <h3 className="text-sm font-medium text-yellow-800">Pending Bookings</h3>
+            </div>
+            <p className="text-sm text-yellow-700 mt-1">
+              These bookings are awaiting confirmation or are currently active. You'll receive updates as their status
+              changes.
+            </p>
+          </motion.div>
+
+          {isLoading ? (
+            <div className="space-y-6">
+              <SkeletonCard />
+              <SkeletonCard />
+              <SkeletonCard />
+            </div>
+          ) : filteredBookings.length > 0 ? (
+            <div className="space-y-6">{filteredBookings.map(renderBookingCard)}</div>
+          ) : (
+            <div className="text-center py-12">
+              <ClockIcon className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+              <h3 className="text-lg font-medium text-gray-900 mb-2">No pending bookings</h3>
+              <p className="text-gray-500">You don't have any pending bookings at the moment.</p>
+            </div>
+          )}
+        </TabsContent>
+
+        <TabsContent value="rescheduled" className="space-y-6">
+          <div className="flex items-center justify-between">
+            <h2 className="text-xl font-semibold text-gray-900">Rescheduled Bookings</h2>
+            <Badge variant="outline" className="text-yellow-600 border-yellow-200">
+              {bookingCounts.rescheduled} bookings
+            </Badge>
+          </div>
+
+          {/* Info Banner for Pending */}
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6"
+          >
+            <div className="flex items-center">
+              <ClockIcon className="h-5 w-5 text-yellow-600 mr-2" />
+              <h3 className="text-sm font-medium text-yellow-800">Rescheduled Bookings</h3>
             </div>
             <p className="text-sm text-yellow-700 mt-1">
               These bookings are awaiting confirmation or are currently active. You'll receive updates as their status
