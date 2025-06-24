@@ -42,7 +42,7 @@ export type Booking = {
     phone: string
     avatar?: string
   }
-  status: "Pending" | "Confirmed" | "Completed" | "Cancelled"
+  status: "Pending" | "Confirmed" | "Completed" | "Cancelled"|"Rescheduled"
   email: string
   phone: string
   vendor: {

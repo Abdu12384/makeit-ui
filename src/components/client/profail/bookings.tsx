@@ -92,7 +92,7 @@ export default function ClientBookings() {
         return bookings.filter((booking) => booking.status.toLowerCase() === "completed")
       case "pending":
         return bookings.filter(
-          (booking) => booking.status.toLowerCase() === "pending" || booking.status.toLowerCase() === "confirmed",
+          (booking) => booking.status.toLowerCase() === "pending" || booking.status.toLowerCase() === "confirmed"||booking.status.toLowerCase() === "rescheduled",
         )
       case "cancelled":
         return bookings.filter((booking) => booking.status.toLowerCase() === "cancelled")
@@ -144,7 +144,7 @@ export default function ClientBookings() {
 
   const renderBookingCard = (booking: Booking, index: number) => {
     const isCompleted = booking.status.toLowerCase() === "completed"
-    const isPending = booking.status.toLowerCase() === "pending"
+    const isPending = booking.status.toLowerCase() === "pending"||"Rescheduled"
     const isConfirmed = booking.status.toLowerCase() === "confirmed"
     const isCancelled = booking.status.toLowerCase() === "cancelled"
 
