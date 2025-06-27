@@ -1,6 +1,5 @@
 "use client"
 
-import type React from "react"
 import { useState, useEffect } from "react"
 import { X, Eye, CheckCircle, XCircle, Clock3 } from "lucide-react"
 import { useGetAllTicketsMutation } from "@/hooks/ClientCustomHooks"
@@ -12,7 +11,7 @@ import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 // Main component
-export const MyTickets: React.FC = () => {
+export default function MyTickets() {
   const [tickets, setTickets] = useState<Ticket[]>([])
   const [selectedTicket, setSelectedTicket] = useState<Ticket | null>(null)
   const [showDetailsModal, setShowDetailsModal] = useState(false)

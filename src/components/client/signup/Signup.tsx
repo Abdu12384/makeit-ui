@@ -29,7 +29,7 @@ const initialValues = {
 
 
 
-export function SignupComponent() {
+export default function SignupComponent() {
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [isOpen, setIsOpen] = useState(false)

@@ -175,7 +175,7 @@ const NoDataMessage: React.FC<{ message: string; icon: React.ReactNode }> = ({ m
   </div>
 )
 
-export const VendorDashboard: React.FC = () => {
+export default function VendorDashboard() {
   const [selectedPeriod, setSelectedPeriod] = useState<keyof FilterPeriod>("week")
   const [selectedDate, setSelectedDate] = useState(new Date())
   const [dashboardData, setDashboardData] = useState<VendorDashboardData>(getDefaultDashboardData())

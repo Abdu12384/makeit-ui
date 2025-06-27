@@ -1,10 +1,10 @@
 
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
 import { motion } from "framer-motion";
 import { CircularSidebar } from "@/components/vendor/vendorProfile/Profile-sidebar"
 
-export const VendorProfilePage: React.FC = () => {
+export default function VendorProfilePage() {
   const [showSidebar, setShowSidebar] = useState(true); // [CHANGED! (added state to control sidebar visibility)]
   let scrollTimeout: NodeJS.Timeout;
 

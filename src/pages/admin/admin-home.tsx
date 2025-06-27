@@ -1,11 +1,9 @@
 
-
-import type React from "react"
 import { motion } from "framer-motion"
 import { Outlet } from "react-router-dom"
 import { Sidebar } from "@/components/admin/sidebar/Sidebar"
 
-export const AdminLayout: React.FC = () => {
+export default function AdminLayout() {
   return (
     <div className="flex min-h-screen bg-gray-900 text-white">
       <div className="fixed top-0 left-0 w-72 h-screen bg-gray-950 border-r border-gray-800 flex flex-col z-50">

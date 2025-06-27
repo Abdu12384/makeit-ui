@@ -28,6 +28,17 @@ export const refreshVendorSession = async (): Promise<IAuthResponse> => {
  };
 
 
+ export const getVendorBookedDates = async () => {
+   try {
+   const response = await VendorAxiosInstance.get("/vendor/booked-dates");
+   return response.data;
+ } catch (error) {
+   console.log(error)
+   throw error
+ }
+}
+
+
  export const  saveVendorFCMToken = async (token:string) => {
    try {
       const response = await VendorAxiosInstance.post("/vendor/fcm-token", { token });

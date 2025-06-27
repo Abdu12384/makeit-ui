@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, useMemo } from "react"
 import { motion } from "framer-motion"
 import { Calendar, Clock, MapPin, Users, Filter, Search, ChevronRight, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -13,6 +13,7 @@ import { Link } from "react-router-dom"
 import { Pagination1 } from "@/components/common/paginations/Pagination"
 import { Event } from "@/types/event"
 import { container, item } from "@/animations/variants"
+import { debounce } from "lodash"
 
 
 const categories = [
@@ -32,12 +33,27 @@ export default function EventsPage() {
   const [events, setEvents] = useState<Event[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [searchQuery, setSearchQuery] = useState("")
+  const [debounceSearch, setDebounceSearch] = useState(searchQuery)
   const [selectedCategory, setSelectedCategory] = useState("all")
-  // const [favorites, setFavorites] = useState<string[]>([])
   const getAllEventsMutation = useGetAllEventsMutation()
   const [currentPage, setCurrentPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
   const limit = 6
+
+
+  const debouncedUpdate = useMemo(() => {
+    return debounce((value: string) => {
+      setDebounceSearch(value);
+    }, 1000);
+  }, []);
+
+  useEffect(() => {
+    debouncedUpdate(searchQuery);
+    return () => {
+      debouncedUpdate.cancel();
+    };
+  }, [searchQuery, debouncedUpdate]);
+
 
   useEffect(() => {
     const fetchEvents = () => {
@@ -45,7 +61,7 @@ export default function EventsPage() {
         {
           page: currentPage,
           limit: limit,
-          search: searchQuery,
+          search: debounceSearch,
         },
         {
           onSuccess: (response) => {
@@ -63,7 +79,7 @@ export default function EventsPage() {
     }
 
     fetchEvents()
-  }, [searchQuery,currentPage])
+  }, [currentPage,debounceSearch])
 
   // const toggleFavorite = (id: string) => {
   //   setFavorites((prev) => (prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]))
@@ -83,10 +99,10 @@ export default function EventsPage() {
     const categoryMatch = selectedCategory === "all" || event.category.toLowerCase() === selectedCategory.toLowerCase()
 
     const searchMatch =
-      !searchQuery ||
-      event.title.toLowerCase().startsWith(searchQuery.toLowerCase()) ||
-      event.category.toLowerCase().startsWith(searchQuery.toLowerCase()) ||
-      event.venueName.toLowerCase().startsWith(searchQuery.toLowerCase())
+      !debounceSearch ||
+      event.title.toLowerCase().startsWith(debounceSearch.toLowerCase()) ||
+      event.category.toLowerCase().startsWith(debounceSearch.toLowerCase()) ||
+      event.venueName.toLowerCase().startsWith(debounceSearch.toLowerCase())
 
     return categoryMatch && searchMatch
   })

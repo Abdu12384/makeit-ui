@@ -32,6 +32,7 @@ import BookingDetails from "./VendorBookingDetails"
 import RejectReasonDialog from "./RejectResonBox"
 import toast from "react-hot-toast"
 import { Link } from "react-router-dom"
+import BookedDatesCalendar from "./BookedDates"
 
 interface Booking {
   _id: string
@@ -110,6 +111,7 @@ const BookingList = ({ isLoading = false }: { isLoading?: boolean }) => {
   const [localBookings, setLocalBookings] = useState<Booking[]>([])
   const [showRejectDialog, setShowRejectDialog] = useState(false)
   const [rejectingBookingId, setRejectingBookingId] = useState("")
+  const [showBookedDates, setShowBookedDates] = useState(false)
   const [searchTerm, setSearchTerm] = useState("")
   const [statusFilter, setStatusFilter] = useState("all")
   const [currentPage, setCurrentPage] = useState(1)
@@ -136,9 +138,8 @@ const BookingList = ({ isLoading = false }: { isLoading?: boolean }) => {
           setTotalPages(response.bookings.total)
           setLocalBookings(response.bookings.bookings)
         },
-        onError: (error) => {
+        onError: (error: any) => {
           console.error(error)
-          toast.error("Failed to load bookings")
         },
       },
     )
@@ -299,6 +300,10 @@ const BookingList = ({ isLoading = false }: { isLoading?: boolean }) => {
             </h1>
             <p className="text-slate-500 mt-1">View and manage all your service bookings</p>
           </div>
+          <Button variant="outline" onClick={() => setShowBookedDates(true)} className="flex items-center gap-2">
+            <CalendarDays className="mr-2 h-6 w-6 text-violet-600" />
+            Booked Dates
+          </Button>
           </div>
       </motion.div>
 
@@ -506,7 +511,7 @@ const BookingList = ({ isLoading = false }: { isLoading?: boolean }) => {
                             </Link>
                           )}
 
-                          {booking.vendorApproval !== "Approved" && booking.vendorApproval !== "Rejected" && (
+                          {booking.vendorApproval !== "Approved" && booking.vendorApproval !== "Rejected" && booking.status !== "Cancelled" && (
                             <DropdownMenu>
                               <DropdownMenuTrigger asChild>
                                 <Button
@@ -567,6 +572,12 @@ const BookingList = ({ isLoading = false }: { isLoading?: boolean }) => {
         onConfirm={handleRejectWithReason}
         bookingId={rejectingBookingId}
       />
+
+          {showBookedDates && (
+            <div className="fixed inset-0 z-[100] bg-opacity-50 overflow-y-auto flex justify-center items-start">
+              <BookedDatesCalendar onClose={() => setShowBookedDates(false)} />
+            </div>
+          )}
     </div>
   )
 }

@@ -28,7 +28,7 @@ import { AvatarImage } from "@radix-ui/react-avatar"
 
 
 
-export function AttendeesList() {
+export default function AttendeesList() {
 
   const { eventId } = useParams<{ eventId: string }>()
   const [searchQuery, setSearchQuery] = useState("")

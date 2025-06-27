@@ -60,7 +60,7 @@ const initialValues: FormValues = {
   document: null,
 }
 
-export function SignupPage() {
+export default function SignupPage() {
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [selectedImage, setSelectedImage] = useState<string>("")

@@ -247,6 +247,17 @@ export const clientBookingService = async (id:string,bookingData:Record<string, 
 }
 
 
+export const rescheduleBookingApproval = async (bookingId:string,status:string) => {
+  try {
+    const response = await clientAxiosInstance.patch(`/client/bookings/${bookingId}/reschedule`,
+      {status})
+    return response.data
+  } catch (error) {
+    console.log('error while client reschedule booking approval',error)
+    throw error
+  }
+}
+
 
 
 

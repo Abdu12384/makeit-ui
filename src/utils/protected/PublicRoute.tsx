@@ -17,7 +17,7 @@ const getActiveSession = (state: RootState) => {
 	return null;
 };
 
-export const NoAuthRoute = ({ element }: NoAuthRouteProps) => {
+export default function NoAuthRoute({ element }: NoAuthRouteProps) {
 	const session = useSelector((state: RootState) => getActiveSession(state));
 
 	if (session && session.role) {

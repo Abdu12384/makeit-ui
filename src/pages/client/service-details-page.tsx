@@ -14,7 +14,7 @@ import { ServiceDetailsSkeleton } from "@/components/common/skelton/SkeltonLoadi
 import { ServiceNF } from "@/components/common/NotFound/ItemsNotFound"
 import { BookingFormComponent } from "@/components/client/service/ServiceBookingForm"
 
-export const BookingPage = () => {
+export default function BookingPage() {
   const { id } = useParams<{ id: string }>()
   const [service, setService] = useState<Service | null>(null)
   const [isLoading, setIsLoading] = useState(true)

@@ -45,7 +45,7 @@ const initialValues = {
   role:'client' as UserRoles
 }
 
-export function LoginComponent() {
+export default function LoginComponent() {
   const [showPassword, setShowPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [formData, setFormData] = useState<FormData>(initialValues)

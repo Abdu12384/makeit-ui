@@ -18,7 +18,7 @@ interface Transaction {
 }
 
 
-export const ClientWallet = () => {
+export default function ClientWallet() {
   const [filterPeriod, setFilterPeriod] = useState("all");
   const [filteredTransactions, setFilteredTransactions] = useState<Transaction[]>([]);
   const [transaction, setTransaction] = useState<any>([]);
@@ -262,4 +262,3 @@ export const ClientWallet = () => {
   );
 };
 
-export default ClientWallet;

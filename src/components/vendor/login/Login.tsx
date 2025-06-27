@@ -33,7 +33,7 @@ const initialValues = {
   role:'vendor' as UserRoles
 }
 
-export function VendorLoginPage() {
+export default function VendorLoginPage() {
   const [showPassword, setShowPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [formData, setFormData] = useState<FormData>(initialValues)

@@ -1,5 +1,5 @@
 
-import { changeBookingStatus, createEvent, createService, createWorkSample, editEvent, getAllBookings, getAllCategories, getAllEventsByVendorId, getAllServicesByVendorId, getAllWorkSamplesByVendorId, getAttendeesById, getDashboardData, getWalletById, logoutVendor, saveVendorFCMToken, updateService, updateVendorProfile, updateWorkSample, uploadImageCloudinary, vendorCancelBooking, vendorChangePassword, vendorCreateAccount, VendorLogin, vendorSignup, verifyTicket, getVendorNotifications, markVendorNotificationAsRead, blockEvent, blockService, RescheduleBooking } from "@/services/vendor/vendorService";
+import { changeBookingStatus, createEvent, createService, createWorkSample, editEvent, getAllBookings, getAllCategories, getAllEventsByVendorId, getAllServicesByVendorId, getAllWorkSamplesByVendorId, getAttendeesById, getDashboardData, getWalletById, logoutVendor, saveVendorFCMToken, updateService, updateVendorProfile, updateWorkSample, uploadImageCloudinary, vendorCancelBooking, vendorChangePassword, vendorCreateAccount, VendorLogin, vendorSignup, verifyTicket, getVendorNotifications, markVendorNotificationAsRead, blockEvent, blockService, RescheduleBooking, getVendorBookedDates } from "@/services/vendor/vendorService";
 import { IEventFormValues } from "@/types/event";
 import { ServiceFormValues } from "@/types/service";
 import { ILoginData } from "@/types/User";
@@ -29,6 +29,15 @@ export const useUploadeImageToCloudinaryMutation = () => {
 
   })
 }
+
+
+export const useGetVendorBookedDates = () => {
+  return useMutation({
+    mutationFn: getVendorBookedDates,
+  })
+}
+
+
 
 export const useSaveVendorFCMTokenMutation = () => {
   return useMutation({

@@ -529,7 +529,7 @@ const BookingDetails = ({ booking, onBack, onComplete, onChat }: BookingDetailsP
 
   const formatDate = (dateString: string) => {
     try {
-      return format(new Date(dateString), "EEEE, MMM dd, yyyy 'at' h:mm a")
+      return format(new Date(dateString), "EEEE, MMM dd, yyyy")
     } catch (error) {
       return dateString
     }
@@ -593,7 +593,6 @@ const BookingDetails = ({ booking, onBack, onComplete, onChat }: BookingDetailsP
     }
 
     setIsLoading(true)
-    try {
       await rescheduleBookingMutation.mutateAsync({
         bookingId: booking.bookingId,
         selectedDate: format(selectedDate, "yyyy-MM-dd HH:mm:ss"),
@@ -607,16 +606,12 @@ const BookingDetails = ({ booking, onBack, onComplete, onChat }: BookingDetailsP
           setRescheduleReason("")
         },
         onError: (error: any) => {
-          toast.error(error.response?.data?.message || "Failed to reschedule booking")
+          console.log(error)
+          toast.error(error.response?.data?.message)
           setIsLoading(false)
         },
         onSettled: () => setIsLoading(false),
       })
-    } catch (error) {
-      toast.error("Failed to send reschedule request")
-    } finally {
-      setIsLoading(false)
-    }
   }
 
   const canCancel =
@@ -631,6 +626,7 @@ const BookingDetails = ({ booking, onBack, onComplete, onChat }: BookingDetailsP
     booking.vendorApproval === "Approved" &&
     booking.status !== "Cancelled" &&
     booking.status !== "Completed" &&
+    booking.status === "Confirmed" &&
     !booking.isComplete
 
   return (

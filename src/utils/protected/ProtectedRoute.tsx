@@ -8,10 +8,10 @@ interface ProtectedRouteProps {
 	allowedRoles: string[];
 }
 
-export const ProtectedRoute = ({
+export default function ProtectedRoute({
 	element,
 	allowedRoles,
-}: ProtectedRouteProps) => {
+}: ProtectedRouteProps) {
 	const session = useSelector(getActiveSession);
   console.log('the session',session)
 

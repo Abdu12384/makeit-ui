@@ -1,11 +1,10 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { Eye, Filter, Search, X, Calendar, User,  Clock,  Info, IndianRupee } from "lucide-react"
+import { Eye, X, Calendar, User,  Clock,  Info, IndianRupee } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { useGetAllBookingsMutation } from "@/hooks/AdminCustomHooks"
 import { Pagination1 } from "@/components/common/paginations/Pagination"
@@ -57,7 +56,7 @@ interface Booking {
 
 export default function AdminBookingsPage() {
   const [bookings, setBookings] = useState<Booking[]>([])
-  const [searchQuery, setSearchQuery] = useState("")
+  const [searchQuery, _setSearchQuery] = useState("")
   const [currentPage, setCurrentPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
   const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null)
@@ -73,7 +72,6 @@ export default function AdminBookingsPage() {
       },
       {
         onSuccess: (data) => {
-          console.log("Bookings data:", data)
           setBookings(data.bookings.bookings)
           setTotalPages(data.bookings.total)
         },
@@ -143,23 +141,7 @@ export default function AdminBookingsPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="flex items-center gap-4 mb-6">
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-              <Input
-                type="search"
-                placeholder="Search by ID, email, phone, or status..."
-                className="pl-10 bg-gray-800 border-gray-700 text-white placeholder:text-gray-400 focus:ring-indigo-500 focus:border-indigo-500 rounded-lg"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-            </div>
-            <Button variant="outline" size="icon" className="bg-gray-800 border-gray-700 hover:bg-gray-700 text-white">
-              <Filter className="h-4 w-4" />
-              <span className="sr-only">Filter</span>
-            </Button>
-          </div>
-
+        
           <div className="rounded-lg border border-gray-800 overflow-hidden">
             <Table>
               <TableHeader className="bg-gray-800">

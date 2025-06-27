@@ -3,7 +3,7 @@ import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import toast from 'react-hot-toast';
 import { motion } from 'framer-motion';
-import { Calendar, User, Mail, Phone, IndianRupee, Clock, Award, AlertCircle } from 'lucide-react';
+import { Calendar, Mail, Phone, IndianRupee, Clock, Award, AlertCircle } from 'lucide-react';
 import { useBookingServiceMutation } from '@/hooks/ClientCustomHooks';
 
 interface BookingFormProps {
@@ -30,7 +30,6 @@ export const BookingFormComponent: React.FC<BookingFormProps> = ({
   const clientBookingServiceMutation = useBookingServiceMutation();
 
   const validationSchema = Yup.object({
-    name: Yup.string().required('Name is required'),
     email: Yup.string().email('Invalid email address').required('Email is required'),
     phone: Yup.string()
       .matches(/^[0-9]{10}$/, 'Phone number must be 10 digits')
@@ -43,7 +42,6 @@ export const BookingFormComponent: React.FC<BookingFormProps> = ({
       {
         id: serviceId,
         bookingData: {
-          name: values.name,
           email: values.email,
           phone: values.phone,
           date: values.date,
@@ -120,19 +118,6 @@ export const BookingFormComponent: React.FC<BookingFormProps> = ({
       >
         {({ isSubmitting }) => (
           <Form className="space-y-4">
-            <div>
-              <label htmlFor="name" className="flex items-center text-sm font-medium text-gray-700 mb-1">
-                <User className="h-4 w-4 mr-1" />
-                Full Name
-              </label>
-              <Field
-                type="text"
-                name="name"
-                className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                placeholder="Enter your name"
-              />
-              <ErrorMessage name="name" component="div" className="text-red-500 text-sm mt-1" />
-            </div>
             <div>
               <label htmlFor="email" className="flex items-center text-sm font-medium text-gray-700 mb-1">
                 <Mail className="h-4 w-4 mr-1" />

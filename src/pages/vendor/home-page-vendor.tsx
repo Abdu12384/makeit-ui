@@ -6,7 +6,7 @@ import { Footer } from "@/components/vendor/vendor-homePage-component/footer"
 import image1 from "@/assets/images/event.avif"
 import image2 from "@/assets/images/vendorhomebanner.avif"
 import image3 from "@/assets/images/grow bussiness.webp"
-import { VendorDashboard } from "@/components/vendor/vendor-dashboard/VendorDashboard"
+import VendorDashboard from "@/components/vendor/vendor-dashboard/VendorDashboard"
 import { useSaveVendorFCMTokenMutation } from "@/hooks/VendorCustomHooks"
 import { listenForForegroundMessages, requestNotificationPermission } from "@/services/firebase/messaging"
 

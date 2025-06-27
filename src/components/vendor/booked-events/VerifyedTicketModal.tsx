@@ -1,6 +1,4 @@
-"use client"
-
-import { useState } from "react"
+import { useCallback, useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { CheckCircle, Mail, Phone, Ticket, CreditCard, CheckCircle2, User, QrCode } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -52,11 +50,13 @@ export function TicketModal({ isOpen, onClose, ticket, onCheckIn }: TicketModalP
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat("en-US", {
       style: "currency",
-      currency: "USD",
-    }).format(amount / 100)
+      currency: "INR",
+    }).format(amount)
   }
 
-  const handleCheckIn = async () => {
+  const handleCheckIn = useCallback( async () => {
+
+    if (isCheckingIn) return
     setIsCheckingIn(true)
 
     // Simulate API call to check in the ticket
@@ -65,7 +65,7 @@ export function TicketModal({ isOpen, onClose, ticket, onCheckIn }: TicketModalP
       setIsCheckingIn(false)
       if (onCheckIn) onCheckIn()
     }, 1000)
-  }
+  }, [isCheckingIn, onCheckIn])
 
   if(!ticket){
    return(

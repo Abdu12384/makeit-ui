@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { debounce } from "lodash";
 import { useGetAllUsers, useUpdateUserStatusMutaiion } from "@/hooks/AdminCustomHooks";
 import { VendorManagementComponent } from "@/components/admin/mangement/VendorMangement";
 import toast from "react-hot-toast";
 
-export const AdminVendorManagementPage: React.FC = () => {
+export default function AdminVendorManagementPage() {
 	const [searchQuery, setSearchQuery] = useState("");
 	const [debouncedSearch, setDebouncedSearch] = useState(searchQuery);
 	const [currentPage, setCurrentPage] = useState(1);
@@ -15,12 +15,21 @@ export const AdminVendorManagementPage: React.FC = () => {
 	// const { errorToast, successToast } = useToaster();
 
 	
+	const debouncedUpdate = useMemo(() => {
+		return debounce((value: string) => {
+			setDebouncedSearch(value);
+		}, 1000);
+	}, []);
+
+
 	
 	useEffect(() => {
-		const handler = debounce(() => setDebouncedSearch(searchQuery), 300);
-		handler();
-		return () => handler.cancel();	
-	}, [searchQuery]);
+		debouncedUpdate(searchQuery);
+		return () => {
+			debouncedUpdate.cancel();
+		};
+	}, [searchQuery, debouncedUpdate]);
+
 	
 	const { data, isLoading, isError } = useGetAllUsers({
 		page:currentPage,

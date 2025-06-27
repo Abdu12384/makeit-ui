@@ -36,7 +36,7 @@ phone: Yup.string()
   .required("Phone number is required"),
 })
 
-export const ClientProfile = () => {
+const ClientProfile = () => {
   const [isEditing, setIsEditing] = useState(false)
   const [showChangePassword, setShowChangePassword] = useState(false)
   const { client } = useSelector((state: RootState) => state.client)
@@ -418,3 +418,5 @@ export const ClientProfile = () => {
  </>
   )
 }
+
+export default ClientProfile

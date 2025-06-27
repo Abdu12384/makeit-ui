@@ -44,7 +44,7 @@ const colors = {
   error: "#E53E3E",
 }
 
-export const ProfileForm = () => {
+export default function ProfileForm() {
   const [isEditing, setIsEditing] = useState(false)
   const [showChangePassword, setShowChangePassword] = useState(false)
   const { vendor } = useSelector((state: RootState) => state.vendor)

@@ -1,27 +1,30 @@
-import { LoginComponent } from "@/components/client/login/Login"
-import ClientBookings from "@/components/client/profail/bookings"
-import { ClientProfile } from "@/components/client/profail/ClientProfail"
-import { SignupComponent } from "@/components/client/signup/Signup"
-import { ClientWallet } from "@/components/client/wallet/ClientWallet"
-import TicketPaymentForm from "@/components/client/paymentForm/TicketPayment"
-import EventDetailsPage from "@/pages/client/event-details-page"
-import EventsPage from "@/pages/client/event-page"
-import ClientHome from "@/pages/client/home-page"
-import ClientProfailLayout from "@/pages/client/profail-page"
-import { BookingPage } from "@/pages/client/service-details-page"
-import { ServiceListings } from "@/pages/client/service-listing-page"
-import { ProtectedRoute } from "@/utils/protected/ProtectedRoute"
-import { NoAuthRoute } from "@/utils/protected/PublicRoute"
+
+import { lazyWithFallback } from "@/utils/lazyLoading/ReactLasyLoading"
 import { Routes, Route } from "react-router-dom"
-import { MyTickets } from "@/components/client/event/ticket/BookedTickets"
-import ForgotPasswordEmail from "@/components/common/ForgotPassword/ForgotPassword"
-import ResetPassword from "@/components/common/ForgotPassword/ResetPassword"
-import ClientChatPage from "@/pages/client/chat-page-client"
-import BookingPayment from "@/components/client/profail/BookingPayment"
+
+const LoginComponent =  lazyWithFallback(() => import("@/components/client/login/Login"))
+const ClientBookings =  lazyWithFallback(() => import("@/components/client/profail/bookings"))
+const ClientProfile = lazyWithFallback(() => import("@/components/client/profail/ClientProfail"))
+const SignupComponent = lazyWithFallback(() => import("@/components/client/signup/Signup"))
+const ClientWallet = lazyWithFallback(() => import("@/components/client/wallet/ClientWallet"))
+const TicketPaymentForm = lazyWithFallback(() => import("@/components/client/paymentForm/TicketPayment"))
+const EventDetailsPage = lazyWithFallback(() => import("@/pages/client/event-details-page"))
+const EventsPage = lazyWithFallback(() => import("@/pages/client/event-page"))
+const ClientHome = lazyWithFallback(() => import("@/pages/client/home-page"))
+const ClientProfailLayout = lazyWithFallback(() => import("@/pages/client/profail-page"))
+const BookingPage = lazyWithFallback(() => import("@/pages/client/service-details-page"))
+const ServiceListings = lazyWithFallback(() => import("@/pages/client/service-listing-page"))
+const ProtectedRoute = lazyWithFallback(() => import("@/utils/protected/ProtectedRoute"))
+const NoAuthRoute = lazyWithFallback(() => import("@/utils/protected/PublicRoute"))
+const MyTickets = lazyWithFallback(() => import("@/components/client/event/ticket/BookedTickets"))
+const ForgotPasswordEmail = lazyWithFallback(() => import("@/components/common/ForgotPassword/ForgotPassword"))
+const ResetPassword = lazyWithFallback(() => import("@/components/common/ForgotPassword/ResetPassword"))
+const ClientChatPage = lazyWithFallback(() => import("@/pages/client/chat-page-client"))
+const BookingPayment = lazyWithFallback(() => import("@/components/client/profail/BookingPayment"))
+
 
 
  export const ClientRoutes = () =>{
-   
      return (
         <Routes> 
           <Route path="/" element={<ClientHome/>}/>
@@ -70,8 +73,7 @@ import BookingPayment from "@/components/client/profail/BookingPayment"
                        <Route path="chat" element={<ClientChatPage/>} />
                      </Route>
           
-
-        </Routes>
+           </Routes>
             
            
             

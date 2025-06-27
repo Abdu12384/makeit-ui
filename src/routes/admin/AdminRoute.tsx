@@ -1,16 +1,18 @@
-import { CategoryManagement } from "@/components/admin/mangement/CategoryManagement"
-import { AdminLoginPage } from "@/components/admin/login/Login"
-import { AdminLayout } from "@/pages/admin/admin-home"
-import { AdminVendorApplicationPage } from "@/pages/admin/applications/AdminVendorApplicationPage"
-import { AdminClientManagementPage } from "@/pages/admin/managementPage/AdminClientManagenemtPage"
-import { AdminVendorManagementPage } from "@/pages/admin/managementPage/AdminVendorManagementPage"
-import { ProtectedRoute } from "@/utils/protected/ProtectedRoute"
-import { NoAuthRoute } from "@/utils/protected/PublicRoute"
+import { lazyWithFallback } from "@/utils/lazyLoading/ReactLasyLoading"
 import { Routes, Route } from "react-router-dom"
-import AdminWallet from "@/components/admin/wallet/AdminWallet"
-import AdminEventsPage from "@/pages/admin/managementPage/AdminEventManagement"
-import AdminBookingsPage from "@/pages/admin/managementPage/AdminBookingManagement"
-import AdminDashboard from "@/pages/admin/managementPage/AdminDashboard"
+import ProtectedRoute from "@/utils/protected/ProtectedRoute"
+import NoAuthRoute from "@/utils/protected/PublicRoute"
+
+const CategoryManagement = lazyWithFallback(() => import("@/components/admin/mangement/CategoryManagement"))
+import { AdminLoginPage } from "@/components/admin/login/Login"
+const AdminLayout = lazyWithFallback(() => import("@/pages/admin/admin-home"))
+const  AdminVendorApplicationPage = lazyWithFallback(() => import("@/pages/admin/applications/AdminVendorApplicationPage"))
+const AdminClientManagementPage = lazyWithFallback(() => import("@/pages/admin/managementPage/AdminClientManagenemtPage"))
+const AdminVendorManagementPage = lazyWithFallback(() => import("@/pages/admin/managementPage/AdminVendorManagementPage"))
+const AdminWallet = lazyWithFallback(() => import("@/components/admin/wallet/AdminWallet"))
+const AdminEventsPage =  lazyWithFallback(() => import("@/pages/admin/managementPage/AdminEventManagement")) 
+const AdminBookingsPage = lazyWithFallback(() => import("@/pages/admin/managementPage/AdminBookingManagement"))
+const AdminDashboard = lazyWithFallback(() => import("@/pages/admin/managementPage/AdminDashboard"))
 
 
 
@@ -36,8 +38,5 @@ export const  AdminRoutes = () =>{
 
      </Routes>
          
-        
-         
-     
   )
 }

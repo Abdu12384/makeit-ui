@@ -7,7 +7,7 @@ import { ServiceCard } from "./ServiceCards"
 import { useGetAllServicesByVendorIdMutation } from "@/hooks/VendorCustomHooks"
 import { Pagination1 } from "@/components/common/paginations/Pagination"
 
-export const ServiceListingPage = () => {
+export default function ServiceListingPage() {
   const [isFormOpen, setIsFormOpen] = useState(false)
   const [searchQuery, _setSearchQuery] = useState("")
   const [sortBy, _setSortBy] = useState<"serviceTitle" | "servicePrice" | "serviceCategory" | null>(null)

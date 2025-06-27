@@ -56,6 +56,8 @@ export default function ClientBookings() {
             isComplete: booking.isComplete,
             serviceId: booking.serviceId,
             service: booking.service,
+            rescheduleStatus: booking.rescheduleStatus,
+            rescheduleReason: booking.rescheduleReason,
             _id: booking._id,
           }))
           setBookings(fetchedBookings)

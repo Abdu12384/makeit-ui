@@ -5,7 +5,7 @@ import { useAllVendorQueryMutation, useUpdateVendorStatusMutation } from "@/hook
 import { getAllVendors } from "@/services/admin/adminService";
 import toast from "react-hot-toast";
 
-export function AdminVendorApplicationPage() {
+export default function AdminVendorApplicationPage() {
 	const [currentPage, setCurrentPage] = useState(1);
 	const [searchQuery, setSearchQuery] = useState("");
 	const [debouncedSearch, setDebouncedSearch] = useState(searchQuery);

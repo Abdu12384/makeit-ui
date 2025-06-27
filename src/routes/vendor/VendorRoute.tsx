@@ -1,25 +1,27 @@
 
-import ForgotPasswordEmail from "@/components/common/ForgotPassword/ForgotPassword"
-import ResetPassword from "@/components/common/ForgotPassword/ResetPassword"
-import { AttendeesList } from "@/components/vendor/booked-events/AttendeesInfo"
-import { BookedEventsList } from "@/components/vendor/booked-events/BookedEventList"
-import BookingList from "@/components/vendor/bookings/VendorBookingList"
-import CreateEventPage from "@/components/vendor/events/CreateEvents"
-import EditEventPage from "@/components/vendor/events/EditEvents"
-import  {  VendorLoginPage } from "@/components/vendor/login/Login"
-import { ServiceListingPage } from "@/components/vendor/service/ServiceComponent"
-import { SignupPage } from "@/components/vendor/signup/Signup"
-import {VendorDashboard} from "@/components/vendor/vendor-dashboard/VendorDashboard"
-import {ProfileForm} from "@/components/vendor/vendorProfile/VendorProfileForm"
-import VendorWallet from "@/components/vendor/wallet/VendorWallet"
-import VendorChatPage from "@/pages/vendor/chat-page-vendor"
-import VendorHomePage from "@/pages/vendor/home-page-vendor"
-import VendorEventsPage from "@/pages/vendor/VendorEventPage"
-import { VendorProfilePage } from "@/pages/vendor/VendorProfilePage"
-import WorkSamplePage from "@/pages/vendor/WorkSamplePage"
-import { ProtectedRoute } from "@/utils/protected/ProtectedRoute"
-import { NoAuthRoute } from "@/utils/protected/PublicRoute"
 import { Routes, Route } from "react-router-dom"
+import { lazyWithFallback } from "@/utils/lazyLoading/ReactLasyLoading"
+
+const ForgotPasswordEmail = lazyWithFallback(() => import("@/components/common/ForgotPassword/ForgotPassword"))
+const ResetPassword = lazyWithFallback(() => import("@/components/common/ForgotPassword/ResetPassword"))
+const AttendeesList = lazyWithFallback(() => import("@/components/vendor/booked-events/AttendeesInfo"))
+const BookedEventsList = lazyWithFallback(() => import("@/components/vendor/booked-events/BookedEventList"))
+const BookingList = lazyWithFallback(() => import("@/components/vendor/bookings/VendorBookingList"))
+const CreateEventPage = lazyWithFallback(() => import("@/components/vendor/events/CreateEvents"))
+const EditEventPage = lazyWithFallback(() => import("@/components/vendor/events/EditEvents"))
+const VendorLoginPage = lazyWithFallback(() => import("@/components/vendor/login/Login"))
+const ServiceListingPage = lazyWithFallback(() => import("@/components/vendor/service/ServiceComponent"))
+const SignupPage = lazyWithFallback(() => import("@/components/vendor/signup/Signup"))
+const VendorDashboard = lazyWithFallback(() => import("@/components/vendor/vendor-dashboard/VendorDashboard"))
+const ProfileForm = lazyWithFallback(() => import("@/components/vendor/vendorProfile/VendorProfileForm"))
+const VendorWallet = lazyWithFallback(() => import("@/components/vendor/wallet/VendorWallet"))
+const VendorChatPage = lazyWithFallback(() => import("@/pages/vendor/chat-page-vendor"))
+const VendorHomePage = lazyWithFallback(() => import("@/pages/vendor/home-page-vendor"))
+const VendorEventsPage = lazyWithFallback(() => import("@/pages/vendor/VendorEventPage"))
+const VendorProfilePage = lazyWithFallback(() => import("@/pages/vendor/VendorProfilePage"))
+const WorkSamplePage = lazyWithFallback(() => import("@/pages/vendor/WorkSamplePage"))
+const ProtectedRoute = lazyWithFallback(() => import("@/utils/protected/ProtectedRoute"))
+const NoAuthRoute = lazyWithFallback(() => import("@/utils/protected/PublicRoute"))
 
 
 export const VendorRoute = () =>{

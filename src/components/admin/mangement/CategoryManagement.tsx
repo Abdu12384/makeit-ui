@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import type React from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FolderPlus, MoreVertical, Check, AlertCircle, X, Image as ImageIcon } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
@@ -15,7 +14,7 @@ import SquareImageCropper from "@/components/common/imageCropper/ImageCropper";
 import { Pagination1 } from "@/components/common/paginations/Pagination";
 import { Category } from "@/types/category";
 
-export const CategoryManagement: React.FC = () => {
+export default function CategoryManagement() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [searchQuery, _setSearchQuery] = useState("");

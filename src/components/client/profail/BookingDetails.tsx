@@ -14,26 +14,28 @@ import {
   Tag,
   Building,
   Plus,
+  RotateCcw,
+  Info,
 } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { MessageCircle } from "lucide-react";
+import { MessageCircle } from "lucide-react"
 import ReviewForm from "@/components/common/review/review-form"
-import { Link, useNavigate } from "react-router-dom";
-import { useCancelBookingMutation } from "@/hooks/ClientCustomHooks";
+import { Link, useNavigate } from "react-router-dom"
+import { useCancelBookingMutation } from "@/hooks/ClientCustomHooks"
 import { ConfirmationButton } from "@/components/common/customButtons/ConfirmButton"
 import toast from "react-hot-toast"
-
+import RescheduleRequestModal from "./resheduleRequstModal"
 
 export type Booking = {
   _id?: string
   bookingId: string
   title?: string
   serviceTitle?: string
-  serviceId?:string
+  serviceId?: string
   date: string
   time?: string
   client: {
@@ -42,7 +44,7 @@ export type Booking = {
     phone: string
     avatar?: string
   }
-  status: "Pending" | "Confirmed" | "Completed" | "Cancelled"|"Rescheduled"
+  status: "Pending" | "Confirmed" | "Completed" | "Cancelled" | "Rescheduled"
   email: string
   phone: string
   vendor: {
@@ -64,7 +66,9 @@ export type Booking = {
     additionalHourFee?: number
   }
   balanceAmount?: number
-  
+  rescheduleStatus?: "Pending" | "Approved" | "Rejected" | "Requested"
+  rescheduleReason?: string
+
 }
 
 interface BookingDetailsProps {
@@ -75,19 +79,20 @@ interface BookingDetailsProps {
 export default function BookingDetails({ booking, onBack }: BookingDetailsProps) {
   const [isLoading, setIsLoading] = useState(true)
   const [_activeTab, setActiveTab] = useState("details")
-  // const [openPaymentDialog, setOpenPaymentDialog] = useState(false)
   const [isReviewFormVisible, setIsReviewFormVisible] = useState(false)
+  const [isRescheduleModalOpen, setIsRescheduleModalOpen] = useState(false)
+  const [isRescheduleLoading, _setIsRescheduleLoading] = useState(false)
   const cancelBookingMutation = useCancelBookingMutation()
   const reviewFormRef = useRef<HTMLDivElement>(null)
   const navigate = useNavigate()
 
-  console.log('booking', booking)
+  console.log("booking", booking)
+
   // Simulate loading
   useEffect(() => {
     const timer = setTimeout(() => setIsLoading(false), 1000)
     return () => clearTimeout(timer)
   }, [])
-
 
   const enhancedBooking: Booking = {
     ...booking,
@@ -106,7 +111,9 @@ export default function BookingDetails({ booking, onBack }: BookingDetailsProps)
     service: {
       ...booking?.service,
     },
-    balanceAmount: booking.balanceAmount || 0
+    balanceAmount: booking.balanceAmount || 0,
+    rescheduleStatus: booking.rescheduleStatus,
+    rescheduleReason: booking.rescheduleReason,
   }
 
 
@@ -124,8 +131,8 @@ export default function BookingDetails({ booking, onBack }: BookingDetailsProps)
       vendorApproval: enhancedBooking.vendorApproval,
     }
 
-    console.log('navigating to booking payment with data:', bookingPaymentData)
-    
+    console.log("navigating to booking payment with data:", bookingPaymentData)
+
     navigate("/booking-payment", {
       state: {
         booking: bookingPaymentData,
@@ -136,10 +143,8 @@ export default function BookingDetails({ booking, onBack }: BookingDetailsProps)
         clientId: enhancedBooking.client?.email,
         serviceTitle: enhancedBooking.service?.serviceTitle || enhancedBooking.serviceTitle,
       },
-    });
-    
+    })
   }
-
 
   const handlePayNow = () => {
     const bookingPaymentData = {
@@ -153,38 +158,35 @@ export default function BookingDetails({ booking, onBack }: BookingDetailsProps)
       status: enhancedBooking.status,
       paymentStatus: enhancedBooking.paymentStatus,
       vendorApproval: enhancedBooking.vendorApproval,
-      balanceAmount: enhancedBooking.balanceAmount
+      balanceAmount: enhancedBooking.balanceAmount,
     }
 
-    console.log('navigating to booking payment with data:', bookingPaymentData)
-    
+    console.log("navigating to booking payment with data:", bookingPaymentData)
+
     navigate("/booking-payment", {
       state: {
         booking: bookingPaymentData,
-        amount:  enhancedBooking.balanceAmount || 0,
+        amount: enhancedBooking.balanceAmount || 0,
         type: "serviceBooking",
         serviceId: enhancedBooking.serviceId,
         vendorId: enhancedBooking.vendor?.userId,
-        clientId: enhancedBooking.client?.email, // or use a client ID if available
+        clientId: enhancedBooking.client?.email,
         serviceTitle: enhancedBooking.service?.serviceTitle || enhancedBooking.serviceTitle,
       },
-    });
+    })
   }
 
-
   const handleCancelBooking = (bookingId: string) => {
-    cancelBookingMutation.mutate(
-      bookingId,
-      {
+    cancelBookingMutation.mutate(bookingId, {
       onSuccess: (data) => {
-        console.log('booking cancelled successfully',data)
+        console.log("booking cancelled successfully", data)
         toast.success(data.message)
         onBack()
       },
       onError: (error) => {
-        console.log('error while cancel booking',error)
+        console.log("error while cancel booking", error)
         toast.error(error.message)
-      }
+      },
     })
   }
 
@@ -311,8 +313,6 @@ export default function BookingDetails({ booking, onBack }: BookingDetailsProps)
     </div>
   )
 
- 
-
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -342,7 +342,7 @@ export default function BookingDetails({ booking, onBack }: BookingDetailsProps)
                       {enhancedBooking.serviceTitle}
                     </h2>
                     <p className="text-indigo-700 dark:text-indigo-400 font-medium">
-                      Booking ID: {enhancedBooking?.bookingId?.slice(0,18)}
+                      Booking ID: {enhancedBooking?.bookingId?.slice(0, 18)}
                     </p>
 
                     <div className="flex flex-wrap gap-3 mt-4">
@@ -375,21 +375,69 @@ export default function BookingDetails({ booking, onBack }: BookingDetailsProps)
                         {getVendorApprovalIcon(enhancedBooking.vendorApproval || "")}
                         <span>Vendor: {enhancedBooking.vendorApproval}</span>
                       </Badge>
+
+                      {/* Reschedule Status Badge */}
+                      {enhancedBooking.rescheduleStatus === "Requested" && (
+                        <Badge
+                          variant="outline"
+                          className="flex items-center gap-1 px-3 py-1.5 text-sm font-medium bg-orange-100 text-orange-800 border-orange-200 dark:bg-orange-900/20 dark:text-orange-300 dark:border-orange-800/30"
+                        >
+                          <RotateCcw className="h-4 w-4" />
+                          <span>Reschedule Requested</span>
+                        </Badge>
+                      )}
                     </div>
+
+                    {/* Reschedule Request Button */}
+                    {enhancedBooking.rescheduleStatus === "Requested" && (
+                      <div className="mt-4">
+                        <Button
+                          onClick={() => setIsRescheduleModalOpen(true)}
+                          className="gap-2 bg-orange-600 hover:bg-orange-700 text-white"
+                        >
+                          <RotateCcw className="h-4 w-4" />
+                           Reschedule Request from {enhancedBooking?.vendor?.name}
+                        </Button>
+                      </div>
+                    )}
                   </div>
 
                   <div className="flex flex-col items-center justify-center bg-white dark:bg-gray-800 p-4 rounded-xl shadow-sm">
                     <div className="text-3xl font-bold text-indigo-600 dark:text-indigo-400">
-                      ₹{ enhancedBooking.balanceAmount ? enhancedBooking.balanceAmount : enhancedBooking?.service?.servicePrice?.toFixed(2)}
+                      ₹
+                      {enhancedBooking.balanceAmount
+                        ? enhancedBooking.balanceAmount
+                        : enhancedBooking?.service?.servicePrice?.toFixed(2)}
                     </div>
-                    <p className="text-gray-500 dark:text-gray-400">{ enhancedBooking.balanceAmount ? "Balance Amount" : "Total Amount"}</p>
-
+                    <p className="text-gray-500 dark:text-gray-400">
+                      {enhancedBooking.balanceAmount ? "Balance Amount" : "Total Amount"}
+                    </p>
                   </div>
                 </div>
               </CardContent>
             </Card>
 
-            {/* Tabs for Details */}
+            {(enhancedBooking.paymentStatus === "Pending" || enhancedBooking.paymentStatus === "AdvancePaid") && (
+              <Card className="border-0 shadow-sm bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950/20 dark:to-orange-950/20 border-l-4 border-amber-500">
+                <CardContent className="p-4">
+                  <div className="flex items-start gap-3">
+                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-amber-100 dark:bg-amber-900/30 flex-shrink-0">
+                      <Info className="h-4 w-4 text-amber-600 dark:text-amber-400" />
+                    </div>
+                    <div className="space-y-2">
+                      <h4 className="font-semibold text-amber-900 dark:text-amber-300">Payment Terms & Conditions</h4>
+                      <div className="text-sm text-amber-800 dark:text-amber-400 space-y-1">
+                        <p>• Advance payment is non-refundable after booking confirmation</p>
+                        {/* <p>• Cancellation must be made at least 24 hours before the scheduled appointment</p> */}
+                        {/* <p>• Balance payment is due before or at the time of service delivery</p> */}
+                        <p>• Rescheduling is allowed up to 2 times without additional charges</p>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
             <Tabs defaultValue="details" className="w-full" onValueChange={setActiveTab}>
               <TabsList className="grid grid-cols-3 mb-4">
                 <TabsTrigger value="details">Booking Details</TabsTrigger>
@@ -421,24 +469,23 @@ export default function BookingDetails({ booking, onBack }: BookingDetailsProps)
                           <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Service Type</p>
                           <p className="font-medium">{enhancedBooking?.service?.serviceTitle}</p>
                         </div>
-                        
                       </div>
-                      
                     </div>
-                  {enhancedBooking.status !== "Completed" && enhancedBooking.status !== "Cancelled" && (
-                  <div className="flex justify-end">
-                    <ConfirmationButton
-                      buttonText="Cancel Booking"
-                      buttonType="danger"
-                      confirmType="danger"
-                      confirmTitle="Cancel Booking"
-                      confirmMessage="Are you sure you want to cancel this booking? This action cannot be undone."
-                      confirmText="Yes, Cancel"
-                      cancelText="No, Go Back"
-                      onConfirm={() => handleCancelBooking(enhancedBooking.bookingId)} // Only run after confirm
-                    />
-                  </div>
-                )}
+
+                    {enhancedBooking.status !== "Completed" && enhancedBooking.status !== "Cancelled" && (
+                      <div className="flex justify-end">
+                        <ConfirmationButton
+                          buttonText="Cancel Booking"
+                          buttonType="danger"
+                          confirmType="danger"
+                          confirmTitle="Cancel Booking"
+                          confirmMessage="Are you sure you want to cancel this booking? This action cannot be undone."
+                          confirmText="Yes, Cancel"
+                          cancelText="No, Go Back"
+                          onConfirm={() => handleCancelBooking(enhancedBooking.bookingId)}
+                        />
+                      </div>
+                    )}
                   </CardContent>
                 </Card>
               </TabsContent>
@@ -557,51 +604,52 @@ export default function BookingDetails({ booking, onBack }: BookingDetailsProps)
                             </div>
                           )}
                         </div>
-                      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
-
-                  {booking?.status === "Completed" && booking?.paymentStatus === "Successfull" && (
-                    <button
-                      onClick={() => {
-                        setIsReviewFormVisible(!isReviewFormVisible)
-                        // Scroll to the form if opening it
-                        if (!isReviewFormVisible) {
-                          setTimeout(() => {
-                            reviewFormRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })
-                          }, 300) // Delay to match the animation duration of the form appearing
-                        }
-                      }}
-                      className="flex items-center justify-center gap-2 w-full max-w-md mt-4 mx-auto py-3 px-6 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl font-semibold text-lg shadow-lg hover:shadow-xl transition-all duration-300"
-                    >
-                      <Plus size={20} />
-                      {isReviewFormVisible ? "Hide Review Form" : "Add Your Review"}
-                    </button>
-                  )}
-                  </motion.div>
-                    <AnimatePresence>
-                    {isReviewFormVisible && (
-                      <motion.div
-                        ref={reviewFormRef} // Attach the ref to the form container
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: "auto" }}
-                        exit={{ opacity: 0, height: 0 }}
-                        transition={{ duration: 0.3 }}
-                        className="mt-4"
-                      >
-                        <ReviewForm
-                          onSubmit={() => {
-                            // handleSubmitReview(data)
-                            setIsReviewFormVisible(false)
-                          }}
-                          isLoading={isLoading}
-                          title="Share Your Experience"
-                          subtitle="Your feedback helps us improve and helps others make informed decisions"
-                          targetId={booking?.serviceId!}
-                          targetType="service"
-                        />
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                    </div>
+                        <motion.div
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: 0.2 }}
+                        >
+                          {booking?.status === "Completed" && booking?.paymentStatus === "Successfull" && (
+                            <button
+                              onClick={() => {
+                                setIsReviewFormVisible(!isReviewFormVisible)
+                                if (!isReviewFormVisible) {
+                                  setTimeout(() => {
+                                    reviewFormRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })
+                                  }, 300)
+                                }
+                              }}
+                              className="flex items-center justify-center gap-2 w-full max-w-md mt-4 mx-auto py-3 px-6 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl font-semibold text-lg shadow-lg hover:shadow-xl transition-all duration-300"
+                            >
+                              <Plus size={20} />
+                              {isReviewFormVisible ? "Hide Review Form" : "Add Your Review"}
+                            </button>
+                          )}
+                        </motion.div>
+                        <AnimatePresence>
+                          {isReviewFormVisible && (
+                            <motion.div
+                              ref={reviewFormRef}
+                              initial={{ opacity: 0, height: 0 }}
+                              animate={{ opacity: 1, height: "auto" }}
+                              exit={{ opacity: 0, height: 0 }}
+                              transition={{ duration: 0.3 }}
+                              className="mt-4"
+                            >
+                              <ReviewForm
+                                onSubmit={() => {
+                                  setIsReviewFormVisible(false)
+                                }}
+                                isLoading={isLoading}
+                                title="Share Your Experience"
+                                subtitle="Your feedback helps us improve and helps others make informed decisions"
+                                targetId={booking?.serviceId!}
+                                targetType="service"
+                              />
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
+                      </div>
                     </div>
                   </CardContent>
                 </Card>
@@ -616,33 +664,33 @@ export default function BookingDetails({ booking, onBack }: BookingDetailsProps)
                     <ArrowLeft className="h-4 w-4" /> Back to Bookings
                   </Button>
                   <div className="flex flex-wrap gap-3">
-                      {enhancedBooking.paymentStatus === "Pending" && enhancedBooking.vendorApproval === "Approved" && (
-                        <Button
-                          onClick={handlePayAdvance}
-                          className="gap-2 bg-blue-600 hover:bg-blue-700 text-white"
-                        >
-                          <CreditCard className="h-4 w-4" /> Pay Advance
-                        </Button>
-                      )}
-
-                    {enhancedBooking.paymentStatus === "Pending"|| enhancedBooking.paymentStatus === "AdvancePaid" && enhancedBooking.status === "Confirmed" && (
-                      <Button onClick={handlePayNow} className="gap-2 bg-indigo-600 hover:bg-indigo-700">
-                        <CreditCard className="h-4 w-4" /> Pay Balance
+                    {enhancedBooking.paymentStatus === "Pending" && enhancedBooking.vendorApproval === "Approved" && (
+                      <Button onClick={handlePayAdvance} className="gap-2 bg-blue-600 hover:bg-blue-700 text-white">
+                        <CreditCard className="h-4 w-4" /> Pay Advance
                       </Button>
                     )}
+
+                    {enhancedBooking.paymentStatus === "Pending" ||
+                      (enhancedBooking.paymentStatus === "AdvancePaid" && enhancedBooking.status === "Confirmed" && (
+                        <Button onClick={handlePayNow} className="gap-2 bg-indigo-600 hover:bg-indigo-700">
+                          <CreditCard className="h-4 w-4" /> Pay Balance
+                        </Button>
+                      ))}
                   </div>
                 </div>
               </CardContent>
             </Card>
           </div>
- 
-          {/* {openPaymentDialog && (
-            <div className="fixed inset-0 z-50 bg-opacity-20 backdrop-blur-sm flex items-center justify-center">
-              <div className="bg-white w-full max-w-2xl mx-4 md:mx-auto p-6 rounded-xl shadow-xl z-10">
-                <BookingPayment booking={enhancedBooking} onClose={() => setOpenPaymentDialog(false)} />
-              </div>
-            </div>
-          )} */}
+
+          {/* Reschedule Request Modal */}
+          {enhancedBooking.rescheduleStatus === "Requested" && (
+            <RescheduleRequestModal
+              isOpen={isRescheduleModalOpen}
+              onClose={() => setIsRescheduleModalOpen(false)}
+              rescheduleRequest={enhancedBooking}
+              isLoading={isRescheduleLoading}
+            />
+          )}
         </>
       )}
     </motion.div>

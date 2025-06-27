@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useMemo } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import {
   Clock,
@@ -31,6 +31,7 @@ import { useClientGetAllServicesMutation } from "@/hooks/ClientCustomHooks"
 import Navbar from "@/components/common/NavBar"
 import { Pagination1 } from "@/components/common/paginations/Pagination"
 import { containerVariants, itemVariants } from "@/animations/variants"
+import { debounce } from "lodash"
 
 interface Service {
   _id: string
@@ -53,10 +54,11 @@ interface Service {
   }
 }
 
-export const ServiceListings = () => {
+export default function ServiceListings() {
   const [services, setServices] = useState<Service[]>([])
   const [filteredServices, setFilteredServices] = useState<Service[]>([])
   const [searchTerm, setSearchTerm] = useState("")
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState(searchTerm);
   const [selectedCategory, setSelectedCategory] = useState("All")
   const [isLoading, setIsLoading] = useState(true)
   const [currentPage, setCurrentPage] = useState(1)
@@ -66,12 +68,29 @@ export const ServiceListings = () => {
   const [totalPages, setTotalPages] = useState(0)
 
   const clientGetAllServicesMutationn = useClientGetAllServicesMutation()
+
+
+  const debouncedUpdate = useMemo(() => {
+    return debounce((value: string) => {
+      setDebouncedSearchTerm(value);
+    }, 1000); // 800ms debounce time
+  }, []);
+
+
+  useEffect(() => {
+    debouncedUpdate(searchTerm);
+    return () => {
+      debouncedUpdate.cancel();
+    };
+  }, [searchTerm, debouncedUpdate]);
+
+  
   useEffect(() => {
       clientGetAllServicesMutationn.mutate(
         {
           page: currentPage,
           limit,
-          search: searchTerm,
+          search: debouncedSearchTerm,
         },
         {
           onSuccess: (response) => {
@@ -86,17 +105,17 @@ export const ServiceListings = () => {
           },
         },
       )
-  }, [currentPage, limit])
+  }, [currentPage, limit, debouncedSearchTerm])
 
 
   useEffect(() => {
     let filtered = [...services]
 
-    if (searchTerm) {
+    if (debouncedSearchTerm) {
       filtered = filtered.filter(
         (service) =>
-          service.serviceTitle.toLowerCase().startsWith(searchTerm.toLowerCase()) ||
-          service.serviceDescription.toLowerCase().startsWith(searchTerm.toLowerCase()),
+          service.serviceTitle.toLowerCase().startsWith(debouncedSearchTerm.toLowerCase()) ||
+          service.serviceDescription.toLowerCase().startsWith(debouncedSearchTerm.toLowerCase()),
       )
     }
 
@@ -105,7 +124,7 @@ export const ServiceListings = () => {
     }
 
     setFilteredServices(filtered)
-  }, [searchTerm, selectedCategory, services])
+  }, [debouncedSearchTerm, selectedCategory, services])
 
   const handleClearFilters = () => {
     setSearchTerm("")
@@ -361,4 +380,3 @@ export const ServiceListings = () => {
     </>
   )
 }
-export default ServiceListings
