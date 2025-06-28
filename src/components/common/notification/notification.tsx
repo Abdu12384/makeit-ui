@@ -325,7 +325,7 @@ export default function NotificationDropdown() {
               className="w-full h-9 text-sm text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-800 rounded-lg font-medium hover:text-slate-900 dark:hover:text-slate-100 transition-all duration-200"
               onClick={() => setIsOpen(false)}
             >
-              View All Notifications
+            Notifications
             </Button>
           </div>
         )}

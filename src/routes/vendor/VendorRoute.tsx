@@ -33,7 +33,7 @@ export const VendorRoute = () =>{
           <Route path="/login" element={<NoAuthRoute element={<VendorLoginPage />} />} />
           <Route path="/signup" element={<NoAuthRoute element={<SignupPage />} />} />
           <Route path="/forgot-password" element={<NoAuthRoute element={<ForgotPasswordEmail userType="vendor" />} />} />
-          <Route path="/reset-password/:token" element={<NoAuthRoute element={<ResetPassword userType="vendor" />} />} />
+          <Route path="/reset-password" element={<NoAuthRoute element={<ResetPassword userType="vendor" />} />} />
 
           
            {/* ProtectRoute */}

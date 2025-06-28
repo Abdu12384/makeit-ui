@@ -6,6 +6,8 @@ import { CheckCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import fetureIMG from "@/assets/images/feturepageIMG.jpg"
 import { useNavigate } from "react-router-dom"
+import { useSelector } from "react-redux"
+import { RootState } from "@/store/store"
 
 const features = [
   "Join our network of verified vendors",
@@ -19,7 +21,7 @@ const features = [
 export default function VendorFeatures() {
   const sectionRef = useRef<HTMLElement>(null)
   const imageRef = useRef<HTMLDivElement>(null)
-
+  const {client} = useSelector((state: RootState) => state.client)
   const navigate = useNavigate()
 
   // Scroll-based animations
@@ -133,12 +135,14 @@ export default function VendorFeatures() {
                   y: { type: "spring", stiffness: 300, damping: 10 },
                 }}
               >
+              {!client &&
                 <Button 
                  className="bg-[#124E66] hover:bg-[#0e3e52] text-white rounded-full px-8 py-6 text-lg"
                  onClick={() => navigate("/vendor/login")}
                  >
                   Join as Vendor
                 </Button>
+              }
               </motion.div>
             </motion.div>
           </div>

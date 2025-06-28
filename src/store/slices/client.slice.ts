@@ -44,7 +44,6 @@ const clientSlice = createSlice({
 		clientLogin: (state, action: PayloadAction<IClient>) => {
 			state.client = action.payload;
       state.isLoggedIn = true
-      console.log('client login',state.client)
 		},
 		clientLogout: (state) => {
 			state.client = null;

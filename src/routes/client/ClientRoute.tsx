@@ -1,4 +1,5 @@
 
+import NotFound404 from "@/components/common/404Page/PageNotFound"
 import { lazyWithFallback } from "@/utils/lazyLoading/ReactLasyLoading"
 import { Routes, Route } from "react-router-dom"
 
@@ -32,7 +33,7 @@ const BookingPayment = lazyWithFallback(() => import("@/components/client/profai
           <Route path="/signup" element={<NoAuthRoute element={<SignupComponent />} />} />
           <Route path="/login" element={<NoAuthRoute element={<LoginComponent />} />} />
           <Route path="/forgot-password" element={<NoAuthRoute element={<ForgotPasswordEmail userType="client" />} />} />
-          <Route path="/reset-password/:token" element={<NoAuthRoute element={<ResetPassword userType="client" />} />} />
+          <Route path="/reset-password" element={<NoAuthRoute element={<ResetPassword userType="client" />} />} />
 
 
 
@@ -73,6 +74,8 @@ const BookingPayment = lazyWithFallback(() => import("@/components/client/profai
                        <Route path="chat" element={<ClientChatPage/>} />
                      </Route>
           
+                     <Route path="*" element={<NotFound404 />} />
+
            </Routes>
             
            

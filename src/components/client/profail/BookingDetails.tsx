@@ -430,7 +430,7 @@ export default function BookingDetails({ booking, onBack }: BookingDetailsProps)
                         <p>• Advance payment is non-refundable after booking confirmation</p>
                         {/* <p>• Cancellation must be made at least 24 hours before the scheduled appointment</p> */}
                         {/* <p>• Balance payment is due before or at the time of service delivery</p> */}
-                        <p>• Rescheduling is allowed up to 2 times without additional charges</p>
+                        {/* <p>• Rescheduling is allowed up to 2 times without additional charges</p> */}
                       </div>
                     </div>
                   </div>

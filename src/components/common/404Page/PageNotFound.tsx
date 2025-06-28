@@ -216,13 +216,7 @@ const NotFound404: React.FC = () => {
 
         {/* Search bar */}
         <motion.form className="w-full max-w-md mb-8 relative" variants={itemVariants} onSubmit={handleSearch}>
-          <input
-            type="text"
-            value={searchValue}
-            onChange={(e) => setSearchValue(e.target.value)}
-            placeholder="Try searching for something else..."
-            className="w-full px-5 py-3 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 pr-12"
-          />
+      
           <motion.button
             type="submit"
             className="absolute right-2 top-1/2 transform -translate-y-1/2 w-9 h-9 flex items-center justify-center rounded-full bg-gradient-to-r from-purple-500 to-pink-600 text-white"
@@ -245,6 +239,7 @@ const NotFound404: React.FC = () => {
 
         {/* Action buttons */}
         <motion.div className="flex flex-col sm:flex-row gap-4 w-full max-w-md" variants={itemVariants}>
+          <Link to="/" >
           <motion.button
             variants={buttonHoverVariants}
             initial="initial"
@@ -255,6 +250,8 @@ const NotFound404: React.FC = () => {
             <ArrowLeft size={18} />
             <span>Go Home</span>
           </motion.button>
+          </Link>
+
 
           <Link to="/" className="flex-1">
             <motion.button
