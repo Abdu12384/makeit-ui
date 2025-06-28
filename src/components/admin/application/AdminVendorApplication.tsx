@@ -73,6 +73,8 @@ export const VendorApplicationList: React.FC<VendorApplicationListProps> = ({
   const filteredVendors = useMemo(() => {
     let filtered = vendor
 
+    filtered = filtered.filter((v) => v.vendorStatus === activeTab)
+
     if (searchQuery) {
       filtered = filtered.filter(
         (v) =>

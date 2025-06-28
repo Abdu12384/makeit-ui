@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useGetWalletByIdMutation } from "@/hooks/ClientCustomHooks";
+import { Pagination1 } from "@/components/common/paginations/Pagination";
 
 interface Transaction {
   _id: string;
@@ -23,19 +24,23 @@ export default function ClientWallet() {
   const [filteredTransactions, setFilteredTransactions] = useState<Transaction[]>([]);
   const [transaction, setTransaction] = useState<any>([]);
   const [balance, setBalance] = useState<number | undefined>(undefined);
+  const [totalPages, setTotalPages] = useState<number>(0);
+  const [currentPage, setCurrentPage] = useState(1);
+  const limit = 10;
   const getWalletByIdMutation = useGetWalletByIdMutation();
 
   useEffect(() => {
     getWalletByIdMutation.mutate(
       {
-        page: 1,
-        limit: 10,
+        page: currentPage,
+        limit: limit,
       },
       {
         onSuccess: (data) => {
           console.log(data);
           setBalance(data.wallet.wallet.balance);
           setTransaction(data.wallet.transaction);
+          setTotalPages(data.wallet.total);
         },
         onError: (error) => {
           console.log(error);
@@ -258,6 +263,12 @@ export default function ClientWallet() {
           )}
         </div>
       )}
+      <Pagination1
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPagePrev={() => setCurrentPage(currentPage - 1)}
+        onPageNext={() => setCurrentPage(currentPage + 1)}
+      />
     </div>
   );
 };

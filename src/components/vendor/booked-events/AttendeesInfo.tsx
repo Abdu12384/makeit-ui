@@ -2,7 +2,6 @@ import { useEffect, useState } from "react"
 import { motion } from "framer-motion"
 import {
   ChevronLeft,
-  Search,
   Mail,
   Phone,
   Ticket,
@@ -14,7 +13,6 @@ import {
   X,
   Clock,
 } from "lucide-react"
-import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -27,11 +25,10 @@ import { AvatarImage } from "@radix-ui/react-avatar"
 
 
 
-
 export default function AttendeesList() {
 
   const { eventId } = useParams<{ eventId: string }>()
-  const [searchQuery, setSearchQuery] = useState("")
+  const [searchQuery, _setSearchQuery] = useState("")
   const [attendees, setAttendees] = useState<any>([])
   const [filterStatus, _setFilterStatus] = useState<string | null>(null)
   const [selectedAttendee, setSelectedAttendee] = useState<any | null>(null)
@@ -199,29 +196,6 @@ export default function AttendeesList() {
                 </div>
               </div>
 
-
-              {/* <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Event Information</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="flex items-center">
-                    <Calendar className="h-5 w-5 mr-3 text-muted-foreground" />
-                    <span>{event ? formatDate(event.date) : "Unknown date"}</span>
-                  </div>
-                  <div className="flex items-center">
-                    <Clock className="h-5 w-5 mr-3 text-muted-foreground" />
-                    <span>{event?.time || "Unknown time"}</span>
-                  </div>
-                  <div className="flex items-center">
-                    <MapPin className="h-5 w-5 mr-3 text-muted-foreground" />
-                    <span>{event?.location || "Unknown location"}</span>
-                  </div>
-                  <div className="flex items-center">
-                    <Ticket className="h-5 w-5 mr-3 text-muted-foreground" />
-                    <span className="font-mono">{attendee.ticketId}</span>
-                  </div>
-                </div>
-              </div> */}
-
               <Separator />
 
               <div className="space-y-4">
@@ -232,9 +206,6 @@ export default function AttendeesList() {
                       <CheckCircle2 className="h-6 w-6 mr-3 text-green-500" />
                       <div>
                         <p className="font-medium">Checked In</p>
-                        {/* <p className="text-sm text-muted-foreground">
-                          {attendee.ticket.checkedInTime} • {attendee.ticket.checkedInBy || "Self check-in"}
-                        </p> */}
                       </div>
                     </div>
                   ) : attendee?.ticket?.checkedIn === "cancelled" ? (
@@ -242,9 +213,6 @@ export default function AttendeesList() {
                       <XCircle className="h-6 w-6 mr-3 text-red-500" />
                       <div>
                         <p className="font-medium">Cancelled</p>
-                        {/* <p className="text-sm text-muted-foreground">
-                          {attendee.cancellationReason || "No reason provided"}
-                        </p> */}
                       </div>
                     </div>
                   ) : (
@@ -265,8 +233,6 @@ export default function AttendeesList() {
                 <div className="p-6 border rounded-lg">
                   <div className="flex justify-between items-start mb-6">
                     <div>
-                      {/* <h3 className="text-xl font-bold">{event?.title || "Event"}</h3>
-                      <p className="text-muted-foreground">{formatDate(event?.date || "")}</p> */}
                     </div>
                     </div>
 
@@ -278,17 +244,11 @@ export default function AttendeesList() {
                       <p className="font-medium">{attendee.name}</p>
                       <p className="text-sm text-muted-foreground mt-1">{attendee.email}</p>
                     </div>
-
-                    {/* <div>
-                      <p className="text-sm text-muted-foreground">Ticket ID</p>
-                      <p className="font-mono">{attendee.ticket.ticketId}</p>
-                    </div> */}
                   </div>
 
                   <div className="mt-6 flex justify-center">
                     <div className="p-4 bg-muted rounded-lg">
                       <div className="h-48 w-48 bg-white flex items-center justify-center">
-                        {/* This would be a QR code in a real app */}
                         <Ticket className="h-24 w-24 text-muted-foreground" />
                       </div>
                       <p className="text-center mt-2 text-sm text-muted-foreground">Scan to check in</p>
@@ -328,7 +288,6 @@ export default function AttendeesList() {
                     <div className="flex-grow">
                       <div className="flex justify-between">
                         <p className="font-medium">Ticket purchased</p>
-                        {/* <p className="text-sm text-muted-foreground">{attendee.purchaseDate || "May 15, 2023"}</p> */}
                       </div>
                       <p className="text-sm text-muted-foreground mt-1">
                         Purchased {attendee.ticketType} ticket for ₹{attendee?.ticket?.totalAmount }
@@ -457,33 +416,6 @@ export default function AttendeesList() {
               </p>
             </div>
           </div>
-
-          <div className="flex flex-col sm:flex-row gap-4 mb-6">
-            <div className="relative flex-grow">
-              <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-              <Input
-                placeholder="Search by name, email or ticket ID..."
-                className="pl-10"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-            </div>
-            {/* <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="outline" className="flex items-center gap-2">
-                  <Filter className="h-4 w-4" />
-                  {filterStatus ? `Filter: ${filterStatus}` : "Filter"}
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent>
-                <DropdownMenuItem onClick={() => setFilterStatus(null)}>All</DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setFilterStatus("checked_in")}>Checked In</DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setFilterStatus("not-checked-in")}>Not Checked In</DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setFilterStatus("cancelled")}>Cancelled</DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu> */}
-          </div>
-
           <div className="grid grid-cols-1 gap-4">
             {filteredAttendees.map((attendee: any) => (
               <AttendeeCard key={attendee.userId} attendee={attendee} onClick={() => setSelectedAttendee(attendee)} />
