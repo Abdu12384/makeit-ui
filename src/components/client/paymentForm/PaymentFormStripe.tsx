@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import { useState } from "react";
 import { Button } from "../../ui/button";
@@ -35,8 +34,6 @@ const PaymentForm: React.FC<PaymentFormProps> = ({
     const cardElement = elements.getElement(CardElement);
     if (!cardElement) return;
 
-    console.log('actual card',cardElement)
-
     setLoading(true);
     setPaymentStatus("Processing...");
     
@@ -44,7 +41,6 @@ const PaymentForm: React.FC<PaymentFormProps> = ({
       type: "card",
       card: cardElement,
     });
-    console.log('card 1',paymentMethod)
 
     if (error) {
       console.error("Stripe error:", error);
@@ -53,15 +49,12 @@ const PaymentForm: React.FC<PaymentFormProps> = ({
     } else {
       try {
         const { clientSecret, payload } = await onCreatePaymentIntent(paymentMethod.id);
-        console.log('card data 1 ', clientSecret, payload)
         const { error: confirmError, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
           payment_method: {
             card: cardElement,
           },
         });
 
-
-        console.log('card data 2 ', clientSecret, payload)
 
         if (confirmError) {
           console.error("Payment confirmation error:", confirmError.message);
@@ -73,7 +66,6 @@ const PaymentForm: React.FC<PaymentFormProps> = ({
           toast.success("Payment successful!");
         }
       } catch (err:any) {
-        console.error("Error during payment:", err);
         setPaymentStatus("Payment Failed");
         toast.error(err.response.data.message);
       }

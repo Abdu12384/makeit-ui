@@ -4,6 +4,7 @@ import { LogOut, Menu, X } from "lucide-react"
 import { useSelector } from "react-redux"
 import { RootState } from "@/store/store"
 import VendorNotificationDropdown from "./notifcation"
+import { CLOUDINARY_BASE_URL } from "@/types/config/config"
 
 interface HeaderProps {
   currentTime: Date
@@ -86,7 +87,7 @@ export const Header = ({ isLiveIndicatorVisible, openSidebar }: HeaderProps) => 
           >
           {vendor?.profileImage ? (
              <img
-             src={vendor?.profileImage}
+             src={CLOUDINARY_BASE_URL + vendor?.profileImage}
              alt="Profile"
              className="h-full w-full rounded-full object-cover"
            />):(

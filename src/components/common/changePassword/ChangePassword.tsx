@@ -59,13 +59,11 @@ export const ChangePassword = ({ onClose, isVendor }: ChangePasswordProps) => {
         },
         {
           onSuccess: (response) => {
-            console.log(`${isVendor ? "Vendor" : "Client"} password changed successfully`, response);
             toast.success(response?.message || "Password changed successfully");
             onClose();
           },
-          onError: (error: any) => {
-            console.error(`Error changing ${isVendor ? "vendor" : "client"} password:`, error);
-            toast.error(error?.response?.data?.message || "Failed to change password");
+          onError: (error) => {
+            toast.error(error?.message || "Failed to change password");
           },
         }
       );

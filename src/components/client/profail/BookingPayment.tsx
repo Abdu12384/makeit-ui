@@ -4,6 +4,7 @@ import { toast } from 'react-hot-toast'
 import { useQueryClient } from '@tanstack/react-query'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useState } from 'react'
+import { Booking } from '@/types/bookings'
 // import TicketBookingLoading from '@/utils/animations/TicketBookingLoading'
 
 function BookingPayment() {
@@ -15,11 +16,10 @@ function BookingPayment() {
     
     // Get data from location state
     const data = location.state as {
-        booking: any,
+        booking: Booking,
         amount: number,
         type: string,
-        bookingDeatils: any,
-        // Add any other properties you need to pass
+        bookingDeatils: Booking,
     }
     
     

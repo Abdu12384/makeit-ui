@@ -34,6 +34,7 @@ export type Booking = {
   _id?: string
   bookingId: string
   title?: string
+  clientId?: string
   serviceTitle?: string
   serviceId?: string
   date: string
@@ -68,6 +69,7 @@ export type Booking = {
   balanceAmount?: number
   rescheduleStatus?: "Pending" | "Approved" | "Rejected" | "Requested"
   rescheduleReason?: string
+  isComplete?: boolean
 
 }
 
@@ -537,9 +539,8 @@ export default function BookingDetails({ booking, onBack }: BookingDetailsProps)
                         </div>
 
                         <div className="p-4 bg-gray-50 dark:bg-gray-800/50 rounded-xl">
-                          <h4 className="font-medium mb-2">Previous Bookings</h4>
                           <p className="text-gray-500 dark:text-gray-400 text-sm">
-                            This client has 3 previous bookings with you.
+                          Here’s a summary of your recent booking activity.
                           </p>
                         </div>
                       </div>

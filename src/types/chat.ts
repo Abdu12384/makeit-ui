@@ -1,5 +1,5 @@
 export interface Chat {
-  seen: any;
+  seen: boolean;
   receiverProfileImage: undefined;
   _id: string;
   senderId: string;

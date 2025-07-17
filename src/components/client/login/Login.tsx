@@ -142,9 +142,8 @@ export default function LoginComponent() {
         }, 3000);
 
        },
-       onError:(error:any)=>{
-        toast.error(error?.response?.data?.message)
-        console.log(error,'hrere')
+       onError:(error)=>{
+        toast.error(error?.message)
         setIsLoading(false)
        }
 

@@ -22,6 +22,6 @@ messaging.onBackgroundMessage(function (payload) {
   console.log("🌙 Received background message: ", payload);
   self.registration.showNotification(payload.notification.title, {
       body: payload.notification.body,
-      icon: "/turf_x.png", 
+      icon: "", 
   });
 });

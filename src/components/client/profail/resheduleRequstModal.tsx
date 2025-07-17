@@ -36,8 +36,8 @@ export default function RescheduleRequestModal({
           onClose()
           toast.success(data.message)
         },
-        onError: (error: any) => {
-          toast.error(error.response.data.message)
+        onError: (error) => {
+          toast.error(error.message)
         }
       }
     )
@@ -52,8 +52,8 @@ export default function RescheduleRequestModal({
           onClose()
           toast.success(data.message)
         },
-        onError: (error: any) => {
-          toast.error(error.response.data.message)
+        onError: (error) => {
+          toast.error(error.message)
         }
       }
     )

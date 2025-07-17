@@ -1,10 +1,9 @@
-"use client"
-
 import type React from "react"
 import { useEffect, useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Phone, Mail, MapPin, Star, Eye, X, ChevronLeft, ChevronRight, ExternalLink } from "lucide-react"
 import { useGetAllWorkSamplesByVendorIdMutation } from "@/hooks/ClientCustomHooks"
+import { CLOUDINARY_BASE_URL } from "@/types/config/config"
 
 interface WorkSample {
   _id: string
@@ -33,6 +32,7 @@ interface VendorDetailsPageProps {
   onClose: () => void
 }
 
+
 const ImageGallery: React.FC<{ images: string[]; title: string }> = ({ images, title }) => {
   const [selectedImage, setSelectedImage] = useState<number | null>(null)
 
@@ -52,11 +52,6 @@ const ImageGallery: React.FC<{ images: string[]; title: string }> = ({ images, t
 
   
 
-
-
-
-
-
   return (
     <>
       <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
@@ -69,7 +64,7 @@ const ImageGallery: React.FC<{ images: string[]; title: string }> = ({ images, t
             onClick={() => setSelectedImage(index)}
           >
             <img
-              src={image || "/placeholder.svg?height=200&width=200"}
+              src={CLOUDINARY_BASE_URL+image || "/placeholder.svg?height=200&width=200"}
               alt={`${title} ${index + 1}`}
               className="w-full h-full object-cover"
             />
@@ -103,12 +98,11 @@ const ImageGallery: React.FC<{ images: string[]; title: string }> = ({ images, t
               onClick={(e) => e.stopPropagation()}
             >
               <img
-                src={images[selectedImage] || "/placeholder.svg"}
+                src={CLOUDINARY_BASE_URL+images[selectedImage] || "/placeholder.svg"}
                 alt={`${title} ${selectedImage + 1}`}
                 className="max-w-full max-h-full object-contain rounded-lg"
               />
 
-              {/* Navigation */}
               {images.length > 1 && (
                 <>
                   <button
@@ -231,7 +225,7 @@ console.log('vendor',vendor)
             >
               <div className="w-48 h-48 rounded-full overflow-hidden border-4 border-white/20 shadow-2xl">
                 <img
-                  src={vendor?.profileImage || "/placeholder.svg?height=200&width=200"}
+                  src={CLOUDINARY_BASE_URL + vendor?.profileImage || "/placeholder.svg?height=200&width=200"}
                   alt={vendor?.name}
                   className="w-full h-full object-cover"
                 />

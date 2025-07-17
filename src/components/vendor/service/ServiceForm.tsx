@@ -12,6 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { ServiceFormValues } from "@/types/service"
 import { useCreateServiceMutation, useGetAllCategoriesMutation, useUpdateServiceMutation } from "@/hooks/VendorCustomHooks"
 import toast from "react-hot-toast"
+import { Category } from "@/types/category"
 
 interface ServiceAddFormProps {
   onClose: () => void
@@ -62,7 +63,7 @@ const defaultInitialValues: ServiceFormValues = {
 export const  ServiceAddForm = ({ onClose, onSubmit, initialData, isEdit, refetchServices }: ServiceAddFormProps) => {
   console.log('isEding',isEdit)
   const [step, setStep] = useState(1)
-  const [categories, setCategories] = useState<any[]>([])
+  const [categories, setCategories] = useState<Category[]>([])
 
   const createServiceMutation = useCreateServiceMutation()
   const getAllCategoriesMutation = useGetAllCategoriesMutation()
@@ -72,7 +73,6 @@ export const  ServiceAddForm = ({ onClose, onSubmit, initialData, isEdit, refetc
   { ...initialData } 
   : { ...defaultInitialValues };
 
-console.log('initialValues',initialValues)
 
   useEffect(() => {
     if (!isEdit) {
@@ -83,7 +83,6 @@ console.log('initialValues',initialValues)
   useEffect(() => {
     getAllCategoriesMutation.mutate(undefined, {
       onSuccess: (data) => {
-        console.log("Categories fetched successfully:", data.categories)
         setCategories(data.categories?.items || [])
       },
       onError: (error) => {
@@ -104,7 +103,6 @@ console.log('initialValues',initialValues)
         console.log('serviceId',values)
         updateServiceMutation.mutate({serviceId:values.serviceId,data:values}, {
           onSuccess: (data) => {
-            console.log("Service updated successfully:", data)
             toast.success(data.message || "Service updated successfully")
             actions.resetForm({ values: defaultInitialValues }) 
             actions.setSubmitting(false)
@@ -112,18 +110,15 @@ console.log('initialValues',initialValues)
             onClose()
             refetchServices?.()
           },
-          onError: (error: any) => {
-            console.error("Error updating service:", error)
-            toast.error(error.response?.data?.message || "Failed to update service")
+          onError: (error) => {
+            toast.error(error.message || "Failed to update service")
             actions.setSubmitting(false)
           },
         })
 
       } else {
-        console.log('adding',values)
         createServiceMutation.mutate(values, {
           onSuccess: (data) => {
-            console.log("Service created successfully:", data)
             toast.success(data.message || "Service created successfully")
             actions.resetForm({ values: defaultInitialValues }) 
             actions.setSubmitting(false)
@@ -131,9 +126,8 @@ console.log('initialValues',initialValues)
             onClose()
             refetchServices?.()
             },  
-          onError: (error: any) => {
-            console.error("Error submitting service:", error)
-            toast.error(error.response?.data?.message || "Failed to create service")
+          onError: (error) => {
+            toast.error(error.message || "Failed to create service")
             actions.setSubmitting(false)
           },
         })

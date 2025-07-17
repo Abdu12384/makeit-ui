@@ -75,8 +75,8 @@ export default function SignupComponent() {
        onSuccess:()=> {
          setIsOpen(true)
        },
-       onError:(error:any)=>{
-         toast.error(error?.response?.data?.message)
+       onError:(error)=>{
+         toast.error(error.message)
          setIsOpen(false)
        }
      })

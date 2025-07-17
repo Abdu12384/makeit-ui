@@ -7,8 +7,8 @@ const ResetPassword = lazyWithFallback(() => import("@/components/common/ForgotP
 const AttendeesList = lazyWithFallback(() => import("@/components/vendor/booked-events/AttendeesInfo"))
 const BookedEventsList = lazyWithFallback(() => import("@/components/vendor/booked-events/BookedEventList"))
 const BookingList = lazyWithFallback(() => import("@/components/vendor/bookings/VendorBookingList"))
-const CreateEventPage = lazyWithFallback(() => import("@/components/vendor/events/CreateEvents"))
-const EditEventPage = lazyWithFallback(() => import("@/components/vendor/events/EditEvents"))
+// const CreateEventPage = lazyWithFallback(() => import("@/components/vendor/events/CreateEvents"))
+// const EditEventPage = lazyWithFallback(() => import("@/components/vendor/events/EditEvents"))
 const VendorLoginPage = lazyWithFallback(() => import("@/components/vendor/login/Login"))
 const ServiceListingPage = lazyWithFallback(() => import("@/components/vendor/service/ServiceComponent"))
 const SignupPage = lazyWithFallback(() => import("@/components/vendor/signup/Signup"))
@@ -22,6 +22,7 @@ const VendorProfilePage = lazyWithFallback(() => import("@/pages/vendor/VendorPr
 const WorkSamplePage = lazyWithFallback(() => import("@/pages/vendor/WorkSamplePage"))
 const ProtectedRoute = lazyWithFallback(() => import("@/utils/protected/ProtectedRoute"))
 const NoAuthRoute = lazyWithFallback(() => import("@/utils/protected/PublicRoute"))
+const CretateEventNew = lazyWithFallback(() => import("@/components/vendor/events/createEvent/EventForm"))
 
 
 export const VendorRoute = () =>{
@@ -53,8 +54,9 @@ export const VendorRoute = () =>{
               <Route path="/services" element={<ServiceListingPage />} />
               <Route path="/bookings" element={<BookingList />} />
               <Route path="/events" element={<VendorEventsPage />} />
-              <Route path="/events/create" element={<CreateEventPage />} />
-              <Route path="/events/edit/:id" element={<EditEventPage />} />
+              {/* <Route path="/events/create" element={<CreateEventPage />} /> */}
+              <Route path="/events/create" element={<CretateEventNew />} />
+              {/* <Route path="/events/edit/:id" element={<EditEventPage />} /> */}
               <Route path="/booked-events" element={<BookedEventsList />} />
               <Route path="/events/attendees/:eventId" element={<AttendeesList />} />
               <Route path="/work-sample" element={<WorkSamplePage />} />

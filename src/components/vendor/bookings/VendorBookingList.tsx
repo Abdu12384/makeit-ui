@@ -116,8 +116,8 @@ const BookingList = ({ isLoading = false }: { isLoading?: boolean }) => {
   const [statusFilter, setStatusFilter] = useState("all")
   const [currentPage, setCurrentPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
-  const [activeTab, setActiveTab] = useState("all")
-  const limit = 10
+  const [activeTab, setActiveTab] = useState("pending")
+  const limit = 9
 
   const changeBookingStatusMutation = useChangeBookingStatusMutation()
   const getAllBookingsMutation = useGetAllBookingsMutation()
@@ -132,18 +132,18 @@ const BookingList = ({ isLoading = false }: { isLoading?: boolean }) => {
 
   useEffect(() => {
     getAllBookingsMutation.mutate(
-      { skip: currentPage, limit },
+      { page: currentPage, limit , status:activeTab},
       {
         onSuccess: (response) => {
-          setTotalPages(response.bookings.total)
           setLocalBookings(response.bookings.bookings)
+          setTotalPages(response.bookings.total)
         },
-        onError: (error: any) => {
+        onError: (error) => {
           console.error(error)
         },
       },
     )
-  }, [currentPage])
+  }, [currentPage,activeTab])
 
   const handleVendorApprovalChange = (bookingId: string, newStatus: "Approved" | "Rejected") => {
     if (newStatus === "Rejected") {
@@ -163,8 +163,8 @@ const BookingList = ({ isLoading = false }: { isLoading?: boolean }) => {
             ),
           )
         },
-        onError: (error: any) => {
-          toast.error(error.response?.data?.message || "Failed to update status")
+        onError: (error) => {
+          toast.error(error.message || "Failed to update status")
         },
       },
     )
@@ -183,7 +183,7 @@ const BookingList = ({ isLoading = false }: { isLoading?: boolean }) => {
           )
           setShowRejectDialog(false)
         },
-        onError: (error: any) => {
+        onError: (error) => {
           toast.error(error.message || "Failed to reject booking")
           setShowRejectDialog(false)
         },
@@ -218,7 +218,7 @@ const BookingList = ({ isLoading = false }: { isLoading?: boolean }) => {
             ),
           )
         },
-        onError: (error: any) => toast.error(error.response?.data?.message || "Failed to complete booking"),
+        onError: (error) => toast.error(error.message || "Failed to complete booking"),
       },
     )
   }
@@ -227,34 +227,11 @@ const BookingList = ({ isLoading = false }: { isLoading?: boolean }) => {
     window.location.href = `/vendor/chat/${clientId}`
   }
 
-  // Filter bookings by tab
-  const getFilteredBookingsByTab = () => {
-    if (activeTab === "pending")
-      return localBookings.filter((b) => b.vendorApproval === "Pending" || b.status === "Pending")
-    if (activeTab === "approved")
-      return localBookings.filter((b) => b.vendorApproval === "Approved" && b.status !== "Cancelled")
-    if (activeTab === "completed") return localBookings.filter((b) => b.isComplete)
-    if (activeTab === "rejected")
-      return localBookings.filter((b) => b.vendorApproval === "Rejected" || b.status === "Cancelled")
-    return localBookings
-  }
 
-  const filteredBookings = getFilteredBookingsByTab()
-    ?.filter((booking) => statusFilter === "all" || booking.status.toLowerCase() === statusFilter.toLowerCase())
-    ?.filter((booking) => {
-      if (!searchTerm) return true
-      const search = searchTerm.toLowerCase()
-      return (
-        booking.bookingId.toLowerCase().includes(search) ||
-        booking.serviceName?.toLowerCase().includes(search) ||
-        booking.clientName?.toLowerCase().includes(search)
-      )
-    })
-
-  // Counts for summary cards
   const counts = {
     pending: localBookings.filter((b) => b.vendorApproval === "Pending" || b.status === "Pending").length,
     approved: localBookings.filter((b) => b.vendorApproval === "Approved" && b.status !== "Cancelled").length,
+    confirmed: localBookings.filter((b) => b.vendorApproval === "Confirmed").length,
     completed: localBookings.filter((b) => b.isComplete).length,
     rejected: localBookings.filter((b) => b.vendorApproval === "Rejected" || b.status === "Cancelled").length,
   }
@@ -309,13 +286,14 @@ const BookingList = ({ isLoading = false }: { isLoading?: boolean }) => {
 
       {/* Summary Cards */}
       <motion.div
-        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6"
+        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-6"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
       >
         {[
           { label: "Pending", count: counts.pending, color: "amber", icon: Clock, tab: "pending" },
           { label: "Approved", count: counts.approved, color: "emerald", icon: CheckCircle, tab: "approved" },
+          { label: "Confirmed", count: counts.confirmed, color: "rose", icon: CheckCircle, tab: "confirmed" },
           { label: "Completed", count: counts.completed, color: "violet", icon: Check, tab: "completed" },
           { label: "Rejected", count: counts.rejected, color: "rose", icon: X, tab: "rejected" },
         ].map((item) => (
@@ -333,13 +311,6 @@ const BookingList = ({ isLoading = false }: { isLoading?: boolean }) => {
                 <item.icon className={`h-5 w-5 text-${item.color}-600`} />
               </div>
             </div>
-            <Button
-              variant="ghost"
-              className={`text-${item.color}-600 hover:text-${item.color}-700 hover:bg-${item.color}-50 p-0 h-auto text-xs font-medium mt-2`}
-              onClick={() => setActiveTab(item.tab)}
-            >
-              View all {item.label.toLowerCase()}
-            </Button>
           </motion.div>
         ))}
       </motion.div>
@@ -353,11 +324,12 @@ const BookingList = ({ isLoading = false }: { isLoading?: boolean }) => {
         <Tabs value={activeTab} onValueChange={setActiveTab} className="mb-6">
           <TabsList className="bg-slate-100 p-1 mb-4">
             {[
-              { value: "all", label: "All Bookings", color: "violet" },
               { value: "pending", label: "Pending", color: "amber" },
               { value: "approved", label: "Approved", color: "emerald" },
+              { value: "confirmed", label: "Confirmed", color: "emerald" },
               { value: "completed", label: "Completed", color: "violet" },
               { value: "rejected", label: "Rejected", color: "rose" },
+              { value: "cancelled", label: "Cancelled", color: "rose" },
             ].map((tab) => (
               <TabsTrigger
                 key={tab.value}
@@ -370,7 +342,7 @@ const BookingList = ({ isLoading = false }: { isLoading?: boolean }) => {
           </TabsList>
 
           <TabsContent value={activeTab}>
-            {filteredBookings?.length === 0 ? (
+            {localBookings?.length === 0 ? (
               <div className="text-center py-12 bg-slate-50 rounded-lg border border-slate-200">
                 <Calendar className="h-16 w-16 text-slate-400 mx-auto mb-4" />
                 <h3 className="text-lg font-medium text-slate-900 mb-2">No bookings found</h3>
@@ -396,7 +368,7 @@ const BookingList = ({ isLoading = false }: { isLoading?: boolean }) => {
             ) : (
               <motion.div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3" initial="hidden" animate="show">
                 <AnimatePresence>
-                  {filteredBookings?.map((booking) => (
+                  {localBookings?.map((booking) => (
                     <motion.div
                       key={booking._id}
                       initial={{ opacity: 0, y: 20 }}
@@ -551,7 +523,7 @@ const BookingList = ({ isLoading = false }: { isLoading?: boolean }) => {
       </motion.div>
 
       {/* Pagination */}
-      {filteredBookings && filteredBookings.length > 0 && (
+      {localBookings && localBookings.length > 0 && (
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}

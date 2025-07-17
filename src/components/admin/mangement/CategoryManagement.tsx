@@ -13,6 +13,7 @@ import { useUploadeImageToCloudinaryMutation } from "@/hooks/VendorCustomHooks";
 import SquareImageCropper from "@/components/common/imageCropper/ImageCropper";
 import { Pagination1 } from "@/components/common/paginations/Pagination";
 import { Category } from "@/types/category";
+import { CLOUDINARY_BASE_URL } from "@/types/config/config";
 
 export default function CategoryManagement() {
   const [categories, setCategories] = useState<Category[]>([]);
@@ -40,11 +41,6 @@ export default function CategoryManagement() {
   const editCategoryMutation = useEditCategoryMutation();
   const uploadToCloudinaryMutation = useUploadeImageToCloudinaryMutation();
 
-  // const filteredCategories = categories.filter(
-  //   (category) =>
-  //     category.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-  //     category.description.toLowerCase().includes(searchQuery.toLowerCase()),
-  // );
 
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -139,8 +135,9 @@ export default function CategoryManagement() {
         cloudinaryFormData.append("upload_preset", "vendor_id");
 
         const uploadResponse = await uploadToCloudinaryMutation.mutateAsync(cloudinaryFormData);
-        imageUrl = uploadResponse.secure_url;
-      }
+        const fullUrl = uploadResponse.secure_url;
+        const uniquePath = new URL(fullUrl).pathname.split("/image/upload/")[1]; 
+        imageUrl = uniquePath;      }
 
       if (isEditing && editingCategoryId) {
         editCategoryMutation.mutate(
@@ -151,7 +148,7 @@ export default function CategoryManagement() {
             image: imageUrl,
           },
           {
-            onSuccess: (response: any) => {
+            onSuccess: (response) => {
               toast.success(response.message);
               setShowSuccess(true);
 
@@ -168,9 +165,8 @@ export default function CategoryManagement() {
                 setIsAddModalOpen(false);
               }, 1500);
             },
-            onError: (error: any) => {
-              console.error("Failed to update category:", error);
-              toast.error(error?.response?.data?.message || "Failed to update category");
+            onError: (error) => {
+              toast.error(error?.message);
               setIsSubmitting(false);
             },
           }
@@ -183,7 +179,7 @@ export default function CategoryManagement() {
             image: imageUrl,
           },
           {
-            onSuccess: (response: any) => {
+            onSuccess: (response) => {
               const newId = Math.max(...categories.map((c) => parseInt(c.categoryId || "0"))) + 1;
               const categoryToAdd = {
                 categoryId: newId.toString(),
@@ -204,9 +200,8 @@ export default function CategoryManagement() {
                 setIsAddModalOpen(false);
               }, 1500);
             },
-            onError: (error: any) => {
-              console.error("Failed to create category:", error);
-              toast.error(error?.response?.data?.message || "Failed to create category");
+            onError: (error) => {
+              toast.error(error.message)
               setIsSubmitting(false);
             },
           }
@@ -224,9 +219,9 @@ export default function CategoryManagement() {
     setIsAddModalOpen(true);
   };
 
-  const handleOpenEditModal = (category: any) => {
+  const handleOpenEditModal = (category: Category) => {
     setIsEditing(true);
-    setEditingCategoryId(category._id);
+    setEditingCategoryId(category._id!);
     setNewCategory({
       title: category.title,
       description: category.description,
@@ -244,7 +239,7 @@ export default function CategoryManagement() {
         status: newStatus,
       },
       {
-        onSuccess: (response: any) => {
+        onSuccess: (response) => {
           setCategories(
             categories.map((category) =>
               category.categoryId === id ? { ...category, status: newStatus } : category
@@ -252,9 +247,8 @@ export default function CategoryManagement() {
           );
           toast.success(response.message);
         },
-        onError: (error: any) => {
-          console.error("error", error);
-          toast.error(error?.response?.data?.message || "Failed to update status");
+        onError: (error) => {
+          toast.error(error?.message || "Failed to update status");
         },
       }
     );
@@ -295,7 +289,7 @@ export default function CategoryManagement() {
                     {category.image ? (
                       <div className="w-12 h-12 rounded-lg overflow-hidden bg-gray-700 flex items-center justify-center">
                         <img
-                          src={category.image}
+                          src={CLOUDINARY_BASE_URL + category.image}
                           alt={category.title}
                           className="w-full h-full object-cover"
                         />

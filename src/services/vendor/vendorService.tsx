@@ -1,22 +1,12 @@
 import authAxiosInstance from "@/api/auth.axios";
 import { VendorAxiosInstance } from "@/api/vendor.axios";
-import { IEventFormValues } from "@/types/event";
+import {  NewEventFormValues } from "@/types/event";
 import { IAuthResponse, IAxiosResponse } from "@/types/response";
 import { GetAllServicesParams, ServiceFormValues } from "@/types/service";
+import { VendorData } from "@/types/signup";
 import { ILoginData } from "@/types/User";
 import { WorkSample } from "@/types/worksample/work-sample";
-import clodAxios from 'axios'
-
-
-
-interface VendorData {
-   name: string;
-   email: string;
-   phone: string;
-   password: string;
-   confirmPassword: string;
-   idProof: string;
-}
+import clodAxios, { isAxiosError } from 'axios'
 
 
 
@@ -70,7 +60,7 @@ export const getVendorNotifications = async () => {
    return response.data;
  } catch (error) {
    console.log(error)
-   throw error
+   throw new Error(isAxiosError(error) ? error.response?.data.message : 'error while fetching notifications')	
  }
 }
 
@@ -91,12 +81,12 @@ export const vendorSignup  = async (formdata: VendorData) =>{
     return  response.data
    } catch (error) {
      console.log('error wihle singup vendor', error)
-     throw error
+     throw new Error(isAxiosError(error) ? error.response?.data.message : 'error while singup vendor')	
    }
 }
 
 
-export  const vendorCreateAccount = async ({formdata, otpString}:{formdata:Record<string, string | number | boolean>;otpString:string}) =>{
+export  const vendorCreateAccount = async ({formdata, otpString}:{formdata:VendorData;otpString:string}) =>{
     try {
        const response = await authAxiosInstance.post('/signup',{formdata,otpString})
        return response.data
@@ -113,7 +103,7 @@ export const VendorLogin = async (user: ILoginData) =>{
       return  response.data
     } catch (error) {
        console.log(error)
-       throw error
+       throw new Error(isAxiosError(error) ? error.response?.data.message : 'error while logging in')	
     }
 }
 
@@ -140,7 +130,7 @@ export const vendorChangePassword = async (data:Record<string, string | number |
       return response.data
    } catch (error) {
       console.log(error)
-      throw error
+      throw new Error(isAxiosError(error) ? error.response?.data.message : 'error while changing password')	
    }
 }
 
@@ -156,7 +146,7 @@ export const createService = async (data:ServiceFormValues) => {
    
   } catch (error) {
        console.log(error)
-       throw error
+       throw new Error(isAxiosError(error) ? error.response?.data.message : 'error while creating service')	
   }
 }
 
@@ -200,7 +190,7 @@ export const updateService = async ({serviceId,data}: {serviceId:string,data:Ser
      return response.data
    } catch (error) {
         console.log(error)
-        throw error
+        throw new Error(isAxiosError(error) ? error.response?.data.message : 'error while updating service')	
    }
 }
 
@@ -211,7 +201,7 @@ export const blockService = async (serviceId:string) => {
    return response.data;
  } catch (error) {
    console.log(error)
-   throw error
+   throw Error(isAxiosError(error) ? error.response?.data.message : 'error while blocking service')	
  }
 }
 
@@ -248,18 +238,19 @@ export const changeBookingStatus = async ({
     return response.data;
   } catch (error) {
     console.log(error);
-    throw error;
+    throw new Error(isAxiosError(error) ? error.response?.data.message : 'error while changing booking status')	
   }
 };
 
 
 
-export const getAllBookings = async (limit:number,skip:number) => {
+export const getAllBookings = async (page:number,limit:number,status:string) => {
    try {
    const response = await VendorAxiosInstance.get("/vendor/bookings",{
       params:{
+         page,
          limit,
-         skip
+         status
       }
    });
    return response.data;
@@ -279,18 +270,18 @@ export const vendorCancelBooking = async ({bookingId,status,reason}: {bookingId:
       return response.data;
     } catch (error) {
       console.log(error);
-      throw error;
+      throw new Error(isAxiosError(error) ? error.response?.data.message : 'error while canceling booking')	
     }
 }
 
 
-export const createEvent = async (data:IEventFormValues)=>{
+export const createEvent = async (data:NewEventFormValues)=>{
    try {
      const response = await VendorAxiosInstance.post("/vendor/event",data)
      return response.data
    } catch (error) {
     console.log(error)
-    throw error
+    throw new Error(isAxiosError(error) ? error.response?.data.message : 'error while creating event')	
    }
 }
 
@@ -311,13 +302,13 @@ export const getAllEventsByVendorId = async (page:number,limit:number) => {
 }
 
 
-export const editEvent = async ({data,eventId}: {data:IEventFormValues,eventId:string})=>{
+export const editEvent = async ({data,eventId}: {data:NewEventFormValues,eventId:string})=>{
    try {
      const response = await VendorAxiosInstance.put(`/vendor/event/${eventId}`,data)
      return response.data
    } catch (error) {
     console.log(error) 
-    throw error
+     throw new Error(isAxiosError(error) ? error.response?.data.message : 'error while editing event')	
    }
 }
 
@@ -327,7 +318,7 @@ export const blockEvent = async (eventId:string) => {
    return response.data;
  } catch (error) {
    console.log(error)
-   throw error
+   throw new Error(isAxiosError(error) ? error.response?.data.message : 'error while blocking event')	
  }
 }
 
@@ -341,7 +332,7 @@ export const RescheduleBooking = async ({bookingId,selectedDate,rescheduleReason
       return response.data;
     } catch (error) {
       console.log(error);
-      throw error;
+      throw new Error(isAxiosError(error) ? error.response?.data.message : 'error while rescheduling booking')	
     }
 }
 
@@ -368,14 +359,18 @@ export const getWalletById = async ({page,limit}: {page:number,limit:number}) =>
 
 
 
-export const verifyTicket = async ({ticketId,eventId}: {ticketId:string,eventId:string}) => {
+export const verifyTicket = async ({ticketId,eventId,status}: {ticketId:string,eventId:string,status:string}) => {
    try {
-   const response = await VendorAxiosInstance.get(`/vendor/verify-ticket/${ticketId}/${eventId}`);
+   const response = await VendorAxiosInstance.get(`/vendor/verify-ticket/${ticketId}/${eventId}`,{
+    params:{
+      status
+    }
+   });
    return response.data;
  } catch (error) {
    console.log(error)
-   throw error
- }
+   throw new Error(isAxiosError(error) ? error.response?.data.message : 'error while verifying ticket')	
+  }
 }
 
 
@@ -419,7 +414,7 @@ export const createWorkSample = async (data:WorkSample) => {
    return response.data;
  } catch (error) {
    console.log(error)
-   throw error
+   throw new Error(isAxiosError(error) ? error.response?.data.message : 'error while creating work sample')	
  }
 }
 
@@ -431,7 +426,7 @@ export const updateWorkSample = async ({data,workSampleId}: {data:WorkSample,wor
    return response.data;
  } catch (error) {
    console.log(error)
-   throw error
+   throw new Error(isAxiosError(error) ? error.response?.data.message : 'error while updating work sample')	
  }
 }
 
@@ -453,8 +448,13 @@ export const getDashboardData = async (period:string) => {
 
 
 export const logoutVendor = async (): Promise<IAxiosResponse> => {
+   try {
    const response = await VendorAxiosInstance.post("/vendor/logout");
    return response.data;
+} catch (error) {
+   console.log(error)
+   throw new Error(isAxiosError(error) ? error.response?.data.message : 'error while logging out')	
+}
 };
 
 

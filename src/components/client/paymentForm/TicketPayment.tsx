@@ -20,13 +20,11 @@ function TicketPaymentForm() {
         vendorId: string,
         event: IEventFormValues
     }
-    console.log('here the data',data)
     const createTicket = useCreateTicketMutation()
     const confirmTicket = useConfirmTicketAndPaymentMutation()
     const {ticket} = data
 
     const handleCreatePaymentIntent = async (paymentMethodId: string) => {
-        console.log('ticket data', ticket)
         const response = await createTicket.mutateAsync({
             ...ticket,
             paymentIntentId: paymentMethodId,
@@ -48,7 +46,6 @@ function TicketPaymentForm() {
             vendorId: data.vendorId,
         }, {
             onSuccess: (response) => {
-                console.log('data',response)
                 setTimeout(() => {
                     setUpdatedTicket(response.confirmTicket)
                     setIsOpen(true)

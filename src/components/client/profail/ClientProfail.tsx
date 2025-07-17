@@ -12,7 +12,7 @@ import { Formik, Form, Field, ErrorMessage } from "formik"
 import * as Yup from "yup"
 import { useUploadeImageToCloudinaryMutation } from "@/hooks/VendorCustomHooks"
 import { ChangePassword } from "@/components/common/changePassword/ChangePassword"
-
+import { CLOUDINARY_BASE_URL } from "@/types/config/config"
 // Color palette for white theme
 const colors = {
   white: "#FFFFFF",
@@ -58,40 +58,48 @@ const ClientProfile = () => {
     [client],
   )
 
-  console.log("client", client)
-
+ 
+   
   const handleSave = async (values: typeof initialValues) => {
-    setIsEditing(false)
-
+    
     try {
       let profileImageUrl = client?.profileImage
-
+      
       if (values.profileImage && values.profileImage !== client?.profileImage && values.profileImage !== dummyDP) {
         const imageBlob = await fetch(values.profileImage).then((r) => r.blob())
         const imageFile = new File([imageBlob], "profile-image.jpg", { type: "image/jpeg" })
-
+        
         const cloudinaryFormData = new FormData()
         cloudinaryFormData.append("file", imageFile)
         cloudinaryFormData.append("upload_preset", "vendor_id")
-
+        
         const uploadResponse = await uploadToCloudinaryMutation.mutateAsync(cloudinaryFormData)
         profileImageUrl = uploadResponse.secure_url
       }
+      let uniquePath = "";
+      if (profileImageUrl?.startsWith("http")) {
+        const url = new URL(profileImageUrl);
+        uniquePath = url.pathname.split("/image/upload/")[1];
+      } else {
+        uniquePath = profileImageUrl || "";
+      }
+  
 
       const updatedClientData = {
         name: values.name,
         phone: values.phone,
         email: values.emailAddress,
-        profileImage: profileImageUrl ?? "",
+        profileImage: uniquePath ?? "",
       }
       console.log("updatedClientData", updatedClientData)
       await updateClientMutation.mutate(updatedClientData, {
         onSuccess: (response) => {
           const user = response.user
           console.log("Profile Updated", user)
-
+          
           dispatch(clientLogin(user as IClient))
           toast.success(response.message)
+          setIsEditing(false)
         },
         onError: (error) => {
           console.log("Profile Updating Error", error)
@@ -233,14 +241,25 @@ const ClientProfile = () => {
                   <div className="relative">
                     <motion.div
                       whileHover={{ scale: 1.05 }}
-                      className="h-32 w-32 rounded-full overflow-hidden border-4"
+                      className="h-32 w-32 rounded-full overflow-hidden border-4 bg-gray-100 flex items-center justify-center"
                       style={{ borderColor: colors.accent }}
                     >
-                      <img
-                        src={values.profileImage || "/placeholder.svg?height=128&width=128"}
-                        alt="Profile"
-                        className="w-full h-full object-cover"
-                      />
+                       {values.profileImage &&
+                          (values.profileImage.startsWith("data:") ||
+                            values.profileImage.startsWith("blob:") ||
+                            (values.profileImage !== dummyDP && values.profileImage)) ? (
+                            <img
+                              src={
+                                values.profileImage.startsWith("data:") || values.profileImage.startsWith("blob:")
+                                  ? values.profileImage
+                                  : `${CLOUDINARY_BASE_URL}${values.profileImage}`
+                              }
+                              alt="Profile"
+                              className="w-full h-full object-cover"
+                            />
+                          ) : (
+                            <User className="w-16 h-16 text-gray-400" />
+                          )}
                     </motion.div>
                     {isEditing && (
                       <motion.div

@@ -4,13 +4,14 @@ import { debounce } from "lodash";
 import { ClientManagementComponent } from "@/components/admin/mangement/UserMangement";
 import { useGetAllUsers, useUpdateUserStatusMutaiion } from "@/hooks/AdminCustomHooks";
 import toast from "react-hot-toast";
+import { IClient } from "@/types/User";
 
 
 export default function AdminClientManagementPage() {
 	const [searchQuery, setSearchQuery] = useState("");
 	const [debouncedSearch, setDebouncedSearch] = useState(searchQuery);
 	const [currentPage, setCurrentPage] = useState(1);
-	const [clients, setClients] = useState<any[]>([]);
+	const [clients, setClients] = useState<IClient[]>([]);
 
 	const limit = 10;
 
@@ -63,23 +64,21 @@ useEffect(() => {
 									setClients((prevClients) =>
 										prevClients.map((client) =>
 											client.userId === userId
-												? {
+												? ({
 														...client,
 														status: client.status === "active" ? "inactive" : "active",
-													}
+													}as IClient)
 												: client
 										)
 									);
 					},
-					onError: (error: any) => {
-						toast.error(error.response.data.message);
+					onError: (error) => {
+						toast.error(error.message);
 					},
 				}
 			);
-		} catch (error: any) {
-			toast.error(
-				error.response?.data?.message || "Failed to update status."
-			);
+		} catch (error) {
+			console.log(error)
 		}
 	};
 

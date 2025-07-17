@@ -8,6 +8,7 @@ import { motion, AnimatePresence } from "framer-motion"
 import {  User, Briefcase, ImageIcon, Calendar, Clock, Wallet, Menu, ChevronRight, Ticket, MessageCircle, User2 } from "lucide-react"
 import { useSelector } from "react-redux"
 import { RootState } from "@/store/store"
+import { CLOUDINARY_BASE_URL } from "@/types/config/config"
 
 interface CircularSidebarProps {
   children?: React.ReactNode
@@ -111,7 +112,7 @@ export const CircularSidebar: React.FC<CircularSidebarProps> = () => {
                   <div onClick={()=>navigate('/vendor/home')} className="h-full w-full rounded-full overflow-hidden bg-white flex items-center justify-center">
                     {vendor?.profileImage ? (
                       <img
-                        src={vendor?.profileImage}
+                        src={CLOUDINARY_BASE_URL + vendor?.profileImage}
                         alt="Profile"
                         className="h-full w-full object-cover"
                       />

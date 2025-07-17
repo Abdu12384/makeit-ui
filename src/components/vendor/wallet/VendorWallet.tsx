@@ -6,32 +6,18 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useGetVendorWalletByIdMutation } from "@/hooks/VendorCustomHooks";
 import { Pagination1 } from "@/components/common/paginations/Pagination";
-
-interface Transaction {
-  _id: string;
-  paymentType: string;
-  amount: number;
-  date: string;
-  paymentStatus: string;
-  description: string;
-  vendor?: string;
-  service?: string;
-}
-
+import { Transaction } from "@/types/transaction";
 
  
 export const VendorWallet = () => {
   const [filterPeriod, setFilterPeriod] = useState("all");
   const [filteredTransactions, setFilteredTransactions] = useState<Transaction[]>([]);
-  const [transaction, setTransaction] = useState<any>([]);
+  const [transaction, setTransaction] = useState<Transaction[]>([]);
   const [balance, setBalance] = useState<number | undefined>(undefined);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const limit = 10
   const getVendorWalletByIdMutation = useGetVendorWalletByIdMutation()  
-
-  
-
 
 
   useEffect(() => {
@@ -59,7 +45,7 @@ export const VendorWallet = () => {
   useEffect(() => {
     console.log("useEffect running, filterPeriod:", filterPeriod, "allTransactions length:", transaction.length);
     const now = new Date();
-    const filtered = transaction.filter((tx:any) => {
+    const filtered = transaction.filter((tx:Transaction) => {
       const txDate = new Date(tx.date);
       if (filterPeriod === "all") return true;
       if (filterPeriod === "today") {
@@ -180,7 +166,7 @@ export const VendorWallet = () => {
           </div>
           <h3 className="text-lg font-medium text-slate-900 mb-2">No Transactions Yet</h3>
           <p className="text-slate-500 max-w-md mx-auto mb-6">
-            It looks like you haven't made any transactions yet. Your transaction history will appear here once you do.
+            It looks like you haven't made transactions yet. Your transaction history will appear here once you do.
           </p>
         </motion.div>
       ) : (
@@ -222,6 +208,11 @@ export const VendorWallet = () => {
                         <Calendar className="h-3.5 w-3.5 mr-1" />
                         {formatDate(transaction.date)} at {formatTime(transaction.date)}
                       </div>
+                      {transaction.relatedTitle && (
+                        <div className="text-sm text-slate-500 mt-1">
+                          <span className="font-medium">Related:</span> {transaction.relatedTitle}
+                        </div>
+                      )}
                       {transaction.vendor && (
                         <div className="text-sm text-slate-500 mt-1">
                           <span className="font-medium">Vendor:</span> {transaction?.vendor}
@@ -239,7 +230,7 @@ export const VendorWallet = () => {
                         }`}
                       >
                         {transaction.paymentStatus === "credit" ? "+" : "-"}
-                        {transaction.amount}
+                        {transaction.amount.toFixed(2)}
                       </p>
                     </div>
                     <div>{transaction.paymentType}</div>

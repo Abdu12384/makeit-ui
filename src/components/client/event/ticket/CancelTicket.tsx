@@ -152,9 +152,8 @@ export const CancelTicketModal: React.FC<{
           onConfirm()
           onClose()
         },
-        onError: (error: any) => {
-          console.log(error)
-          toast.error(error.message || "Failed to cancel ticket")
+        onError: (error) => {
+          toast.error(error?.message)
           setIsLoading(false)
         },
       },

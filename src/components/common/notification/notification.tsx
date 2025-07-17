@@ -110,7 +110,7 @@ export default function NotificationDropdown() {
         setNotifications(data.items)
         console.log("Notifications:", data)
       },
-      onError: (err: any) => {
+      onError: (err) => {
         console.error("Failed to fetch notifications:", err)
       },
     })
@@ -145,7 +145,7 @@ export default function NotificationDropdown() {
       onSuccess: (data) => {
         console.log("Notifications:", data)
       },
-      onError: (err: any) => {
+      onError: (err) => {
         console.error("Failed to fetch notifications:", err)
       },
     })

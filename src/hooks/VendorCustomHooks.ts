@@ -1,7 +1,8 @@
 
 import { changeBookingStatus, createEvent, createService, createWorkSample, editEvent, getAllBookings, getAllCategories, getAllEventsByVendorId, getAllServicesByVendorId, getAllWorkSamplesByVendorId, getAttendeesById, getDashboardData, getWalletById, logoutVendor, saveVendorFCMToken, updateService, updateVendorProfile, updateWorkSample, uploadImageCloudinary, vendorCancelBooking, vendorChangePassword, vendorCreateAccount, VendorLogin, vendorSignup, verifyTicket, getVendorNotifications, markVendorNotificationAsRead, blockEvent, blockService, RescheduleBooking, getVendorBookedDates } from "@/services/vendor/vendorService";
-import { IEventFormValues } from "@/types/event";
+import { NewEventFormValues } from "@/types/event";
 import { ServiceFormValues } from "@/types/service";
+import { VendorData } from "@/types/signup";
 import { ILoginData } from "@/types/User";
 import { WorkSample } from "@/types/worksample/work-sample";
 import { useMutation } from "@tanstack/react-query";
@@ -72,7 +73,7 @@ export const useVendorSignupMutation = () =>{
 
 export const useCreateAccountMutation = () => {
   return useMutation({
-      mutationFn: ({ formdata, otpString }: { formdata: Record<string, string | boolean | number>; otpString: string }) => vendorCreateAccount({ formdata, otpString })
+      mutationFn: ({ formdata, otpString }: { formdata: VendorData; otpString: string }) => vendorCreateAccount({ formdata, otpString })
 
   })
 }
@@ -158,7 +159,7 @@ export const useChangeBookingStatusMutation = () => {
 
 export const useGetAllBookingsMutation = () => {
   return useMutation({
-    mutationFn: (params: {limit:number,skip:number}) => getAllBookings(params.limit,params.skip),
+    mutationFn: (params: {page:number,limit:number,status:string}) => getAllBookings(params.page,params.limit,params.status),
   });
 }
 
@@ -173,7 +174,7 @@ export const useVendorCancelBookingMutation = () => {
 
 export const useCreateEventMutation = () => {
    return useMutation({
-     mutationFn: (data:IEventFormValues) => createEvent(data)
+     mutationFn: (data:NewEventFormValues) => createEvent(data)
    })
 }
 
@@ -192,7 +193,7 @@ export const useGetAllEventsByVendorIdMutation = () => {
 
 export const useEditEventMutation = () => {
   return useMutation({
-    mutationFn: ({data,eventId}: {data:IEventFormValues,eventId:string}) => editEvent({data,eventId}),
+    mutationFn: ({data,eventId}: {data:NewEventFormValues,eventId:string}) => editEvent({data,eventId}),
   });
 }
 
@@ -213,7 +214,7 @@ export const useGetVendorWalletByIdMutation = () => {
 
 export const useVerifyTicketMutation = () => {
    return useMutation({
-     mutationFn: ({ticketId,eventId}: {ticketId:string,eventId:string}) => verifyTicket({ticketId,eventId}),
+     mutationFn: ({ticketId,eventId,status}: {ticketId:string,eventId:string,status:string}) => verifyTicket({ticketId,eventId,status}),
    })
 }
 

@@ -13,6 +13,7 @@ import { Link } from "react-router-dom"
 import { disconnectSocket } from "@/utils/socket/socket"
 import { listenForForegroundMessages, requestNotificationPermission } from "@/services/firebase/messaging"
 import NotificationDropdown from "./notification/notification"
+import { CLOUDINARY_BASE_URL } from "@/types/config/config"
 
 interface NavbarProps {
   variant?: "transparent" | "solid"
@@ -56,7 +57,7 @@ export const Navbar: React.FC<NavbarProps> = ({ variant = "solid" }) => {
           onSuccess: () => {
             localStorage.setItem("fcmToken", token);
           },
-          onError: (err: any) => {
+          onError: (err) => {
             console.error("Failed to save token:", err);
           },
         });
@@ -97,8 +98,8 @@ export const Navbar: React.FC<NavbarProps> = ({ variant = "solid" }) => {
         toast.success(data.message)
         setIsProfileDropdownOpen(false)
       },
-      onError: (err: any) => {
-        toast.error(err.response.data.message)
+      onError: (err) => {
+        toast.error(err.message)
       },
     })
   }
@@ -176,7 +177,7 @@ export const Navbar: React.FC<NavbarProps> = ({ variant = "solid" }) => {
                 >
                   {client?.profileImage ? (
                         <img
-                          src={client.profileImage}
+                          src={`${CLOUDINARY_BASE_URL}/${client.profileImage}`}
                           alt="Profile"
                           className="h-8 w-8 rounded-full object-cover" 
                         />

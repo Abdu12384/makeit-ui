@@ -114,9 +114,10 @@ export default function SignupPage() {
     
     try {
       const response = await uploadImageCloudinaryAPI.mutateAsync(formdata)
-      console.log('clodinary data',response)
-      const documentUrl = response.secure_url
-      console.log('this is the documenturl', documentUrl)
+      // const documentUrl = response.secure_url
+      const fullUrl = response.secure_url;
+      const documentUrl = new URL(fullUrl).pathname.split("/image/upload/")[1];
+
       
       const vendor: VendorData = {
         name: values.name,
@@ -129,16 +130,14 @@ export default function SignupPage() {
       }
       
       setData(vendor)
-      console.log(vendor)
       
       // Call the vendor signup API
       vendorSignupAPI.mutate(vendor, {
         onSuccess: () => {
           setIsOpen(true)
         },
-        onError: (error:any) => {
-          console.log('the error06465',error)
-          toast.error(error?.response?.data?.message)
+        onError: (error) => {
+          toast.error(error?.message)
         }
       })
 

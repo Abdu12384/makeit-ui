@@ -82,9 +82,8 @@ export default function EventBookingForm({
             },
           });
         },
-        onError: (error:any) => {
-          console.log('error',error)
-          toast.error(error.response?.data?.message)
+        onError: (error) => {
+          toast.error(error?.message)
         }
      });
 

@@ -5,6 +5,7 @@ import type { Socket } from "socket.io-client"
 import type { Chat } from "@/types/chat"
 import { motion } from "framer-motion"
 import { Search, MessageSquare } from "lucide-react"
+import { CLOUDINARY_BASE_URL } from "@/types/config/config"
 
 interface ChatListProps {
   userId: string
@@ -220,7 +221,7 @@ const ChatList: React.FC<ChatListProps> = ({ userId, userModel, onSelectChat, so
                     <div className="relative">
                       {otherUserProfilePicture ? (
                         <img
-                          src={otherUserProfilePicture || "/placeholder.svg"}
+                          src={ CLOUDINARY_BASE_URL + otherUserProfilePicture || "/placeholder.svg"}
                           alt={otherUserName}
                           className="w-12 h-12 rounded-full object-cover"
                         />
@@ -240,11 +241,6 @@ const ChatList: React.FC<ChatListProps> = ({ userId, userModel, onSelectChat, so
                         <p className="text-sm text-gray-600 truncate max-w-[180px]">
                           {chat.lastMessage || "No messages yet"}
                         </p>
-                        {/* {hasUnread && (
-                          <span className="w-5 h-5 bg-purple-600 rounded-full flex items-center justify-center text-white text-xs">
-                            1
-                          </span>
-                        )} */}
                       </div>
                     </div>
                   </div>

@@ -4,7 +4,6 @@ import { ArrowLeft, Mail, Phone, Calendar, Store } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 // import { Separator } from "@/components/ui/separator"
-import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import type { IVendor } from "@/types/User"
 import {
@@ -16,6 +15,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { Textarea } from "@/components/common/textArea/TextArea"
+import { CLOUDINARY_BASE_URL } from "@/types/config/config"
 
 interface VendorViewProps {
   vendor: IVendor | null
@@ -120,21 +120,11 @@ export const VendorView: React.FC<VendorViewProps> = ({ vendor , onBack}) => {
                     <div className="flex flex-col gap-2">
                           <p className="text-sm text-gray-400">ID Proof</p>
                           <img
-                            src={vendor.idProof}
+                            src={CLOUDINARY_BASE_URL + vendor.idProof}
                             alt="ID Proof"
                             className="w-full max-w-xs border border-gray-600 rounded"
                           />
                         </div>
-                      <p className="text-sm text-gray-400">Online Status</p>
-                      <Badge
-                        className={
-                          vendor.onlineStatus === "online"
-                            ? "bg-green-500/10 text-green-500 border-green-500/20"
-                            : "bg-gray-500/10 text-gray-400 border-gray-500/20"
-                        }
-                      >
-                        {vendor.onlineStatus || "Offline"}
-                      </Badge>
                     </div>
                   </div>
                 </div>

@@ -474,7 +474,7 @@ export const DownloadTicket: React.FC<DownloadTicketProps> = ({ ticket, classNam
                   <div className="text-center">
                     <h4 className="font-semibold text-gray-800 mb-1">{ticket.eventDetails?.title}</h4>
                     <p className="text-sm text-gray-600">
-                      {ticket.eventDetails?.date} • {ticket.eventDetails?.startTime}
+                    {ticket.eventDetails?.date[0].date ? new Date(ticket.eventDetails.date[0].date).toLocaleDateString() : "Date not available"} • {ticket.eventDetails?.startTime}
                     </p>
                     <div className="mt-3 bg-white rounded-lg p-2 inline-block">
                       <img

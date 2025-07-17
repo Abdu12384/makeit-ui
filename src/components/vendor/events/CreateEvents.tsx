@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Formik, Form, Field, ErrorMessage, FieldArray } from "formik";
+import { Formik, Form, Field, ErrorMessage, FieldArray, FieldInputProps } from "formik";
 import { motion, AnimatePresence } from "framer-motion";
 import { CalendarIcon, Clock, Trash2, Upload } from "lucide-react";
 import { EventValidationSchema } from "@/utils/validationForms/event-form.validation";
@@ -17,6 +17,7 @@ import { useCreateEventMutation, useEditEventMutation, useUploadeImageToCloudina
 import toast from "react-hot-toast";
 import LocationPicker from "@/components/common/location/LocationPicker";
 import { EventData } from "@/types/event";
+import { CLOUDINARY_BASE_URL } from "@/types/config/config";
 
 
 
@@ -25,6 +26,7 @@ interface EventFormPageProps {
   onSuccess?: () => void;
   onCancel?: () => void;
 }
+
 
 export default function EventFormPage({ eventData, onSuccess, onCancel }: EventFormPageProps) {
   const navigate = useNavigate();
@@ -43,8 +45,6 @@ export default function EventFormPage({ eventData, onSuccess, onCancel }: EventF
       setSelectedDates(dates);
     }
   }, [eventData]);
-
-  console.log('eventData',eventData)
 
   const initialValues = eventData
     ? {
@@ -86,7 +86,7 @@ export default function EventFormPage({ eventData, onSuccess, onCancel }: EventF
         status: "upcoming" as const,
       };
 
-  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>, push: any, values: any) => {
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>, push: (obj: string) => void, values: any) => {
     const files = Array.from(e.target.files || []);
     if (files.length + values.posterImage.length > 5) {
       toast.error("Cannot upload more than 5 images");
@@ -99,24 +99,33 @@ export default function EventFormPage({ eventData, onSuccess, onCancel }: EventF
     }
   };
 
-  const handleSubmit = async (values: any, { setSubmitting }: any) => {
+  const handleSubmit = async (values: any, { setSubmitting }: { setSubmitting: (isSubmitting: boolean) => void }) => {
     try {
       setSubmitting(true);
       console.log(`handleSubmit is running with ${JSON.stringify(values)}`);
 
       const cloudinaryUrls = [];
+      console.log('value.poster image ',values.posterImage)
       for (const imageUrl of values.posterImage) {
-        if (!imageUrl.includes("cloudinary.com")) {
+        const isLocalBlob = imageUrl.startsWith("blob:");
+        const isBase64Image = imageUrl.startsWith("data:image");
+        const isAlreadyUploaded = !isLocalBlob && !isBase64Image && imageUrl.includes("/"); 
+        
+        if (isLocalBlob || isBase64Image) {
+          console.log('imageUrl',imageUrl)
           const imageBlob = await fetch(imageUrl).then((r) => r.blob());
           const imageFile = new File([imageBlob], "event-image.jpg", { type: "image/jpeg" });
+      
           const cloudinaryFormData = new FormData();
           cloudinaryFormData.append("file", imageFile);
-          cloudinaryFormData.append("upload_preset", "vendor_id"); 
-
+          cloudinaryFormData.append("upload_preset", "vendor_id");
+      
           const uploadResponse = await uploadToCloudinary.mutateAsync(cloudinaryFormData);
-          cloudinaryUrls.push(uploadResponse.secure_url);
-        } else {
-          cloudinaryUrls.push(imageUrl);
+          const fullUrl = uploadResponse.secure_url;
+          const uniquePath = new URL(fullUrl).pathname.split("/image/upload/")[1]; 
+          cloudinaryUrls.push(uniquePath); 
+        } else if (isAlreadyUploaded) {     
+          cloudinaryUrls.push(imageUrl); 
         }
       }
 
@@ -132,28 +141,26 @@ export default function EventFormPage({ eventData, onSuccess, onCancel }: EventF
             eventId: eventData?.eventId 
           }, 
           {
-          onSuccess: (response: any) => {
+          onSuccess: (response) => {
             console.log("Edit response:", response);
             toast.success(response.message);
             onSuccess?.()
 
           },
-          onError: (error: any) => {
-            console.error("Failed to edit event:", error);
-            toast.error(error?.response?.data?.message || "Failed to edit event");
+          onError: (error) => {
+            toast.error(error?.message || "Failed to edit event");
             setSubmitting(false);
           },
         });
       } else {
         createEventMutation.mutate(finalValues, {
-          onSuccess: (response: any) => {
+          onSuccess: (response) => {
             console.log("Create response:", response);
             toast.success(response.message);
             navigate("/vendor/events");
           },
-          onError: (error: any) => {
-            console.error("Failed to create event:", error);
-            toast.error(error?.response?.data?.message || "Failed to create event");
+          onError: (error) => {
+            toast.error(error?.message || "Failed to create event");
             setSubmitting(false);
           },
         });
@@ -226,7 +233,7 @@ export default function EventFormPage({ eventData, onSuccess, onCancel }: EventF
                           Event Title
                         </Label>
                         <Field name="title">
-                          {({ field }: any) => (
+                          {({ field }: { field: FieldInputProps<string> }) => (
                             <Input
                               id="title"
                               placeholder="Enter event title"
@@ -249,7 +256,7 @@ export default function EventFormPage({ eventData, onSuccess, onCancel }: EventF
                           Description
                         </Label>
                         <Field name="description">
-                          {({ field }: any) => (
+                          {({ field }: { field: FieldInputProps<string> }) => (
                             <Textarea
                               id="description"
                               placeholder="Describe your event"
@@ -310,7 +317,7 @@ export default function EventFormPage({ eventData, onSuccess, onCancel }: EventF
                           Event Status
                         </Label>
                         <Field name="status">
-                          {({ field }: any) => (
+                          {({ field }: { field: FieldInputProps<string> }) => (
                             <Select
                               onValueChange={(value) => setFieldValue("status", value)}
                               value={field.value}
@@ -398,7 +405,7 @@ export default function EventFormPage({ eventData, onSuccess, onCancel }: EventF
                           <div className="flex items-center">
                             <Clock className="mr-2 h-4 w-4 text-sky-500" />
                             <Field name="startTime">
-                              {({ field }: any) => (
+                              {({ field }: { field: FieldInputProps<string> }) => (
                                 <Input
                                   id="startTime"
                                   type="time"
@@ -424,7 +431,7 @@ export default function EventFormPage({ eventData, onSuccess, onCancel }: EventF
                           <div className="flex items-center">
                             <Clock className="mr-2 h-4 w-4 text-sky-500" />
                             <Field name="endTime">
-                              {({ field }: any) => (
+                              {({ field }: { field: FieldInputProps<string> }) => (
                                 <Input
                                   id="endTime"
                                   type="time"
@@ -463,7 +470,7 @@ export default function EventFormPage({ eventData, onSuccess, onCancel }: EventF
                           Venue Name
                         </Label>
                         <Field name="venueName">
-                          {({ field }: any) => (
+                          {({ field }: { field: FieldInputProps<string> }) => (
                             <Input
                               id="venueName"
                               placeholder="Enter venue name"
@@ -486,7 +493,7 @@ export default function EventFormPage({ eventData, onSuccess, onCancel }: EventF
                           Address
                         </Label>
                         <Field name="address">
-                          {({ field }: any) => (
+                          {({ field }: { field: FieldInputProps<string> }) => (
                             <Textarea
                               id="address"
                               placeholder="Enter full address"
@@ -510,7 +517,7 @@ export default function EventFormPage({ eventData, onSuccess, onCancel }: EventF
                             Latitude
                           </Label>
                           <Field name="location.coordinates[0]">
-                            {({ field }: any) => (
+                            {({ field }: { field: FieldInputProps<string> }) => (
                               <Input
                                 id="latitude"
                                 type="number"
@@ -536,7 +543,7 @@ export default function EventFormPage({ eventData, onSuccess, onCancel }: EventF
                             Longitude
                           </Label>
                           <Field name="location.coordinates[1]">
-                            {({ field }: any) => (
+                            {({ field }: { field: FieldInputProps<string> }) => (
                               <Input
                                 id="longitude"
                                 type="number"
@@ -565,11 +572,11 @@ export default function EventFormPage({ eventData, onSuccess, onCancel }: EventF
                         {/* This is the single component you need to add to your form */}
                         <LocationPicker
                           mode="edit"
-                          initialLat={values.location.coordinates[0]}
-                          initialLng={values.location.coordinates[1]}
+                          initialLat={values.location.coordinates[1]}
+                          initialLng={values.location.coordinates[0]}
                           onLocationSelect={(location) => {
-                            setFieldValue("location.coordinates[0]", location.lat)
-                            setFieldValue("location.coordinates[1]", location.lng)
+                            setFieldValue("location.coordinates[0]", location.lng)
+                            setFieldValue("location.coordinates[1]", location.lat)
                             setFieldValue("address", location.address)
                           }}
                         />
@@ -606,11 +613,18 @@ export default function EventFormPage({ eventData, onSuccess, onCancel }: EventF
                                   exit={{ opacity: 0, scale: 0.8 }}
                                   transition={{ duration: 0.3 }}
                                 >
-                                  <img
-                                    src={image || "/placeholder.svg"}
-                                    alt={`Event poster ${index + 1}`}
-                                    className="w-full h-40 object-cover rounded-md shadow-sm transition-transform duration-500 hover:scale-[1.02]"
-                                  />
+                                 <img
+                                  src={
+                                    image.startsWith("http") || image.startsWith("data:image") || image.startsWith("blob:")
+                                      ? image
+                                      : `${CLOUDINARY_BASE_URL}/${image}`
+                                  }
+                                  alt={`Event poster ${index + 1}`}
+                                  className="w-full h-40 object-cover rounded-md shadow-sm transition-transform duration-500 hover:scale-[1.02]"
+                                  onError={(e) => {
+                                    e.currentTarget.src = "/placeholder.svg";
+                                  }}
+                                />
                                   <Button
                                     type="button"
                                     variant="destructive"
@@ -681,7 +695,7 @@ export default function EventFormPage({ eventData, onSuccess, onCancel }: EventF
                           Price Per Ticket (₹)
                         </Label>
                         <Field name="pricePerTicket">
-                          {({ field }: any) => (
+                          {({ field }: { field: FieldInputProps<string> }) => (
                             <Input
                               id="pricePerTicket"
                               type="number"
@@ -711,7 +725,7 @@ export default function EventFormPage({ eventData, onSuccess, onCancel }: EventF
                           Total Tickets Available
                         </Label>
                         <Field name="totalTicket">
-                          {({ field }: any) => (
+                          {({ field }: { field: FieldInputProps<string> }) => (
                             <Input
                               id="totalTicket"
                               type="number"
@@ -745,7 +759,7 @@ export default function EventFormPage({ eventData, onSuccess, onCancel }: EventF
                           Max Tickets Per User
                         </Label>
                         <Field name="maxTicketsPerUser">
-                          {({ field }: any) => (
+                          {({ field }: { field: FieldInputProps<string> }) => (
                             <Input
                               id="maxTicketsPerUser"
                               type="number"

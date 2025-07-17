@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import {  Calendar, Clock, MapPin, User, Phone, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {  TicketConfirmationModalProps } from "@/types/ticket";
+import { CLOUDINARY_BASE_URL } from "@/types/config/config";
 
 
 
@@ -84,7 +85,7 @@ export default function TicketConfirmationModal({ isOpen, setIsOpen, ticket,even
 
                 <div className="relative h-48 md:h-64 mb-6 overflow-hidden rounded-lg">
                   <img
-                    src={event?.posterImage[0] || "/placeholder.svg"}
+                    src={CLOUDINARY_BASE_URL + event?.posterImage[0] || "/placeholder.svg"}
                     alt="Event"
                     className="w-full h-full object-cover"
                   />

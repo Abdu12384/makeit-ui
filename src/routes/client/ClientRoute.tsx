@@ -22,6 +22,7 @@ const ForgotPasswordEmail = lazyWithFallback(() => import("@/components/common/F
 const ResetPassword = lazyWithFallback(() => import("@/components/common/ForgotPassword/ResetPassword"))
 const ClientChatPage = lazyWithFallback(() => import("@/pages/client/chat-page-client"))
 const BookingPayment = lazyWithFallback(() => import("@/components/client/profail/BookingPayment"))
+const NearbyEventsPage = lazyWithFallback(() => import("@/components/client/event/LocactionBasedEvents"))
 
 
 
@@ -48,6 +49,9 @@ const BookingPayment = lazyWithFallback(() => import("@/components/client/profai
 
             <Route path="/events" element={
                        <ProtectedRoute allowedRoles={["client"]} element={<EventsPage />} />
+                       } />
+            <Route path="/events/nearby" element={
+                       <ProtectedRoute allowedRoles={["client"]} element={<NearbyEventsPage />} />
                        } />
 
             <Route path="/events/details/:eventId" element={

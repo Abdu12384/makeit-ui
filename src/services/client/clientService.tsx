@@ -1,12 +1,15 @@
 import authAxiosInstance from "@/api/auth.axios";
 import { clientAxiosInstance } from "@/api/client.axios";
 import { GetAllBookingsParams } from "@/hooks/ClientCustomHooks";
-import { PaginationParams } from "@/types/event";
+import { Booking } from "@/types/bookings";
+import { LocationEventParams, PaginationParams } from "@/types/event";
 import { IAuthResponse, IAxiosResponse } from "@/types/response";
 import { GetAllServicesParams } from "@/types/service";
 import { TicketEntity } from "@/types/ticket";
-import { ILoginData } from "@/types/User";
+import { IClient, ILoginData } from "@/types/User";
 import { ReviewData } from "@/types/worksample/review";
+import { FormData } from "@/utils/validationForms/validationForms";
+import { isAxiosError } from "axios";
 
 interface SignupPayload{
   name: string,
@@ -18,11 +21,11 @@ interface SignupPayload{
 
 interface SingupResponse {
   message: string,
-  data?: any
+  data?: IClient
 }
 
 type CreateAccountParams = {
-  formdata: Record<string, string | number | boolean>
+  formdata: FormData
   otpString: string
 }
 
@@ -43,7 +46,7 @@ export const saveClientFCMToken = async (token:string) => {
      return response.data;
    } catch (error) {
      console.log(error);
-     throw error;
+     throw new Error(isAxiosError(error) ? error.response?.data.message : 'error while saving fcm token');
    }
  };
 
@@ -53,7 +56,7 @@ export const saveClientFCMToken = async (token:string) => {
      return response.data;
    } catch (error) {
      console.log(error);
-     throw error;
+     throw new Error(isAxiosError(error) ? error.response?.data.message : 'error while getting notifications');	
    }
  }
 
@@ -76,13 +79,13 @@ export const clientSignup = async (values: SignupPayload): Promise<SingupRespons
      return response.data
    } catch (error) {
      console.error('Signup failed',error)
-     throw error
+     throw new Error(isAxiosError(error) ? error.response?.data.message : 'error while signup')	
    }
 }
 
 
 
-export const clientCreateAccount = async ({formdata, otpString}:CreateAccountParams): Promise<any> =>{
+export const clientCreateAccount = async ({formdata, otpString}:CreateAccountParams): Promise<SingupResponse> =>{
    try {
      const response = await authAxiosInstance.post('/signup',{
       formdata,
@@ -116,7 +119,7 @@ export const clientLogin = async (user:ILoginData)=>{
      return response.data
    } catch (error) {
        console.log('error while client login', error)
-       throw error
+       throw new Error(isAxiosError(error) ? error.response?.data.message : 'error while logging in')	
    }
 }
 
@@ -157,7 +160,7 @@ export const clientGoogleLogin = async ({
       return response.data
     } catch (error) {
       console.log('error while client forgot password',error)
-      throw error
+      throw new Error(isAxiosError(error) ? error.response?.data.message : 'error while forgot password')	
     }
   }
 
@@ -168,7 +171,7 @@ export const clientGoogleLogin = async ({
       return response.data
     } catch (error) {
       console.log('error while client reset password',error)
-      throw error
+      throw new Error(isAxiosError(error) ? error.response?.data.message : 'error while reset password')	
     }
   }
 
@@ -194,7 +197,7 @@ export const clientGoogleLogin = async ({
     return response.data
    } catch (error) {
     console.log('error while client change password',error)
-    throw error
+    throw new Error(isAxiosError(error) ? error.response?.data.message : 'error while changing password')	
    }
  }
 
@@ -229,7 +232,7 @@ export const clientGetServiceById = async (id:string) => {
     return response.data
   } catch (error) {
     console.log('error while client get service by id',error)
-    throw error
+    throw new Error(isAxiosError(error) ? error.response?.data.message : 'error while getting service by id')	
   }
 }
 
@@ -242,7 +245,7 @@ export const clientBookingService = async (id:string,bookingData:Record<string, 
     return response.data
   } catch (error) {
     console.log('error while client booking service',error)
-    throw error
+    throw new Error(isAxiosError(error) ? error.response?.data.message : 'error while booking service')	
   }
 }
 
@@ -254,7 +257,7 @@ export const rescheduleBookingApproval = async (bookingId:string,status:string) 
     return response.data
   } catch (error) {
     console.log('error while client reschedule booking approval',error)
-    throw error
+    throw new Error(isAxiosError(error) ? error.response?.data.message : 'error while reschedule booking approval')	
   }
 }
 
@@ -264,6 +267,7 @@ export const rescheduleBookingApproval = async (bookingId:string,status:string) 
 export const getBookings = async ({
   page = 1,
   limit = 10,
+  status = "",
   search = "",
   sortOrder = "asc"
 }: GetAllBookingsParams) => {
@@ -272,6 +276,7 @@ export const getBookings = async ({
       params:{
         page,
         limit,
+        status,
         search,
         sortOrder
       }
@@ -286,7 +291,7 @@ export const getBookings = async ({
 
 
 
-export const createBookingPayment = async (bookingId:string,paymentIntentId:string,bookingDetails:Record<string, string|number|boolean>) => {
+export const createBookingPayment = async (bookingId:string,paymentIntentId:string,bookingDetails:Booking) => {
   try {
     const response = await clientAxiosInstance.post(`/client/create-booking-payment`,{bookingId,paymentIntentId,bookingDetails})
     return response.data
@@ -344,6 +349,30 @@ export const getAllEvents = async ({
 }
 
 
+export const getAllLocationBasedEvents = async ({
+  lat,
+  lng,
+  radius,
+  page = 1,
+  limit = 10,
+}: LocationEventParams) => {
+  try {
+    const response = await clientAxiosInstance.get("/client/nearby", {
+      params: {
+        lat,
+        lng,
+        radius,
+        page,
+        limit,
+      },
+    })
+    return response.data
+  } catch (error) {
+    console.log("Error while fetching location-based events:", error)
+    throw error
+  }
+}
+
 
 export const getEventById = async (eventId:string) => {
   try {
@@ -357,7 +386,7 @@ export const getEventById = async (eventId:string) => {
 
 
 
-export const checkEventBookingAvailability = async ({id,ticketCount}: {id:string,ticketCount:number}):Promise<any|string> => {
+export const checkEventBookingAvailability = async ({id,ticketCount}: {id:string,ticketCount:number}):Promise<string> => {
   try {
     const response = await clientAxiosInstance.get(`/client/events/${id}/check-booking`,{
       params:{
@@ -367,7 +396,7 @@ export const checkEventBookingAvailability = async ({id,ticketCount}: {id:string
     return response.data
   } catch (error) {
     console.log('error while client check event booking availability',error)
-    throw error
+    throw new Error(isAxiosError(error) ? error.response?.data.message : 'error while checking event booking availability')	
   }
 }
 
@@ -396,12 +425,13 @@ export const confirmTicketAndPayment = async (ticket: TicketEntity,paymentIntent
 }
 
 
-export const  getAllTickets = async ({page = 1,limit = 10}:PaginationParams) => {
+export const  getAllTickets = async ({page = 1,limit = 10,status}:PaginationParams) => {
   try {
     const response = await clientAxiosInstance.get('/client/tickets',{
       params:{
         page,
         limit,  
+        status,
       }
     })
     return response.data
@@ -419,7 +449,7 @@ export const cancelTicket = async ({ticketId,cancelCount}: {ticketId:string,canc
     return response.data
   } catch (error) {
     console.log('error while client cancel ticket',error)
-    throw error
+    throw new Error(isAxiosError(error) ? error.response?.data.message : 'error while canceling ticket')	
   }
 }
 
@@ -449,7 +479,7 @@ export const addReview = async (review: ReviewData) => {
     return response.data
   } catch (error) {
     console.log('error while client add review',error)
-    throw error
+    throw new Error(isAxiosError(error) ? error.response?.data.message : 'error while adding review')	
   }
 }
 
@@ -492,7 +522,12 @@ export const getAllWorkSamplesByVendorId = async ({vendorId,page,limit}: {vendor
 
 
   export const logoutClient = async (): Promise<IAxiosResponse> => {
-    const response = await clientAxiosInstance.post("/client/logout");
-    return response.data;
+    try {
+      const response = await clientAxiosInstance.post("/client/logout");
+      return response.data;
+    } catch (error) {
+      console.log('error while client logout',error)
+      throw new Error(isAxiosError(error) ? error.response?.data.message : 'error while logging out')	
+    }
   };
   

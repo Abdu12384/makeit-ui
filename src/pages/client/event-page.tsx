@@ -9,11 +9,12 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
 import Navbar from "@/components/common/NavBar"
 import { useGetAllEventsMutation } from "@/hooks/ClientCustomHooks"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import { Pagination1 } from "@/components/common/paginations/Pagination"
 import { Event } from "@/types/event"
 import { container, item } from "@/animations/variants"
 import { debounce } from "lodash"
+import { CLOUDINARY_BASE_URL } from "@/types/config/config"
 
 
 const categories = [
@@ -40,7 +41,7 @@ export default function EventsPage() {
   const [totalPages, setTotalPages] = useState(1)
   const limit = 6
 
-
+  const navigate = useNavigate()
   const debouncedUpdate = useMemo(() => {
     return debounce((value: string) => {
       setDebounceSearch(value);
@@ -139,6 +140,14 @@ export default function EventsPage() {
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
                 <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-[#124E66]" />
+              </div>
+              <div className="mt-6 flex justify-center">
+                <Button
+                  className="bg-white text-[#124E66] border border-[#124E66] hover:bg-[#124E66] hover:text-white"
+                  onClick={() => navigate("/events/nearby")}
+                >
+                  🎯 View Nearby Events
+                </Button>
               </div>
             </motion.div>
           </div>
@@ -280,7 +289,7 @@ export default function EventsPage() {
                         <div className="relative">
                           <div className="aspect-[3/2] overflow-hidden">
                             <motion.img
-                              src={event.posterImage[0]}
+                              src={CLOUDINARY_BASE_URL + event.posterImage[0]}
                               alt={event.title}
                               className="object-cover w-full h-full"
                               whileHover={{ scale: 1.05 }}
@@ -298,31 +307,55 @@ export default function EventsPage() {
                           <h3 className="text-xl font-bold mb-3 text-[#212A31] line-clamp-2">{event.title}</h3>
 
                           <div className="space-y-3 text-sm text-[#2E3944]">
-                            <div className="flex items-center">
-                              <Calendar className="h-4 w-4 mr-2 text-[#124E66]" />
-                              <span>
-                                {new Date(event.date[0]).toLocaleDateString("en-US", {
-                                  day: "numeric",
-                                  month: "short",
-                                  year: "numeric",
-                                })}
-                                {event.date.length > 1
-                                  ? ` - ${new Date(event.date[event.date.length - 1]).toLocaleDateString("en-US", {
-                                      day: "numeric",
-                                      month: "short",
-                                      year: "numeric",
-                                    })}`
-                                  : ""}
-                              </span>
-                            </div>
-
-                            <div className="flex items-center">
-                              <Clock className="h-4 w-4 mr-2 text-[#124E66]" />
-                              <span>
-                                {event.startTime} - {event.endTime}
-                              </span>
-                            </div>
-
+                          {event.date && event.date.length > 0 && (
+                              <>
+                                {event.date.length === 1 ? (
+                                  // Single date entry
+                                  <>
+                                    <div className="flex items-center">
+                                      <Calendar className="h-4 w-4 mr-2 text-[#124E66]" />
+                                      <span>
+                                        {new Date(event.date[0].date).toLocaleDateString("en-IN", {
+                                          year: "numeric",
+                                          month: "long",
+                                          day: "numeric",
+                                        })}
+                                      </span>
+                                    </div>
+                                    <div className="flex items-center">
+                                      <Clock className="h-4 w-4 mr-2 text-[#124E66]" />
+                                      <span>
+                                        {event.date[0].startTime} - {event.date[0].endTime}
+                                      </span>
+                                    </div>
+                                  </>
+                                ) : (
+                                  // Multiple date entries
+                                  <div className="space-y-1">
+                                    <div className="flex items-center text-[#212A31]">
+                                      <Calendar className="h-4 w-4 mr-2 text-[#124E66]" />
+                                      <span className="font-semibold">Dates:</span>
+                                    </div>
+                                    <ul className="list-disc pl-6 text-[#2E3944]">
+                                      {event.date.map((entry, index) => (
+                                        <li key={index} className="text-sm">
+                                          {new Date(entry.date).toLocaleDateString("en-IN", {
+                                            year: "numeric",
+                                            month: "long",
+                                            day: "numeric",
+                                          })}
+                                          {entry.startTime && entry.endTime && (
+                                            <span className="ml-2 text-[#748D92]">
+                                              ({entry.startTime} - {entry.endTime})
+                                            </span>
+                                          )}
+                                        </li>
+                                      ))}
+                                    </ul>
+                                  </div>
+                                )}
+                              </>
+                            )}
                             <div className="flex items-center">
                               <MapPin className="h-4 w-4 mr-2 text-[#124E66]" />
                               <span className="line-clamp-1">{event.venueName}</span>

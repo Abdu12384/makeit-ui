@@ -4,6 +4,7 @@ import { RootState } from "@/store/store";
 import ChatComponent from "@/components/common/chat/chatComponent";
 import { getSocket, initializeSocket, waitForSocketConnection } from "@/utils/socket/socket";
 import { useParams } from "react-router-dom";
+import { Chat } from "@/types/chat";
 
 const VendorChatPage: React.FC = () => {
   const {receiverId} = useParams()
@@ -28,7 +29,7 @@ const VendorChatPage: React.FC = () => {
         setSocketReady(true);
         if (userId) {
           console.log("Fetching chat history for userId:", userId);
-          currentSocket.emit("get-chats", { userId }, (response: { status: string; data: any[]; message?: string }) => {
+          currentSocket.emit("get-chats", { userId }, (response: { status: string; data: Chat[]; message?: string }) => {
             if (response.status === "success") {
               console.log("Chat history fetched:", response.data);
               setHasChats(response.data.length > 0);

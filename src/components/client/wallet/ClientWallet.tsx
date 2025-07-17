@@ -6,23 +6,14 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useGetWalletByIdMutation } from "@/hooks/ClientCustomHooks";
 import { Pagination1 } from "@/components/common/paginations/Pagination";
+import { Transaction } from "@/types/transaction";
 
-interface Transaction {
-  _id: string;
-  paymentType: string;
-  amount: number;
-  date: string;
-  paymentStatus: string;
-  description: string;
-  vendor?: string;
-  service?: string;
-}
 
 
 export default function ClientWallet() {
   const [filterPeriod, setFilterPeriod] = useState("all");
   const [filteredTransactions, setFilteredTransactions] = useState<Transaction[]>([]);
-  const [transaction, setTransaction] = useState<any>([]);
+  const [transaction, setTransaction] = useState<Transaction[]>([]);
   const [balance, setBalance] = useState<number | undefined>(undefined);
   const [totalPages, setTotalPages] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState(1);
@@ -53,7 +44,7 @@ export default function ClientWallet() {
   useEffect(() => {
     console.log("useEffect running, filterPeriod:", filterPeriod, "allTransactions length:", transaction.length);
     const now = new Date();
-    const filtered = transaction.filter((tx:any) => {
+    const filtered = transaction.filter((tx:Transaction) => {
       const txDate = new Date(tx.date);
       if (filterPeriod === "all") return true;
       if (filterPeriod === "today") {
@@ -216,6 +207,11 @@ export default function ClientWallet() {
                         <Calendar className="h-3.5 w-3.5 mr-1" />
                         {formatDate(transaction.date)} at {formatTime(transaction.date)}
                       </div>
+                      {transaction.relatedTitle && (
+                        <div className="text-sm text-slate-500 mt-1">
+                          <span className="font-medium">Related:</span> {transaction.relatedTitle}
+                        </div>
+                      )}
                       {transaction.vendor && (
                         <div className="text-sm text-slate-500 mt-1">
                           <span className="font-medium">Vendor:</span> {transaction?.vendor}
@@ -233,7 +229,7 @@ export default function ClientWallet() {
                         }`}
                       >
                         {transaction.paymentStatus === "credit" ? "+" : "-"}
-                        {transaction.amount}
+                        {transaction.amount.toFixed(2)}
                       </p>
                     </div>
                     <div>{transaction.paymentType}</div>

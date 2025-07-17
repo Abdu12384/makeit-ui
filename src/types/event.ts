@@ -1,3 +1,4 @@
+import { FormikErrors, FormikTouched } from "formik";
 
 export interface IEventFormValues {
     title: string;
@@ -18,8 +19,8 @@ export interface IEventFormValues {
     pricePerTicket: number;
     totalTicket: number;
     maxTicketsPerUser: number;
+    status?: "upcoming" | "completed" | "cancelled"
 }
-
 
 
 export interface Event {
@@ -28,7 +29,7 @@ export interface Event {
   title: string
   description: string
   category: string
-  date: string[]
+  date: DateTimeEntry[]
   startTime: string
   endTime: string
   address: string
@@ -38,11 +39,10 @@ export interface Event {
   maxTicketsPerUser?: number
   totalTicket: number
   attendeesCount: number
+  checkedInCount?: number
   ticketPurchased: number
   status: "upcoming" | "completed" | "cancelled"
 }
-
-
 
 export interface PaginationParams {
     page?: number;
@@ -50,10 +50,8 @@ export interface PaginationParams {
     search?: string;
     targetId?: string;
     targetType?: string;
+    status?:string;
 }
-
-
-
 
 export interface EventData {
   eventId: string;
@@ -79,13 +77,12 @@ export interface EventData {
   isActive?: boolean
 }
 
-
 export interface Event {
   eventId: string;
   title: string;
   description: string;
   category: string;
-  date: string[];
+  date: DateTimeEntry[];
   startTime: string;
   endTime: string;
   address: string;
@@ -119,8 +116,6 @@ export interface Event {
   }>;
 }
 
-
-
 export interface AdEvent {
   _id: string
   eventId: string
@@ -151,3 +146,122 @@ interface Location {
   type: string
   coordinates: number[]
 }
+export interface Attendee {
+  _id: string;
+  name: string;
+  email: string;
+  phone: string;
+  ticketNumber: string;
+  checkedIn: boolean;
+}
+
+
+
+export type LocationEventParams = {
+  lat: number
+  lng: number
+  radius: number
+  page?: number
+  limit?: number
+}
+
+
+export interface NewEventFormValues {
+  title: string
+  description: string
+  category: string
+  venueName: string
+  address: string
+  location: {
+    type: "Point"
+    coordinates: [number, number]
+  }
+  posterImage: string[]
+  pricePerTicket: number
+  totalTicket: number
+  maxTicketsPerUser: number
+  status: "upcoming" | "completed" | "cancelled"
+  date: DateTimeEntry[]
+  startTime: string
+  endTime: string
+}
+
+export interface EventFormErrors {
+  title?: string
+  description?: string
+  category?: string
+  venueName?: string
+  address?: string
+  location?: {
+    type?: string
+    coordinates?: string | string[]
+  }
+  posterImage?: string | string[]
+  pricePerTicket?: string
+  totalTicket?: string
+  maxTicketsPerUser?: string
+  status?: string
+  date?: string | string[] | FormikErrors<DateTimeEntry>[];
+  startTime?: string
+  endTime?: string
+}
+
+export interface EventFormTouched {
+  title?: boolean
+  description?: boolean
+  category?: boolean
+  venueName?: boolean
+  address?: boolean
+  location?: {
+    type?: boolean
+    coordinates?: boolean | boolean[]
+  }
+  posterImage?: boolean | boolean[]
+  pricePerTicket?: boolean
+  totalTicket?: boolean
+  maxTicketsPerUser?: boolean
+  status?: boolean
+  date?:FormikTouched<DateTimeEntry>[]; 
+  startTime?: boolean
+  endTime?: boolean
+}
+
+export interface DateTimeEntry {
+  date: Date
+  startTime: string
+  endTime: string
+}
+
+export interface CloudinaryUploadResponse {
+  secure_url: string
+  public_id: string
+}
+
+export interface UploadMutation {
+  mutateAsync: (formData: FormData) => Promise<CloudinaryUploadResponse>
+  isPending: boolean
+}
+
+
+export interface NewEventData {
+  eventId: string
+  title: string
+  description: string
+  category: string
+  venueName: string
+  address: string
+  location: {
+    type: "Point"
+    coordinates: [number, number]
+  }
+  posterImage: string[]
+  pricePerTicket: number
+  totalTicket: number
+  maxTicketsPerUser: number
+  status: "upcoming" | "completed" | "cancelled"
+  date: DateTimeEntry[]
+  startTime: string
+  endTime: string
+  ticketPurchased: number
+  isActive?: boolean
+} 

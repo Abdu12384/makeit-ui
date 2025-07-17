@@ -2,6 +2,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { ChevronLeft, ChevronRight } from "@/animations/ChevronLeft";
+import { CLOUDINARY_BASE_URL } from "@/types/config/config";
 
 interface EventGalleryDialogProps {
   isOpen: boolean;
@@ -28,7 +29,7 @@ export default function EventGalleryDialog({
             <AnimatePresence mode="wait">
               <motion.img
                 key={currentImageIndex}
-                src={images[currentImageIndex]}
+                src={CLOUDINARY_BASE_URL + images[currentImageIndex]}
                 alt={`Gallery image ${currentImageIndex + 1}`}
                 className="w-full h-full object-contain"
                 initial={{ opacity: 0 }}
@@ -54,7 +55,7 @@ export default function EventGalleryDialog({
             className="absolute left-4 top-1/2 transform -translate-y-1/2 text-white hover:bg-white/20 rounded-full"
             onClick={() => changeImage(-1)}
           >
-            <ChevronLeft size={24} />
+            <ChevronLeft />
           </Button>
 
           <Button
@@ -63,7 +64,7 @@ export default function EventGalleryDialog({
             className="absolute right-4 top-1/2 transform -translate-y-1/2 text-white hover:bg-white/20 rounded-full"
             onClick={() => changeImage(1)}
           >
-            <ChevronRight size={24} />
+            <ChevronRight />
           </Button>
 
           <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-2">

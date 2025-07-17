@@ -2,16 +2,18 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Calendar, MapPin, Users, X, QrCode, ChevronLeft, Clock } from "lucide-react";
+import { Calendar, MapPin, X, QrCode, ChevronLeft, Clock, Ticket } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Link, useNavigate } from "react-router-dom";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import TicketScanner from "./TikcetScanner";
+import { CLOUDINARY_BASE_URL } from "@/types/config/config";
+import { Event } from "@/types/event";
 
 interface EventDetailsProps {
-  event: any;
+  event: Event;
   onClose: () => void;
 }
 
@@ -47,7 +49,7 @@ export function BookedEventDetails({ event, onClose }: EventDetailsProps) {
       <div className="relative h-64 bg-gradient-to-r from-purple-500 to-pink-500">
         {event.posterImage && (
           <img
-            src={event.posterImage[0] || "/placeholder.svg"}
+            src={CLOUDINARY_BASE_URL + event.posterImage[0] || "/placeholder.svg"}
             alt={event?.title}
             className="w-full h-full object-cover"
           />
@@ -82,8 +84,8 @@ export function BookedEventDetails({ event, onClose }: EventDetailsProps) {
               Scan Ticket
             </Button>
             <Button variant="outline" className="flex items-center gap-2">
-              <Users className="h-4 w-4" />
-              <Link to={`/vendor/events/attendees/${event.eventId}`}>View Attendees</Link>
+              <Ticket className="h-4 w-4" />
+              <Link to={`/vendor/events/attendees/${event.eventId}`}>Booked Tickets</Link>
             </Button>
           </div>
         </div>
@@ -102,7 +104,7 @@ export function BookedEventDetails({ event, onClose }: EventDetailsProps) {
                 <div>
                   <p className="text-sm text-muted-foreground">Date</p>
                   <span className="font-medium">
-                    {new Date(event?.date[0]).toLocaleDateString("en-IN", {
+                    {new Date(event?.date[0].date).toLocaleDateString("en-IN", {
                       year: "numeric",
                       month: "long",
                       day: "numeric",
@@ -116,7 +118,7 @@ export function BookedEventDetails({ event, onClose }: EventDetailsProps) {
                 <div>
                   <p className="text-sm text-muted-foreground">Time</p>
                   <span className="font-medium">
-                    {new Date(event?.date[0]).toLocaleTimeString("en-IN", {
+                    {new Date(event?.date[0].date).toLocaleTimeString("en-IN", {
                       hour: "numeric",
                       minute: "numeric",
                       hour12: true,
@@ -136,7 +138,7 @@ export function BookedEventDetails({ event, onClose }: EventDetailsProps) {
 
             <div>
               <h3 className="text-lg font-semibold mb-3">About this event</h3>
-              <p className="text-muted-foreground">{event?.fullDescription || event?.description}</p>
+              <p className="text-muted-foreground">{event?.description}</p>
             </div>
           </TabsContent>
 
@@ -148,7 +150,7 @@ export function BookedEventDetails({ event, onClose }: EventDetailsProps) {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <p className="text-sm text-muted-foreground">Organizer</p>
-                    <p className="font-medium">{event?.hostedBy}</p>
+                    <p className="font-medium">{event?.vendorDetails?.name}</p>
                   </div>
                   <div>
                     <p className="text-sm text-muted-foreground">Category</p>
@@ -169,7 +171,7 @@ export function BookedEventDetails({ event, onClose }: EventDetailsProps) {
                 <h3 className="text-lg font-semibold mb-2">Additional Information</h3>
                 <Separator className="my-3" />
                 <p className="text-muted-foreground">
-                  {event?.additionalInfo || "No additional information available."}
+                  {/* {event?.additionalInfo || "No additional information available."} */}
                 </p>
               </div>
             </div>

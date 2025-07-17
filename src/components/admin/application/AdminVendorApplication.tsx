@@ -75,14 +75,12 @@ export const VendorApplicationList: React.FC<VendorApplicationListProps> = ({
 
     filtered = filtered.filter((v) => v.vendorStatus === activeTab)
 
-    if (searchQuery) {
-      filtered = filtered.filter(
-        (v) =>
-          v.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          v.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          v.category?.toLowerCase().includes(searchQuery.toLowerCase()),
-      )
-    }
+    // if (searchQuery) {
+    //   filtered = filtered.filter(
+    //     (v) =>
+    //       v.name?.toLowerCase().includes(searchQuery.toLowerCase()) 
+    //   )
+    // }
 
     return filtered
   }, [vendor, activeTab, searchQuery])

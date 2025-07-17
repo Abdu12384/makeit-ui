@@ -7,12 +7,13 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { BookedEventDetails } from "./BookedEventDetails"
 import { useGetAllEventsByVendorIdMutation } from "@/hooks/VendorCustomHooks"
-
+import { CLOUDINARY_BASE_URL } from "@/types/config/config"
+import { Event } from "@/types/event"
 
 
 export default function BookedEventsList() {
-  const [events,setEvents] = useState<any[]>([])
-  const [selectedEvent, setSelectedEvent] = useState<any | null>(null)
+  const [events,setEvents] = useState<Event[]>([])
+  const [selectedEvent, setSelectedEvent] = useState<Event | null>(null)
 
 
   const getAllEventsMutation = useGetAllEventsByVendorIdMutation()
@@ -54,18 +55,18 @@ export default function BookedEventsList() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredEvents.map((event) => (
-              <motion.div key={event._id} whileHover={{ y: -5 }} transition={{ type: "spring", stiffness: 300 }}>
+              <motion.div key={event.eventId} whileHover={{ y: -5 }} transition={{ type: "spring", stiffness: 300 }}>
                 <Card className="overflow-hidden h-full flex flex-col">
                   <div className="relative h-48 bg-gradient-to-r from-purple-500 to-pink-500">
                     {event?.posterImage && (
                       <img
-                        src={event?.posterImage[0]}
+                        src={CLOUDINARY_BASE_URL + event?.posterImage[0]}
                         alt={event?.title}
                         className="w-full h-full object-cover"
                       />
                     )}
                     <div className="absolute top-3 right-3">
-                      <Badge variant={event.status === "Upcoming" ? "default" : "secondary"}>
+                      <Badge variant={event.status === "upcoming" ? "default" : "secondary"}>
                         {event.status}
                       </Badge>
                     </div>
@@ -74,27 +75,64 @@ export default function BookedEventsList() {
                     <h3 className="text-xl font-bold mb-2 line-clamp-2">{event?.title}</h3>
                     <div className="space-y-2 text-sm text-muted-foreground">
                       <div className="flex items-center">
-                        <Calendar className="h-4 w-4 mr-2" />
-                        <span>{event?.date[0]}</span>
+                        {event.date && event.date.length > 0 && (
+                        <>
+                          {event.date.length === 1 ? (
+                            // Single date entry
+                            <>
+                              <div className="flex items-center text-gray-700">
+                                <Calendar className="h-4 w-4 mr-2 text-sky-600" />
+                                <span>
+                                  {new Date(event.date[0].date).toLocaleDateString("en-IN", {
+                                    year: "numeric",
+                                    month: "long",
+                                    day: "numeric",
+                                  })}
+                                </span>
+                              </div>
+                              <div className="flex items-center text-gray-700">
+                                <Clock className="h-4 w-4 mr-2 text-sky-600" />
+                                <span>
+                                  {event.date[0].startTime} - {event.date[0].endTime}
+                                </span>
+                              </div>
+                            </>
+                          ) : (
+                            // Multiple date entries
+                            <div className="space-y-1">
+                              <div className="flex items-center text-sky-800">
+                                <Calendar className="h-4 w-4 mr-2 text-sky-600" />
+                                <span className="font-semibold">Dates:</span>
+                              </div>
+                              <ul className="list-disc pl-6 text-gray-700">
+                                {event.date.map((entry, index) => (
+                                  <li key={index} className="text-sm">
+                                    {new Date(entry.date).toLocaleDateString("en-IN", {
+                                      year: "numeric",
+                                      month: "long",
+                                      day: "numeric",
+                                    })}
+                                    {entry.startTime && entry.endTime && (
+                                      <span className="ml-2 text-gray-500">
+                                        ({entry.startTime} - {entry.endTime})
+                                      </span>
+                                    )}
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          )}
+                        </>
+                      )}
+
                       </div>
                       <div className="flex items-center">
                         <MapPin className="h-4 w-4 mr-2" />
                         <span className="line-clamp-1">{event?.address}</span>
                       </div>
                       <div className="flex items-center">
-                        <Clock className="h-4 w-4 mr-2" />
-                        <span>
-                          {new Date(event?.date[0]).toLocaleDateString("en-IN", {
-                            year: "numeric",
-                            month: "long",
-                            day: "numeric"
-                          })}
-                        </span>
-
-                      </div>
-                      <div className="flex items-center">
                         <Users className="h-4 w-4 mr-2" />
-                        <span>{event?.attendeeCount} attendees</span>
+                        <span>{event?.attendeesCount} attendees</span>
                       </div>
                     </div>
                   </CardContent>

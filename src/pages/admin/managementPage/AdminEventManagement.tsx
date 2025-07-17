@@ -9,6 +9,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { useGetAllEventsMutation } from "@/hooks/AdminCustomHooks"
 import { Pagination1 } from "@/components/common/paginations/Pagination"
 import { AdEvent } from "@/types/event"
+import { CLOUDINARY_BASE_URL } from "@/types/config/config"
 
 export default function AdminEventsPage() {
   const [searchQuery, _setSearchQuery] = useState("")
@@ -58,10 +59,6 @@ export default function AdminEventsPage() {
     <div className="grid gap-6 p-4 md:p-8 bg-gray-900 min-h-screen">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold text-white tracking-tight">Event Management</h1>
-        <Button className="bg-indigo-600 hover:bg-indigo-700 text-white border-indigo-700 transition-colors duration-200">
-          <Calendar className="mr-2 h-4 w-4" />
-          Add New Event
-        </Button>
       </div>
 
       <Card className="bg-gray-900 border-gray-800 text-white shadow-lg">
@@ -139,7 +136,7 @@ export default function AdminEventsPage() {
             <div className="relative">
               <img
                 src={
-                  selectedEvent.posterImage[0] ||
+                  CLOUDINARY_BASE_URL+selectedEvent.posterImage[0] ||
                   "/placeholder.svg?height=200&width=800&text=Event+Poster"
                 }
                 alt={`${selectedEvent.title} Poster`}

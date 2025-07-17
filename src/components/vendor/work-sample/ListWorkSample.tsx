@@ -3,6 +3,7 @@ import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Edit, Plus, Eye } from "lucide-react"
 import { WorkSample } from "@/types/worksample/work-sample"
+import { CLOUDINARY_BASE_URL } from "@/types/config/config"
 
 interface WorkSamplesListProps {
   workSamples: WorkSample[]
@@ -121,7 +122,7 @@ const WorkSamplesList: React.FC<WorkSamplesListProps> = ({ workSamples, onEdit, 
                   {sample.images.length > 0 ? (
                     <div className="relative h-full">
                       <img
-                        src={sample.images[0] || "/placeholder.svg?height=200&width=300"}
+                        src={CLOUDINARY_BASE_URL + sample.images[0] || "/placeholder.svg?height=200&width=300"}
                         alt={sample.title}
                         className="w-full h-full object-cover"
                       />

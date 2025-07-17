@@ -7,10 +7,10 @@ import "leaflet/dist/leaflet.css";
 import { Search, MapPin } from "lucide-react";
 import { Input } from "@/components/ui/input";
 
+// Fix Leaflet icons
 const fixLeafletIcons = () => {
   if (typeof window !== "undefined") {
     delete (L.Icon.Default.prototype as any)._getIconUrl;
-
     L.Icon.Default.mergeOptions({
       iconRetinaUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon-2x.png",
       iconUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png",
@@ -47,8 +47,8 @@ function LocationMarker({ position, onPositionChange, draggable = false }: Locat
           ? {
               dragend: (e) => {
                 const marker = e.target;
-                const position = marker.getLatLng();
-                onPositionChange(position.lat, position.lng);
+                const pos = marker.getLatLng();
+                onPositionChange(pos.lat, pos.lng);
               },
             }
           : undefined
@@ -58,14 +58,14 @@ function LocationMarker({ position, onPositionChange, draggable = false }: Locat
 }
 
 interface LocationPickerProps {
-  mode?: "edit" | "view"; // "edit" for vendor, "view" for client
-  buttonClassName?: string; // For edit mode button styling
-  buttonText?: string; // For edit mode button text
-  containerClassName?: string; // For view mode container styling
-  onLocationSelect?: (data: { lat: number; lng: number; address: string }) => void; // Callback for edit mode
-  initialLat?: number | string; // Initial latitude
-  initialLng?: number | string; // Initial longitude
-  initialAddress?: string; // Initial address for view mode
+  mode?: "edit" | "view";
+  buttonClassName?: string;
+  buttonText?: string;
+  containerClassName?: string;
+  onLocationSelect?: (data: { lat: number; lng: number; address: string }) => void;
+  initialLat?: number | string;
+  initialLng?: number | string;
+  initialAddress?: string;
 }
 
 export default function LocationPicker({
@@ -83,12 +83,12 @@ export default function LocationPicker({
     typeof initialLat === "number"
       ? initialLat
       : typeof initialLat === "string"
-        ? Number.parseFloat(initialLat) || 40.7128
+        ? parseFloat(initialLat) || 40.7128
         : 40.7128,
     typeof initialLng === "number"
       ? initialLng
       : typeof initialLng === "string"
-        ? Number.parseFloat(initialLng) || -74.006
+        ? parseFloat(initialLng) || -74.006
         : -74.006,
   ]);
   const [address, setAddress] = useState<string>(mode === "view" ? initialAddress : "");
@@ -96,32 +96,29 @@ export default function LocationPicker({
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const mapRef = useRef<L.Map | null>(null);
 
-  // Fix Leaflet icons on component mount
   useEffect(() => {
     fixLeafletIcons();
   }, []);
 
-  // Update position if initialLat/initialLng props change
   useEffect(() => {
     const lat =
       typeof initialLat === "number"
         ? initialLat
         : typeof initialLat === "string"
-          ? Number.parseFloat(initialLat) || position[0]
+          ? parseFloat(initialLat) || position[0]
           : position[0];
     const lng =
       typeof initialLng === "number"
         ? initialLng
         : typeof initialLng === "string"
-          ? Number.parseFloat(initialLng) || position[1]
+          ? parseFloat(initialLng) || position[1]
           : position[1];
 
-    if (lat && lng && (lat !== position[0] || lng !== position[1])) {
+    if (lat !== position[0] || lng !== position[1]) {
       setPosition([lat, lng]);
     }
   }, [initialLat, initialLng]);
 
-  // Get address from coordinates (reverse geocoding) for edit mode
   useEffect(() => {
     if (mode === "view") {
       setAddress(initialAddress);
@@ -131,16 +128,15 @@ export default function LocationPicker({
     const getAddressFromCoordinates = async () => {
       try {
         const response = await fetch(
-          `https://nominatim.openstreetmap.org/reverse?format=json&lat=${position[0]}&lon=${position[1]}&zoom=18&addressdetails=1&accept-language=en`,
+          `https://nominatim.openstreetmap.org/reverse?format=json&lat=${position[0]}&lon=${position[1]}&zoom=18&addressdetails=1&accept-language=en`
         );
         const data = await response.json();
-        if (data && data.display_name) {
+        if (data?.display_name) {
           setAddress(data.display_name);
         } else {
           setAddress(`${position[0].toFixed(6)}, ${position[1].toFixed(6)}`);
         }
       } catch (error) {
-        console.error("Error fetching address:", error);
         setAddress(`${position[0].toFixed(6)}, ${position[1].toFixed(6)}`);
       }
     };
@@ -150,54 +146,50 @@ export default function LocationPicker({
     }
   }, [position, mode, initialAddress]);
 
-  // Handle position change for edit mode
   const handlePositionChange = (lat: number, lng: number) => {
     setPosition([lat, lng]);
   };
 
-  // Handle search for edit mode
   const handleSearch = async () => {
     if (!searchQuery.trim()) return;
-
     setIsLoading(true);
     try {
       const response = await fetch(
-        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(searchQuery)}`,
+        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(searchQuery)}`
       );
       const data = await response.json();
-
-      if (data && data.length > 0) {
+      if (data?.length > 0) {
         const { lat, lon } = data[0];
-        const newPosition: [number, number] = [Number.parseFloat(lat), Number.parseFloat(lon)];
+        const newPosition: [number, number] = [parseFloat(lat), parseFloat(lon)];
         setPosition(newPosition);
-
-        if (mapRef.current) {
-          mapRef.current.flyTo(newPosition, 16);
-        }
+        if (mapRef.current) mapRef.current.flyTo(newPosition, 16);
       }
-    } catch (error) {
-      console.error("Error searching location:", error);
+    } catch (err) {
+      console.error("Search error:", err);
     } finally {
       setIsLoading(false);
     }
   };
 
-  // Handle confirm location for edit mode
   const handleConfirmLocation = () => {
-    if (onLocationSelect) {
-      onLocationSelect({
-        lat: position[0],
-        lng: position[1],
-        address: address,
-      });
-    }
+    onLocationSelect?.({
+      lat: position[0],
+      lng: position[1],
+      address,
+    });
     setIsOpen(false);
   };
 
+  // View Mode with redirect
   if (mode === "view") {
     return (
       <div className={containerClassName}>
-        <div className="h-[200px] w-full rounded-md overflow-hidden border border-sky-200">
+        <a
+          href={`https://www.google.com/maps?q=${position[0]},${position[1]}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="block h-[200px] w-full rounded-md overflow-hidden border border-sky-200 cursor-pointer"
+        >
           <MapContainer
             center={position}
             zoom={13}
@@ -211,14 +203,14 @@ export default function LocationPicker({
             zoomControl={false}
           >
             <TileLayer
-              attribution='© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+              attribution='© OpenStreetMap contributors'
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
             <LocationMarker position={position} draggable={false} />
           </MapContainer>
-        </div>
+        </a>
         {address && (
-          <div className="text-sm text-sky-900">
+          <div className="text-sm text-sky-900 mt-2">
             <p className="font-medium text-sky-700">Address</p>
             <p>{address}</p>
           </div>
@@ -227,6 +219,7 @@ export default function LocationPicker({
     );
   }
 
+  // Edit Mode
   return (
     <>
       <Button type="button" variant="outline" className={buttonClassName} onClick={() => setIsOpen(true)}>
@@ -271,12 +264,11 @@ export default function LocationPicker({
                 zoom={13}
                 style={{ height: "100%", width: "100%" }}
                 whenReady={((event: any) => {
-                  mapRef.current = event.target; 
-                })as () => void
-              }
+                  mapRef.current = event.target;
+                }) as () => void}
               >
                 <TileLayer
-                  attribution='© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                  attribution='© OpenStreetMap contributors'
                   url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 />
                 <LocationMarker
@@ -300,8 +292,8 @@ export default function LocationPicker({
               </div>
               {address && (
                 <div>
-                  <p className="font-medium text-sky-700 text-sm">Address</p>
-                  <p className="text-sky-900 text-sm break-words">{address}</p>
+                  <p className="font-medium text-sky-700">Address</p>
+                  <p className="text-sky-900 break-words">{address}</p>
                 </div>
               )}
             </div>

@@ -17,19 +17,6 @@ export default function Footer() {
     visible: { opacity: 1, y: 0 },
   }
 
-  // const socialVariants = {
-  //   hidden: { opacity: 0, scale: 0 },
-  //   visible: (item) => ({
-  //     opacity: 1,
-  //     scale: 1,
-  //     transition: {
-  //       delay: item * 0.1,
-  //       type: "spring",
-  //       stiffness: 300,
-  //       damping: 10,
-  //     },
-  //   }),
-  // }
 
   return (
     <footer className="bg-[#212A31] text-white pt-16 pb-8">

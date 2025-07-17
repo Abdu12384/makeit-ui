@@ -1,5 +1,5 @@
 import React from 'react';
-import { Formik, Form, Field, ErrorMessage } from 'formik';
+import { Formik, Form, Field, ErrorMessage, FormikHelpers } from 'formik';
 import * as Yup from 'yup';
 import toast from 'react-hot-toast';
 import { motion } from 'framer-motion';
@@ -16,6 +16,12 @@ interface BookingFormProps {
   cancellationPolicySnippet: string;
   onBookingSuccess: () => void;
 }
+interface BookingFormValues {
+  email: string;
+  phone: string;
+  date: string;
+}
+
 
 export const BookingFormComponent: React.FC<BookingFormProps> = ({
   serviceId,
@@ -37,7 +43,7 @@ export const BookingFormComponent: React.FC<BookingFormProps> = ({
     date: Yup.date().required('Date is required').min(new Date(), 'Date must be in the future'),
   });
 
-  const handleBookingSubmit = (values: any, action: any) => {
+  const handleBookingSubmit = (values: BookingFormValues, action: FormikHelpers<BookingFormValues>) => {
     clientBookingServiceMutation.mutate(
       {
         id: serviceId,
@@ -55,9 +61,8 @@ export const BookingFormComponent: React.FC<BookingFormProps> = ({
           action.setSubmitting(false);
           onBookingSuccess(); 
         },
-        onError: (error: any) => {
-          console.error('Error while booking service:', error); // Use console.error for errors
-          toast.error(error.response?.data?.message || 'Failed to book service. Please try again.'); // Safely access error message
+        onError: (error) => {
+          toast.error(error.message || 'Failed to book service. Please try again.');
           action.setSubmitting(false);
         },
       }
@@ -112,7 +117,7 @@ export const BookingFormComponent: React.FC<BookingFormProps> = ({
 
       {/* Booking Form */}
       <Formik
-        initialValues={{ name: '', email: '', phone: '', date: '' }}
+        initialValues={{ email: '', phone: '', date: '' }}
         validationSchema={validationSchema}
         onSubmit={handleBookingSubmit}
       >

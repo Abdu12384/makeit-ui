@@ -79,8 +79,8 @@ export default function VendorLoginPage() {
           setCommonLoading(false)
         }, 3000);
        },
-       onError:(error:any)=>{
-        toast.error(error?.response?.data?.message)
+       onError:(error)=>{
+        toast.error(error?.message)
         setIsLoading(false)
        }
     })

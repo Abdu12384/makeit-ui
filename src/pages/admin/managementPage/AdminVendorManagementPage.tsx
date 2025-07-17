@@ -3,12 +3,13 @@ import { debounce } from "lodash";
 import { useGetAllUsers, useUpdateUserStatusMutaiion } from "@/hooks/AdminCustomHooks";
 import { VendorManagementComponent } from "@/components/admin/mangement/VendorMangement";
 import toast from "react-hot-toast";
+import { IVendor } from "@/types/User";
 
 export default function AdminVendorManagementPage() {
 	const [searchQuery, setSearchQuery] = useState("");
 	const [debouncedSearch, setDebouncedSearch] = useState(searchQuery);
 	const [currentPage, setCurrentPage] = useState(1);
-	const [vendors, setVendors] = useState<any[]>([]);
+	const [vendors, setVendors] = useState<IVendor[]>([]);
 	const limit = 10;
 
  const {mutate: updateUserStatus} = useUpdateUserStatusMutaiion()
@@ -60,20 +61,18 @@ export default function AdminVendorManagementPage() {
 						setVendors((prevVendors) =>
 							prevVendors.map((vendor) =>
 								vendor.userId === userId
-									? { ...vendor, status: vendor.status === "active" ? "inactive" : "active" }
+									? ({ ...vendor, status: vendor.status === "active" ? "inactive" : "active" }as IVendor)
 									: vendor
 							)
 						);
 					},
-					onError: (error: any) => {
-						toast.error(error.response.data.message);
+					onError: (error) => {
+						toast.error(error.message);
 					},
 				}
 			);
-		} catch (error: any) {
-			toast.error(
-				error.response?.data?.message || "Failed to update status."
-			);
+		} catch (error) {
+			console.log(error)
 		}
 	};
 

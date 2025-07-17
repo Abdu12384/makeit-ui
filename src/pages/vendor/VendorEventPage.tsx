@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import {  useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { CalendarDays, MapPin, MoreVertical, Plus, Tag, Ticket } from "lucide-react";
+import { CalendarDays, Clock, MapPin, MoreVertical, Plus, Tag, Ticket } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -12,41 +12,48 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useGetAllEventsByVendorIdMutation } from "@/hooks/VendorCustomHooks";
-import EventFormPage from "@/components/vendor/events/CreateEvents";
-import { EventData } from "@/types/event";
+// import EventFormPage from "@/components/vendor/events/CreateEvents";
+import {  NewEventData } from "@/types/event";
 import { useBlockEventMutation } from "@/hooks/VendorCustomHooks";
 import toast from "react-hot-toast";
-
+import { CLOUDINARY_BASE_URL } from "@/types/config/config";
+import EventFormTabs from "@/components/vendor/events/createEvent/EventForm";
+import { Pagination1 } from "@/components/common/paginations/Pagination";
 
 export default function VendorEventsPage() {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState<"upcoming" | "completed" | "cancelled">("upcoming");
-  const [events, setEvents] = useState<EventData[]>([]);
+  const [activeTab, setActiveTab] = useState<"upcoming" | "ongoing" |"completed" | "cancelled">("upcoming");
+  const [events, setEvents] = useState<NewEventData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [editingEvent, setEditingEvent] = useState<EventData | null>(null);
-
+  const [editingEvent, setEditingEvent] = useState<NewEventData | null>(null);
+  const [currentPage,setCurrentPage] = useState(1)
+  const [totalPages,setTotalPages] = useState(1)
+  let limit = 7
   const getAllEventsByVendorIdMutation = useGetAllEventsByVendorIdMutation();
   const blockEventMutation = useBlockEventMutation();
+
 
   useEffect(() => {
     setIsLoading(true);
     getAllEventsByVendorIdMutation.mutate(
       {
-        page: 1,
-        limit: 10
+        page: currentPage,
+        limit: limit
       },
       {
         onSuccess: (data) => {
+          console.log(data)
           setEvents(data.events.events);
+          setTotalPages(data.events.total)
           setIsLoading(false);
         },
-        onError: (error: any) => {
+        onError: (error) => {
           setIsLoading(false);
          console.log(error)
         }
       }
     );
-  }, []);
+  }, [currentPage,activeTab]);
 
 
   const handleBlockEvent = (eventId: string) => {
@@ -61,8 +68,8 @@ export default function VendorEventsPage() {
             )
           );
         },
-        onError: (error: any) => {
-          toast.error(error.response?.data?.message);
+        onError: (error) => {
+          toast.error(error?.message);
         }
       }
     );
@@ -104,12 +111,18 @@ export default function VendorEventsPage() {
       </motion.div>
 
       <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as typeof activeTab)}>
-        <TabsList className="grid w-full grid-cols-3 mb-8 bg-sky-100">
+        <TabsList className="grid w-full grid-cols-4 mb-8 bg-sky-100">
           <TabsTrigger
             value="upcoming"
             className="data-[state=active]:bg-sky-500 data-[state=active]:text-white transition-all duration-300"
           >
             Upcoming
+          </TabsTrigger>
+          <TabsTrigger
+            value="ongoing"
+            className="data-[state=active]:bg-sky-500 data-[state=active]:text-white transition-all duration-300"
+          >
+            Ongoing
           </TabsTrigger>
           <TabsTrigger
             value="completed"
@@ -142,7 +155,7 @@ export default function VendorEventsPage() {
                   <Card className="overflow-hidden border border-sky-100 shadow-sm hover:shadow-md transition-all duration-300 bg-white">
                     <div className="aspect-video relative overflow-hidden">
                       <img
-                        src={event.posterImage?.[0] || "/placeholder.svg"}
+                        src={`${CLOUDINARY_BASE_URL}${event.posterImage?.[0]}` || "/placeholder.svg"}
                         alt={event.title}
                         className={`object-cover w-full h-full transition-transform duration-500 ${
                           event.isActive ? "hover:scale-105" : "grayscale opacity-60"
@@ -154,19 +167,53 @@ export default function VendorEventsPage() {
                     <CardContent className="p-4">
                       <h3 className="text-xl font-bold mb-2 line-clamp-1 text-sky-800">{event.title}</h3>
                       <div className="space-y-2 text-sm text-sky-700">
-                        <div className="flex items-center">
-                          <CalendarDays className="h-4 w-4 mr-2 text-sky-500" />
-                          <span>
-                            {event.date[0]
-                              ? new Date(event.date[0]).toLocaleDateString("en-IN", {
-                                  day: "numeric",
-                                  month: "short",
-                                  year: "numeric",
-                                })
-                              : "No date"}
-                            {event.startTime ? ` at ${event.startTime}` : ""}
-                          </span>
-                        </div>
+                      {event.date && event.date.length > 0 && (
+                            <>
+                              {event.date.length === 1 ? (
+                                <>
+                                  <div className="flex items-center">
+                                    <CalendarDays className="h-4 w-4 mr-2 text-sky-500" />
+                                    <span>
+                                      {new Date(event.date[0].date).toLocaleDateString("en-IN", {
+                                        year: "numeric",
+                                        month: "long",
+                                        day: "numeric",
+                                      })}
+                                    </span>
+                                  </div>
+                                  <div className="flex items-center">
+                                    <Clock className="h-4 w-4 mr-2 text-sky-500" />
+                                    <span>
+                                      {event.date[0].startTime} - {event.date[0].endTime}
+                                    </span>
+                                  </div>
+                                </>
+                              ) : (
+                                <div className="space-y-1">
+                                  <div className="flex items-center text-sky-800">
+                                    <CalendarDays className="h-4 w-4 mr-2 text-sky-500" />
+                                    <span className="font-semibold">Dates:</span>
+                                  </div>
+                                  <ul className="list-disc pl-6 text-sky-700">
+                                    {event.date.map((entry, index) => (
+                                      <li key={index} className="text-sm">
+                                        {new Date(entry.date).toLocaleDateString("en-IN", {
+                                          year: "numeric",
+                                          month: "long",
+                                          day: "numeric",
+                                        })}
+                                        {entry.startTime && entry.endTime && (
+                                          <span className="ml-2 text-gray-500">
+                                            ({entry.startTime} - {entry.endTime})
+                                          </span>
+                                        )}
+                                      </li>
+                                    ))}
+                                  </ul>
+                                </div>
+                              )}
+                            </>
+                          )}
                         <div className="flex items-center">
                           <MapPin className="h-4 w-4 mr-2 text-sky-500" />
                           <span className="line-clamp-1">{event.venueName}</span>
@@ -234,7 +281,7 @@ export default function VendorEventsPage() {
                   <h2 className="text-2xl font-semibold text-sky-700 mb-4">
                     Edit Event: {editingEvent.title}
                   </h2>
-                  <EventFormPage eventData={editingEvent} onSuccess={() => setEditingEvent(null)} onCancel={() => setEditingEvent(null)} />
+                  <EventFormTabs eventData={editingEvent} onSuccess={() => setEditingEvent(null)} onCancel={() => setEditingEvent(null)} />
                   <button
                     onClick={() => setEditingEvent(null)}
                     className="absolute top-3 right-3 text-gray-500 hover:text-gray-700 text-xl"
@@ -245,6 +292,12 @@ export default function VendorEventsPage() {
               </div>
             )}
       </Tabs>
+       <Pagination1
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPagePrev={() => setCurrentPage(currentPage - 1)}
+        onPageNext={() => setCurrentPage(currentPage + 1)}
+        />
     </div>
   );
 }

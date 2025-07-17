@@ -1,4 +1,5 @@
-import { IEventFormValues } from "./event";
+import { DateTimeEntry, IEventFormValues } from "./event";
+import { IClient } from "./User";
 
 
 
@@ -56,7 +57,7 @@ export interface Ticket {
   ticketStatus: string
   paymentTransactionId: string
   totalAmount: number
-  checkInHistory: any[]
+  checkInHistory:[]
   // Additional fields for display
   eventName?: string
   eventDate?: string
@@ -67,7 +68,7 @@ export interface Ticket {
     eventId: string;
     address: string;
     attendees: number;
-    date: string;
+    date: DateTimeEntry[];
     totalTicket: number;
     ticketPurchased: number;
     status: string;
@@ -97,7 +98,7 @@ export interface ITicketConfirmationModal{
   ticketStatus: string;
   paymentTransactionId: string;
   totalAmount: number;
-  checkInHistory?: any[];
+  checkInHistory?:[];
   createdAt?: string;
   updatedAt?: string;
   eventName?: string;
@@ -109,4 +110,28 @@ export interface TicketConfirmationModalProps {
   setIsOpen: (isOpen: boolean) => void;
   ticket:ITicketConfirmationModal
   event?: IEventFormValues
+}
+
+
+
+export interface ITicketEntity {
+  _id: string
+  ticketId: string
+  clientId: string
+  vendorId: string
+  email: string // This is the client's email on the ticket
+  eventId: string
+  ticketCount: number // Number of tickets purchased (e.g., 1)
+  paymentStatus: "successfull" | "pending" | "failed"
+  phone: string // This is the client's phone on the ticket
+  qrCodeLink: string
+  ticketStatus: "unused" | "used" | "cancelled"
+  totalAmount: number
+  createdAt: string // ISO string
+  updatedAt: string // ISO string
+  checkedIn?: "checked_in" | "pending" | "cancelled" // Status for check-in
+  checkedInTime?: string
+  checkedInBy?: string
+  ticketType: string // e.g., "Standard" - now consistent across all mock tickets
+  client?: IClient// Nested client object
 }

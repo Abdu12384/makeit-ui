@@ -26,8 +26,8 @@ const VendorProfile = () => {
 				toast.success(data.message);
 				// navigate("/admin");
 			},
-			onError: (err: any) => {
-				toast.error(err.response.data.message);
+			onError: (err) => {
+				toast.error(err.message);
 			},
 		});
 	};

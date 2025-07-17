@@ -62,7 +62,7 @@ const VendorHomePage = () => {
             onSuccess: () => {
               localStorage.setItem("fcmToken", token);
             },
-            onError: (err: any) => {
+            onError: (err) => {
               console.error("Failed to save token:", err);
             },
           });

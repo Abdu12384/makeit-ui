@@ -28,6 +28,7 @@ export default function MyTickets() {
       {
         page: currentPage,
         limit: limit,
+        status: activeTab
       },
       {
         onSuccess: (response) => {
@@ -44,7 +45,7 @@ export default function MyTickets() {
 
   useEffect(() => {
     fetchTickets()
-  }, [currentPage])
+  }, [currentPage,activeTab])
 
   const formatTo12Hour = (time: string) => {
     const [hour, minute] = time.split(":")
@@ -73,7 +74,7 @@ export default function MyTickets() {
     if (selectedTicket) {
       const updatedTickets = tickets.map((ticket) => {
         if (ticket.ticketId === selectedTicket.ticketId) {
-          return { ...ticket, ticketStatus: "refunded" }
+          return { ...ticket, ticketStatus: "cancelled" }
         }
         return ticket
       })
@@ -90,7 +91,7 @@ export default function MyTickets() {
       case "unused":
         return tickets.filter((ticket) => ticket.ticketStatus === "unused" || ticket.ticketStatus === "active" || ticket.ticketStatus === "partially_refunded")
       case "cancelled":
-        return tickets.filter((ticket) => ticket.ticketStatus === "refunded")
+        return tickets.filter((ticket) => ticket.ticketStatus === "cancelled")
       default:
         return tickets
     }
@@ -100,7 +101,7 @@ export default function MyTickets() {
     return {
       used: tickets.filter((ticket) => ticket.ticketStatus === "used").length,
       unused: tickets.filter((ticket) => ticket.ticketStatus === "unused" || ticket.ticketStatus === "active").length,
-      cancelled: tickets.filter((ticket) => ticket.ticketStatus === "refunded").length,
+      cancelled: tickets.filter((ticket) => ticket.ticketStatus === "cancelled").length,
     }
   }
 
@@ -109,7 +110,7 @@ export default function MyTickets() {
 
   const renderTicketCard = (ticket: Ticket) => {
     const isUsed = ticket.ticketStatus === "used"
-    const isCancelled = ticket.ticketStatus === "refunded"
+    const isCancelled = ticket.ticketStatus === "cancelled"
     const isUnused = ticket.ticketStatus === "unused" || ticket.ticketStatus === "active"
 
     return (
@@ -123,14 +124,38 @@ export default function MyTickets() {
               className={`w-1/2 bg-white p-6 flex flex-col justify-between relative ${isCancelled ? "opacity-60" : ""}`}
             >
               <div>
-                <h3 className={`text-2xl font-bold ${isCancelled ? "text-gray-500" : "text-purple-900"}`}>
-                  {ticket.eventDetails?.title}
-                </h3>
+              <h3
+                className={`text-2xl font-bold ${isCancelled ? "text-gray-500" : "text-purple-900"} truncate max-w-[300px]`}
+                title={ticket.eventDetails?.title} 
+              >
+                {ticket.eventDetails?.title}
+              </h3>
               </div>
               <div>
                 <div className={`text-2xl font-bold ${isCancelled ? "text-gray-500" : "text-purple-900"}`}>
-                  {ticket?.eventDetails?.date ? new Date(ticket.eventDetails.date).toISOString().split("T")[0] : ""}
-                </div>
+                {ticket.eventDetails?.date && ticket.eventDetails.date.length > 0 ? (
+                  ticket.eventDetails.date.length > 0 && (
+                    // Single date entry
+                    <>
+                      <div className={`text-2xl font-bold ${isCancelled ? "text-gray-500" : "text-purple-900"}`}>
+                        {new Date(ticket.eventDetails.date[0].date).toLocaleDateString("en-US", {
+                          year: "numeric",
+                          month: "short",
+                          day: "numeric",
+                        })}
+                      </div>
+                      <div className="text-sm text-gray-600">
+                        <span>{formatTo12Hour(ticket.eventDetails.date[0].startTime || "")}</span>
+                        <span> - </span>
+                        <span>{formatTo12Hour(ticket.eventDetails.date[0].endTime || "")}</span>
+                      </div>
+                    </>
+                  )
+                ) : (
+                  <div className={`text-2xl font-bold ${isCancelled ? "text-gray-500" : "text-purple-900"}`}>
+                    No date
+                  </div>
+                )}                </div>
                 <div className="text-sm text-gray-600">
                   <span>{formatTo12Hour(ticket?.eventDetails?.startTime || "")}</span>
                   <span> - </span>
@@ -265,9 +290,6 @@ export default function MyTickets() {
     )
   }
 
-  console.log("tickets", tickets)
-  console.log("component rendering")
-
   return (
     <div className="min-h-screen bg-gray-50 p-4 md:p-8">
       <div className="max-w-6xl mx-auto">
@@ -317,7 +339,7 @@ export default function MyTickets() {
               <div className="text-center py-12">
                 <Clock3 className="h-12 w-12 text-gray-400 mx-auto mb-4" />
                 <h3 className="text-lg font-medium text-gray-900 mb-2">No unused tickets</h3>
-                <p className="text-gray-500">You don't have any active tickets at the moment.</p>
+                <p className="text-gray-500">You don't have active tickets at the moment.</p>
               </div>
             )}
           </TabsContent>
@@ -337,7 +359,7 @@ export default function MyTickets() {
               <div className="text-center py-12">
                 <CheckCircle className="h-12 w-12 text-gray-400 mx-auto mb-4" />
                 <h3 className="text-lg font-medium text-gray-900 mb-2">No used tickets</h3>
-                <p className="text-gray-500">You haven't used any tickets yet.</p>
+                <p className="text-gray-500">You haven't used tickets yet.</p>
               </div>
             )}
           </TabsContent>
@@ -369,7 +391,7 @@ export default function MyTickets() {
               <div className="text-center py-12">
                 <XCircle className="h-12 w-12 text-gray-400 mx-auto mb-4" />
                 <h3 className="text-lg font-medium text-gray-900 mb-2">No cancelled tickets</h3>
-                <p className="text-gray-500">You don't have any cancelled tickets.</p>
+                <p className="text-gray-500">You don't have cancelled tickets.</p>
               </div>
             )}
           </TabsContent>

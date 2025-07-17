@@ -44,3 +44,17 @@ export interface Service {
   providerRating: number
   gallery: string[]
 }
+
+export interface ServiceType {
+  _id: string
+  title?: string
+  serviceId: string
+  serviceTitle: string
+  serviceCategory: string
+  yearsOfExperience: number
+  servicePrice: number
+  serviceDuration: number
+  serviceDescription: string
+  status: "active" | "blocked" | string  // You can restrict values if known
+}
+

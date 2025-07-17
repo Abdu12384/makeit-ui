@@ -1,5 +1,5 @@
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Html5QrcodeScanner } from 'html5-qrcode';
 import { useVerifyTicketMutation } from '@/hooks/VendorCustomHooks';
 import toast from 'react-hot-toast';
@@ -11,6 +11,8 @@ function TicketScanner() {
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const [verifiedTicket, setVerifiedTicket] = useState<TicketBackendEntity | null>(null)
   const ticketVerify = useVerifyTicketMutation()
+  const isVerifyingRef = useRef(false);
+
   const initializeScanner = () => {
     const scanner = new Html5QrcodeScanner(
       'reader',
@@ -41,6 +43,8 @@ function TicketScanner() {
   }, []);
 
   const onScanSuccess = async (decodedText: string) => {
+    if (isVerifyingRef.current) return; // 🔒 Prevent duplicate scan
+        isVerifyingRef.current = true;  
     setScanResult(decodedText);
 
     try {
@@ -48,21 +52,18 @@ function TicketScanner() {
       const pathParts = url.pathname.split("/"); // ['', 'verifyTicket', 'ticketId', 'eventId']
       const ticketId = pathParts[2];
       const eventId = pathParts[3];
-      console.log('ticketId', ticketId, 'eventId', eventId)
-      ticketVerify.mutate({ ticketId, eventId }, {
+      ticketVerify.mutate({ ticketId, eventId ,status:"varify"}, {
         onSuccess: (data) => {
-          console.log('varify',data)
           toast.success(data.message)
           setVerifiedTicket(data.verifyTicket)
           setIsOpen(true)
         },
-        onError: (err:any) => {
-          console.log('error---',err)
-         console.log('errcccc',err.response?.data.message)
-          toast.error(err.response?.data.message)
+        onError: (err) => {
+          toast.error(err.message)
         },
         onSettled: () => {
           setTimeout(() => {
+            isVerifyingRef.current = false; // 🔓 Unlock if success
             setScanResult(null);
             initializeScanner(); 
           }, 5000);
@@ -70,6 +71,8 @@ function TicketScanner() {
       })
     } catch (error) {
       console.log('error while decoding the qr', error)
+      isVerifyingRef.current = false; // 🔓 Unlock if failure
+
     }
     console.log('Scanner cleared');
 
@@ -91,7 +94,7 @@ function TicketScanner() {
     setIsOpen(false)
   scannerInstance?.clear().then(() => {
     console.log("Camera stopped.");
-  }).catch((err:any) => {
+  }).catch((err) => {
     console.error("Error stopping camera:", err);
   });
   }

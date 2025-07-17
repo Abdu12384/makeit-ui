@@ -6,13 +6,12 @@ import { ServiceAddForm } from "./ServiceForm"
 import { ServiceCard } from "./ServiceCards"
 import { useGetAllServicesByVendorIdMutation } from "@/hooks/VendorCustomHooks"
 import { Pagination1 } from "@/components/common/paginations/Pagination"
+import { ServiceType } from "@/types/service"
 
 export default function ServiceListingPage() {
   const [isFormOpen, setIsFormOpen] = useState(false)
   const [searchQuery, _setSearchQuery] = useState("")
-  const [sortBy, _setSortBy] = useState<"serviceTitle" | "servicePrice" | "serviceCategory" | null>(null)
-  const [sortOrder, _setSortOrder] = useState<"asc" | "desc">("asc")
-  const [allServices, setAllServices] = useState<any>([])
+  const [allServices, setAllServices] = useState<ServiceType[]>([])
   const [serviceToEdit, setServiceToEdit] = useState<any>(null)
   const [currentPage, setCurrentPage] = useState(1)
   const [isEdit, setIsEdit] = useState(false);
@@ -28,7 +27,7 @@ export default function ServiceListingPage() {
         page: currentPage,
         limit,
         search: searchQuery,
-        sortOrder: sortOrder
+        sortOrder: 'desc'
       },
       {
         onSuccess: (response) => {
@@ -53,11 +52,11 @@ export default function ServiceListingPage() {
   }
 
   const handleDeleteService = (id: string) => {
-    setAllServices(allServices.filter((service:any) => service._id !== id))
+    setAllServices(allServices.filter((service:ServiceType) => service._id !== id))
   }
 
   const handleEditService = (id: string) => {
-    const service = allServices.find((service:any) => service._id === id)
+    const service = allServices.find((service:ServiceType) => service._id === id)
     setServiceToEdit(service) 
     setIsEdit(true)
     setIsFormOpen(true) 
@@ -70,32 +69,6 @@ export default function ServiceListingPage() {
     setIsEdit(false)
   }
 
-
-
-  const filteredServices = allServices.filter(
-    (service:any) =>
-      service.serviceTitle.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      service.serviceCategory.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      service.serviceDescription.toLowerCase().includes(searchQuery.toLowerCase()),
-  )
-
-  const sortedServices = [...filteredServices].sort((a, b) => {
-    if (!sortBy) return 0
-
-    if (sortBy === "serviceTitle") {
-      return sortOrder === "asc" ? a.title.localeCompare(b.title) : b.title.localeCompare(a.title)
-    }
-
-    if (sortBy === "servicePrice") {
-      return sortOrder === "asc" ? a.price - b.price : b.price - a.price
-    }
-
-    if (sortBy === "serviceCategory") {
-      return sortOrder === "asc" ? a.experience - b.experience : b.experience - a.experience
-    }
-
-    return 0
-  })
 
 
   const containerVariants = {
@@ -135,7 +108,7 @@ export default function ServiceListingPage() {
       
       </motion.div>
 
-      {sortedServices.length === 0 ? (
+      {allServices.length === 0 ? (
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -156,7 +129,7 @@ export default function ServiceListingPage() {
           animate="visible"
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
         >
-          {sortedServices.map((service) => (
+          {allServices.map((service) => (
             <ServiceCard
               key={service._id}
               service={service}

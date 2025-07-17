@@ -58,17 +58,27 @@ const WorkSamplePage: React.FC = () => {
     const cloudinaryUrls = [];
     console.log(data.images)
     for (const imageUrl of data.images) {
-      if (!imageUrl.includes("cloudinary.com")) {
+      const isLocal = imageUrl.startsWith("data:image") || imageUrl.startsWith("blob:");
+      const isShortCloudinaryPath = imageUrl.startsWith("v");
+  
+      if (isLocal) {
         const imageBlob = await fetch(imageUrl).then((r) => r.blob());
         const imageFile = new File([imageBlob], "event-image.jpg", { type: "image/jpeg" });
         const cloudinaryFormData = new FormData();
         cloudinaryFormData.append("file", imageFile);
-        cloudinaryFormData.append("upload_preset", "vendor_id"); 
-
+        cloudinaryFormData.append("upload_preset", "vendor_id");
+  
         const uploadResponse = await uploadToCloudinary.mutateAsync(cloudinaryFormData);
-        cloudinaryUrls.push(uploadResponse.secure_url);
+  
+        const fullUrl = uploadResponse.secure_url;
+        const uniquePath = new URL(fullUrl).pathname.split("/image/upload/")[1]; // ✅ [CHANGED]
+        cloudinaryUrls.push(uniquePath); // ✅ [CHANGED]
+      } else if (isShortCloudinaryPath) {
+        cloudinaryUrls.push(imageUrl); // already short
       } else {
-        cloudinaryUrls.push(imageUrl);
+        // full URL already stored from previous flow
+        const uniquePath = new URL(imageUrl).pathname.split("/image/upload/")[1];
+        cloudinaryUrls.push(uniquePath); // ✅ [CHANGED]
       }
     }
 
@@ -98,9 +108,8 @@ const WorkSamplePage: React.FC = () => {
               )
             )
           },
-          onError: (error:any) => {
-            console.error("Error updating work sample:", error)
-            toast.error(error?.response?.data?.message || "Failed to update work sample")
+          onError: (error) => {
+            toast.error(error?.message || "Failed to update work sample")
           },
         }
       )
@@ -119,9 +128,8 @@ const WorkSamplePage: React.FC = () => {
             toast.success(response.message)
             setWorkSamples((prev) => [...prev, newWorkSample])
           },
-          onError: (error:any) => {
-            console.error("Error creating work sample:", error)
-            toast.error(error?.response?.data?.message || "Failed to create work sample")
+          onError: (error) => {
+            toast.error(error?.message || "Failed to create work sample")
           },
         }
       )    

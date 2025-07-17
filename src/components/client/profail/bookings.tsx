@@ -1,9 +1,6 @@
-
-"use client"
-
 import { useEffect, useState } from "react"
 import { motion } from "framer-motion"
-import { Calendar, User, CheckCircle, ClockIcon, Eye, Mail, Phone, XCircle, AlertTriangle } from "lucide-react"
+import { Calendar, User, CheckCircle, ClockIcon, Eye, Mail, Phone, XCircle, AlertTriangle, CheckIcon } from "lucide-react"
 import { useGetBookingsMutation } from "@/hooks/ClientCustomHooks"
 import BookingDetails from "./BookingDetails"
 import { Pagination1 } from "@/components/common/paginations/Pagination"
@@ -20,7 +17,7 @@ export default function ClientBookings() {
   const [currentPage, setCurrentPage] = useState<number>(1)
   const [totalPages, setTotalPages] = useState<number>(1)
   const [activeTab, setActiveTab] = useState("pending")
-  const limit = 20
+  const limit = 10
 
   console.log(bookings)
   const clientGetBookingsMutation = useGetBookingsMutation()
@@ -31,12 +28,13 @@ export default function ClientBookings() {
       {
         page: currentPage,
         limit,
+        status: activeTab
       },
       {
         onSuccess: (response) => {
           console.log("response", response)
           setTotalPages(response.bookings.total)
-          const fetchedBookings = response.bookings.bookings.map((booking: any) => ({
+          const fetchedBookings = response.bookings.bookings.map((booking: Booking) => ({
             bookingId: booking.bookingId || booking.clientId,
             title: "Service Booking",
             date: new Date(booking.date[0]).toLocaleDateString("en-US", {
@@ -69,7 +67,7 @@ export default function ClientBookings() {
         },
       },
     )
-  }, [currentPage])
+  }, [currentPage,activeTab])
 
   const getStatusColor = (status: string) => {
     switch (status.toLowerCase()) {
@@ -108,9 +106,8 @@ export default function ClientBookings() {
   const getBookingCounts = () => {
     return {
       completed: bookings.filter((booking) => booking.status.toLowerCase() === "completed").length,
-      pending: bookings.filter(
-        (booking) => booking.status.toLowerCase() === "pending" || booking.status.toLowerCase() === "confirmed",
-      ).length,
+      confirmed: bookings.filter((booking) => booking.status.toLowerCase() === "confirmed").length,
+      pending: bookings.filter((booking) => booking.status.toLowerCase() === "pending").length,
       rescheduled: bookings.filter((booking) => booking.status.toLowerCase() === "rescheduled").length,
       cancelled: bookings.filter((booking) => booking.status.toLowerCase() === "cancelled").length,
     }
@@ -309,12 +306,19 @@ export default function ClientBookings() {
 
       {/* Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-4 mb-8">
+        <TabsList className="grid w-full grid-cols-5 mb-8">
           <TabsTrigger value="pending" className="relative">
             <ClockIcon className="h-4 w-4 mr-2" />
             Pending
             {bookingCounts.pending > 0 && (
               <Badge className="ml-2 bg-yellow-500 text-white text-xs px-2 py-0.5">{bookingCounts.pending}</Badge>
+            )}
+          </TabsTrigger>
+          <TabsTrigger value="confirmed" className="relative">
+            <CheckCircle className="h-4 w-4 mr-2" />
+            Confirmed
+            {bookingCounts.confirmed > 0 && (
+              <Badge className="ml-2 bg-green-500 text-white text-xs px-2 py-0.5">{bookingCounts.confirmed}</Badge>
             )}
           </TabsTrigger>
           <TabsTrigger value="completed" className="relative">
@@ -359,6 +363,47 @@ export default function ClientBookings() {
               <h3 className="text-sm font-medium text-yellow-800">Pending Bookings</h3>
             </div>
             <p className="text-sm text-yellow-700 mt-1">
+              These bookings are awaiting confirmation or are currently active. You'll receive updates as their status
+              changes.
+            </p>
+          </motion.div>
+
+          {isLoading ? (
+            <div className="space-y-6">
+              <SkeletonCard />
+              <SkeletonCard />
+              <SkeletonCard />
+            </div>
+          ) : filteredBookings.length > 0 ? (
+            <div className="space-y-6">{filteredBookings.map(renderBookingCard)}</div>
+          ) : (
+            <div className="text-center py-12">
+              <ClockIcon className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+              <h3 className="text-lg font-medium text-gray-900 mb-2">No pending bookings</h3>
+              <p className="text-gray-500">You don't have any pending bookings at the moment.</p>
+            </div>
+          )}
+        </TabsContent>
+
+        <TabsContent value="confirmed" className="space-y-6">
+          <div className="flex items-center justify-between">
+            <h2 className="text-xl font-semibold text-gray-900">Confirmed Bookings</h2>
+            <Badge variant="outline" className="text-green-600 border-green-200">
+              {bookingCounts.confirmed} bookings
+            </Badge>
+          </div>
+
+          {/* Info Banner for Pending */}
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6"
+          >
+            <div className="flex items-center">
+              <CheckIcon className="h-5 w-5 text-green-600 mr-2" />
+              <h3 className="text-sm font-medium text-green-800">Confirmed Bookings</h3>
+            </div>
+            <p className="text-sm text-green-700 mt-1">
               These bookings are awaiting confirmation or are currently active. You'll receive updates as their status
               changes.
             </p>

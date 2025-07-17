@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react"
+import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { CheckCircle, Mail, Phone, Ticket, CreditCard, CheckCircle2, User, QrCode } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -6,6 +6,8 @@ import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import { useVerifyTicketMutation } from "@/hooks/VendorCustomHooks"
+import toast from "react-hot-toast"
 
 interface TicketData {
   ticketId: string
@@ -19,7 +21,7 @@ interface TicketData {
   ticketStatus: string
   paymentTransactionId: string
   totalAmount: number
-  checkInHistory?: any[]
+  checkInHistory?: []
   createdAt?: Date
   updatedAt?: Date
   __v?: number
@@ -35,6 +37,8 @@ interface TicketModalProps {
 export function TicketModal({ isOpen, onClose, ticket, onCheckIn }: TicketModalProps) {
   const [isCheckedIn, setIsCheckedIn] = useState(ticket?.ticketStatus === "used")
   const [isCheckingIn, setIsCheckingIn] = useState(false)
+  const ticketVerify = useVerifyTicketMutation()
+  
 
   const formatDate = (dateString: Date) => {
     const date = new Date(dateString)
@@ -54,18 +58,33 @@ export function TicketModal({ isOpen, onClose, ticket, onCheckIn }: TicketModalP
     }).format(amount)
   }
 
-  const handleCheckIn = useCallback( async () => {
+  const handleCheckIn = async () => {
 
     if (isCheckingIn) return
     setIsCheckingIn(true)
 
-    // Simulate API call to check in the ticket
-    setTimeout(() => {
-      setIsCheckedIn(true)
-      setIsCheckingIn(false)
-      if (onCheckIn) onCheckIn()
-    }, 1000)
-  }, [isCheckingIn, onCheckIn])
+    ticketVerify.mutate(
+      { 
+        ticketId: ticket?.ticketId!,
+         eventId: ticket?.eventId! ,
+         status : 'checked_in'
+      }, 
+      {
+      onSuccess: () => {
+        setIsCheckedIn(true)
+        setIsCheckingIn(false)
+        if (onCheckIn) onCheckIn()
+      },
+      onError: (err) => {
+        toast.error(err.message)
+      },
+      onSettled: () => {
+        setTimeout(() => {
+          setIsCheckingIn(false)
+        }, 1000)
+      }
+    })
+  }
 
   if(!ticket){
    return(

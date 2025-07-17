@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react"
 import {motion } from "framer-motion"
 import { useParams, Link, useNavigate } from "react-router-dom"
-import { ArrowLeft, Share2, Heart, ChevronDown, ChevronUp, Star } from 'lucide-react'
+import { ArrowLeft, ChevronDown, ChevronUp, Star } from 'lucide-react'
 import { useClientGetServiceByIdMutation, useGetAllReviewsMutation } from "@/hooks/ClientCustomHooks"
 import { IVendor } from "@/types/User"
 import Navbar from "@/components/common/NavBar"
@@ -71,7 +71,7 @@ useEffect(() => {
             setVendor(data.service.vendor)
             setIsLoading(false)
           },
-          onError: (error: any) => {
+          onError: (error) => {
             console.log('error while client get service by id', error)
             setIsLoading(false)
           },
@@ -117,22 +117,7 @@ useEffect(() => {
         <motion.div variants={itemVariants} className="mb-8">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <h1 className="text-3xl md:text-4xl font-bold text-gray-800">{service.serviceTitle}</h1>
-            <div className="flex items-center space-x-3">
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
-              >
-                <Share2 className="h-5 w-5 text-gray-700" />
-              </motion.button>
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
-              >
-                <Heart className="h-5 w-5 text-gray-700" />
-              </motion.button>
-            </div>
+          
           </div>
           <div className="flex items-center mt-2">
             <div className="flex items-center text-yellow-500">

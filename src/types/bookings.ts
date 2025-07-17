@@ -1,3 +1,6 @@
+import { Service } from "./service";
+import { IClient, IVendor } from "./User";
+
 export interface Booking {
   _id?:string;
   bookingId: string;
@@ -21,3 +24,24 @@ export interface Booking {
 }
 
 
+
+export interface BookingType {
+  bookingId: string
+  clientId: string
+  client: IClient
+  date: string[]
+  email: string
+  phone: string
+  paymentStatus: string
+  serviceId: string
+  service: Service
+  vendorApproval: string
+  vendorId: string
+  vendor: IVendor
+  status: string
+  createdAt: string
+  updatedAt: string
+  isComplete: boolean
+  rejectionReason?: string
+  _id: string
+}

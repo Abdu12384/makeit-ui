@@ -109,9 +109,8 @@ export default function VendorNotificationDropdown() {
     notificationMutation.mutate(undefined, {
       onSuccess: (data) => {
         setNotifications(data.items)
-        console.log("Notifications:", data)
       },
-      onError: (err: any) => {
+      onError: (err) => {
         console.error("Failed to fetch notifications:", err)
       },
     })
@@ -142,8 +141,8 @@ export default function VendorNotificationDropdown() {
       onSuccess: (data) => {
         console.log("Notifications:", data)
       },
-      onError: (err: any) => {
-        console.error("Failed to fetch notifications:", err)
+      onError: (err) => {
+        console.error("Failed to mark notifications as read:", err)
       },
     })
   }

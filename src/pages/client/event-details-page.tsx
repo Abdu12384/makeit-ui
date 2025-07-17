@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Calendar,Clock,MapPin,Ticket,ArrowLeft,Tag,Star,Plus,} from "lucide-react";
+import { Calendar, Clock, MapPin, Ticket, ArrowLeft, Tag, Star, Plus, } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -23,9 +23,12 @@ import { VendorDetailsDialog } from "@/components/client/vendor-info/VendorInfoD
 import { EventDetailsPageSkeleton } from "@/components/common/skelton/SkeltonLoading";
 import { EventNF } from "@/components/common/NotFound/ItemsNotFound";
 import toast from "react-hot-toast";
+import { CLOUDINARY_BASE_URL } from "@/types/config/config";
+import { RootState } from "@/store/store";
+import { format } from "date-fns";
 
 export default function EventDetailsPage() {
-  const { eventId } = useParams<{ eventId: string }>(); 
+  const { eventId } = useParams<{ eventId: string }>();
   const navigate = useNavigate();
   const [event, setEvent] = useState<Event | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -38,12 +41,11 @@ export default function EventDetailsPage() {
   const getEventByIdMutation = useGetEventByIdMutation()
   const [showVendorInfo, setShowVendorInfo] = useState(false)
   const [reviews, setReviews] = useState<ReviewData[]>([])
-  const {client} = useSelector((state: any) => state.client)
+  const { client } = useSelector((state: RootState) => state.client)
   const getAllReviewsMutation = useGetAllReviewsMutation()
-    const reviewFormRef = useRef<HTMLDivElement>(null)
+  const reviewFormRef = useRef<HTMLDivElement>(null)
 
-    const isSoldOut = event ? event.attendeesCount >= event.totalTicket : false;
-
+  const isSoldOut = event ? event.attendeesCount >= event.totalTicket : false;
 
   useEffect(() => {
     const fetchEvent = async () => {
@@ -53,12 +55,12 @@ export default function EventDetailsPage() {
         eventId!,
         {
           onSuccess: (data) => {
-            console.log('event data',data)
+            console.log('event data', data)
             setEvent(data.event)
             setIsLoading(false)
           },
           onError: (error) => {
-            console.log('error while fetching event',error)
+            console.log('error while fetching event', error)
             setIsLoading(false)
           }
         }
@@ -97,21 +99,19 @@ export default function EventDetailsPage() {
     )
   }, [activeTab])
 
-  const handleSubmitReview = (values: any) => {
-    console.log('values', values)
+  const handleSubmitReview = (values: ReviewData) => {
     const newReview = {
       comment: values.comment,
       rating: values.rating,
-      client:{
+      client: {
         name: client?.name,
         profileImage: client?.profileImage,
       },
       targetId: event?.eventId!,
       targetType: "event",
     }
-    setReviews([ newReview, ...reviews ])
-    console.log('reviews', values)
-  
+    setReviews([newReview, ...reviews])
+
   }
 
   const formatDate = (dateString: string) => {
@@ -136,11 +136,11 @@ export default function EventDetailsPage() {
   };
 
   if (isLoading) {
-    return <EventDetailsPageSkeleton/>
+    return <EventDetailsPageSkeleton />
   }
 
   if (!event) {
-    return <EventNF/>
+    return <EventNF />
   }
   return (
     <div className="min-h-screen bg-[#D3D9D4]/10">
@@ -161,7 +161,7 @@ export default function EventDetailsPage() {
       <div className="relative">
         <div className="aspect-[21/9] w-full relative overflow-hidden">
           <motion.img
-            src={event?.posterImage[0]}
+            src={CLOUDINARY_BASE_URL + event?.posterImage[0]}
             alt={event?.title}
             className="w-full h-full object-cover"
             initial={{ scale: 1.1, opacity: 0.8 }}
@@ -180,13 +180,31 @@ export default function EventDetailsPage() {
             <Badge className="bg-[#124E66] hover:bg-[#124E66]/90 border-none mb-3">{event.category}</Badge>
             <h1 className="text-3xl md:text-4xl font-bold mb-2">{event.title}</h1>
             <div className="flex flex-wrap gap-4 text-sm">
-              <div className="flex items-center">
-                <Calendar className="h-4 w-4 mr-1.5 text-[#D3D9D4]" />
-                <span>
-                  {formatDate(event.date[0])}
-                  {event.date.length > 1 ? ` - ${formatDate(event.date[event.date.length - 1])}` : ""}
-                </span>
-              </div>
+              {event.date.length === 1 ? (
+                <>
+                  <div className="flex items-center">
+                    <Calendar className="h-4 w-4 mr-1.5 text-[#D3D9D4]" />
+                    <span>{formatDate(event.date[0].date.toString())}</span>
+                  </div>
+                  <div className="flex items-center">
+                    <Clock className="h-4 w-4 mr-1.5 text-[#D3D9D4]" />
+                    <span>
+                      {event.date[0].startTime} - {event.date[0].endTime}
+                    </span>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="flex items-center">
+                    <Calendar className="h-4 w-4 mr-1.5 text-[#D3D9D4]" />
+                    {event?.date?.map((entry, idx) => (
+                      <li key={idx}>
+                        {format(new Date(entry?.date), "PPP")}
+                      </li>
+                    ))}
+                  </div>
+                </>
+              )}
               <div className="flex items-center">
                 <Clock className="h-4 w-4 mr-1.5 text-[#D3D9D4]" />
                 <span>
@@ -248,12 +266,21 @@ export default function EventDetailsPage() {
                           <Calendar className="h-5 w-5 mr-3 text-[#124E66] mt-0.5" />
                           <div>
                             <h4 className="font-medium text-[#212A31]">Date & Time</h4>
-                            <p className="text-[#748D92] text-sm">
-                              {formatDate(event.date[0])}
-                              {event.date.length > 1 ? ` - ${formatDate(event.date[event.date.length - 1])}` : ""}
-                              <br />
-                              {event.startTime} - {event.endTime}
-                            </p>
+                            {event?.date?.length === 1 ? (
+                              <p className="text-[#748D92] text-sm">
+                                {format(new Date(event?.date?.[0].date), "PPP")}
+                                <br />
+                                {event?.date?.[0].startTime} - {event?.date?.[0].endTime}
+                              </p>
+                            ) : (
+                              <ul className="text-[#748D92] text-sm list-disc pl-5">
+                                {event?.date?.map((entry, idx) => (
+                                  <li key={idx}>
+                                    {format(new Date(entry?.date), "PPP")} ({entry?.startTime} - {entry?.endTime})
+                                  </li>
+                                ))}
+                              </ul>
+                            )}
                           </div>
                         </div>
                         <div className="flex items-start">
@@ -291,7 +318,7 @@ export default function EventDetailsPage() {
                       {event.vendorDetails && (
                         <div className="flex items-center mb-6">
                           <Avatar className="h-12 w-12 mr-4">
-                            <AvatarImage src={event.vendorDetails.profileImage|| "/placeholder.svg"} alt={event.vendorDetails.name} />
+                            <AvatarImage src={CLOUDINARY_BASE_URL + event.vendorDetails.profileImage || "/placeholder.svg"} alt={event.vendorDetails.name} />
                             <AvatarFallback>{event.vendorDetails.name.charAt(0)}</AvatarFallback>
                           </Avatar>
                           <div>
@@ -318,13 +345,13 @@ export default function EventDetailsPage() {
 
                       <h3 className="text-lg font-semibold text-[#212A31] mb-4">Location</h3>
                       <div className={`z-10 ${isBookingOpen || showVendorInfo ? 'hidden' : 'block'}`}>
-                      <LocationPicker
-                        mode="view"
-                        initialLat={event?.location?.coordinates[0]}
-                        initialLng={event?.location?.coordinates[1]}
-                        initialAddress={event?.address}
-                        containerClassName="space-y-4" 
-                      />
+                        <LocationPicker
+                          mode="view"
+                          initialLat={event?.location?.coordinates[1]}
+                          initialLng={event?.location?.coordinates[0]}
+                          initialAddress={event?.address}
+                          containerClassName="space-y-4"
+                        />
                       </div>
                     </CardContent>
                   </Card>
@@ -350,7 +377,7 @@ export default function EventDetailsPage() {
                             onClick={() => openGallery(index)}
                           >
                             <img
-                              src={image || "/placeholder.svg"}
+                              src={CLOUDINARY_BASE_URL + image || "/placeholder.svg"}
                               alt={`Event image ${index + 1}`}
                               className="w-full h-full object-cover"
                             />
@@ -370,58 +397,58 @@ export default function EventDetailsPage() {
                 >
                   <Card className="bg-white border-none shadow-sm">
                     <CardContent className="p-6">
-                    <>
-                  <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}>
-                    <ReviewDisplay 
-                    title="What Our Customers Say" 
-                    showAverage={true} 
-                    reviews={reviews}
-                    />
-                  </motion.div>
+                      <>
+                        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}>
+                          <ReviewDisplay
+                            title="What Our Customers Say"
+                            showAverage={true}
+                            reviews={reviews}
+                          />
+                        </motion.div>
 
-                  <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
-                    <button
-                      onClick={() => {
-                        setIsReviewFormVisible(!isReviewFormVisible)
-                        // Scroll to the form if opening it
-                        if (!isReviewFormVisible) {
-                          setTimeout(() => {
-                            reviewFormRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })
-                          }, 300) // Delay to match the animation duration of the form appearing
-                        }
-                      }}
-                      className="flex items-center justify-center gap-2 w-full max-w-md mt-4 mx-auto py-3 px-6 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl font-semibold text-lg shadow-lg hover:shadow-xl transition-all duration-300"
-                    >
-                      <Plus size={20} />
-                      {isReviewFormVisible ? "Hide Review Form" : "Add Your Review"}
-                    </button>
-                  </motion.div>
+                        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
+                          <button
+                            onClick={() => {
+                              setIsReviewFormVisible(!isReviewFormVisible)
+                              // Scroll to the form if opening it
+                              if (!isReviewFormVisible) {
+                                setTimeout(() => {
+                                  reviewFormRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })
+                                }, 300) // Delay to match the animation duration of the form appearing
+                              }
+                            }}
+                            className="flex items-center justify-center gap-2 w-full max-w-md mt-4 mx-auto py-3 px-6 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl font-semibold text-lg shadow-lg hover:shadow-xl transition-all duration-300"
+                          >
+                            <Plus size={20} />
+                            {isReviewFormVisible ? "Hide Review Form" : "Add Your Review"}
+                          </button>
+                        </motion.div>
 
-                  <AnimatePresence>
-                    {isReviewFormVisible && (
-                      <motion.div
-                        ref={reviewFormRef} // Attach the ref to the form container
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: "auto" }}
-                        exit={{ opacity: 0, height: 0 }}
-                        transition={{ duration: 0.3 }}
-                        className="mt-4"
-                      >
-                        <ReviewForm
-                          onSubmit={(data: ReviewData) => {
-                            handleSubmitReview(data)
-                            setIsReviewFormVisible(false)
-                          }}
-                          isLoading={isLoading}
-                          title="Share Your Experience"
-                          subtitle="Your feedback helps us improve and helps others make informed decisions"
-                          targetId={event?.eventId!}
-                          targetType="event"
-                        />
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                    </>
+                        <AnimatePresence>
+                          {isReviewFormVisible && (
+                            <motion.div
+                              ref={reviewFormRef} // Attach the ref to the form container
+                              initial={{ opacity: 0, height: 0 }}
+                              animate={{ opacity: 1, height: "auto" }}
+                              exit={{ opacity: 0, height: 0 }}
+                              transition={{ duration: 0.3 }}
+                              className="mt-4"
+                            >
+                              <ReviewForm
+                                onSubmit={(data: ReviewData) => {
+                                  handleSubmitReview(data)
+                                  setIsReviewFormVisible(false)
+                                }}
+                                isLoading={isLoading}
+                                title="Share Your Experience"
+                                subtitle="Your feedback helps us improve and helps others make informed decisions"
+                                targetId={event?.eventId!}
+                                targetType="event"
+                              />
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
+                      </>
                     </CardContent>
                   </Card>
                 </motion.div>
@@ -442,14 +469,14 @@ export default function EventDetailsPage() {
       </div>
 
       <div className="z-[9999] relative">
-      <Dialog open={isBookingOpen} onOpenChange={setIsBookingOpen}>
-        <EventBookingForm
-          event={event}
-          ticketCount={ticketCount}
-          isBookingOpen={isBookingOpen}
-          setIsBookingOpen={setIsBookingOpen}
-        />
-      </Dialog>
+        <Dialog open={isBookingOpen} onOpenChange={setIsBookingOpen}>
+          <EventBookingForm
+            event={event}
+            ticketCount={ticketCount}
+            isBookingOpen={isBookingOpen}
+            setIsBookingOpen={setIsBookingOpen}
+          />
+        </Dialog>
       </div>
 
       <EventGalleryDialog
@@ -460,12 +487,11 @@ export default function EventDetailsPage() {
         setCurrentImageIndex={setCurrentImageIndex}
         changeImage={changeImage}
       />
-     <VendorDetailsDialog
+      <VendorDetailsDialog
         isOpen={showVendorInfo}
         onClose={() => setShowVendorInfo(false)}
-        vendor={event?.vendorDetails || null} 
+        vendor={event?.vendorDetails || null}
       />
     </div>
   );
 }
-

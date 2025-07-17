@@ -5,6 +5,7 @@ import { Formik, Form, Field, FieldArray, ErrorMessage } from "formik"
 import * as Yup from "yup"
 import { X, Plus, Upload, ImageIcon, ArrowLeft, Save } from "lucide-react"
 import { WorkSample } from "@/types/worksample/work-sample"
+import { CLOUDINARY_BASE_URL } from "@/types/config/config"
 
 interface WorkSampleFormProps {
   initialData?: WorkSample
@@ -65,6 +66,12 @@ const WorkSampleForm: React.FC<WorkSampleFormProps> = ({ initialData, onSubmit, 
         duration: 0.2,
       },
     },
+  }
+
+  function resolvePreviewUrl(path: string | undefined): string {
+    if (!path) return "/placeholder.svg?height=64&width=64";
+    if (path.startsWith("data:image") || path.startsWith("blob:") || path.startsWith("http")) return path;
+    return `${CLOUDINARY_BASE_URL}/${path}`;
   }
 
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>, push: (obj: string) => void) => {
@@ -179,7 +186,7 @@ const WorkSampleForm: React.FC<WorkSampleFormProps> = ({ initialData, onSubmit, 
                             <div className="flex-1">
                               <Field
                                 name={`images.${index}`}
-                                type="url"
+                                type="text"
                                 placeholder="Enter image URL or upload below..."
                                 className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 text-slate-700"
                               />
@@ -192,11 +199,14 @@ const WorkSampleForm: React.FC<WorkSampleFormProps> = ({ initialData, onSubmit, 
 
                             {image && (
                               <div className="w-16 h-16 rounded-lg overflow-hidden border border-slate-200">
-                                <img
-                                  src={image || "/placeholder.svg?height=64&width=64"}
-                                  alt={`Preview ${index + 1}`}
-                                  className="w-full h-full object-cover"
-                                />
+                                  <img
+                                    src={resolvePreviewUrl(image)}
+                                    alt={`Preview ${index + 1}`}
+                                    className="w-full h-full object-cover"
+                                    onError={(e) => {
+                                      e.currentTarget.src = "/placeholder.svg?height=64&width=64";
+                                    }}
+                                  />
                               </div>
                             )}
 

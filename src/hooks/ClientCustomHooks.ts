@@ -1,10 +1,12 @@
 import { useMutation } from '@tanstack/react-query';
-import { addReview, cancelBooking, cancelTicket, clientBookingService, clientChangePassword, clientCreateAccount, clientForgotPassword, clientGetAllServices, clientGetServiceById, clientGoogleLogin, clientLogin, clientProfileEdit, clientResendOtp, clientResetPassword, clientSignup, confirmBookingPayment, confirmTicketAndPayment, createBookingPayment, createTicket, getAllEvents, getAllReviews, getAllTickets, getAllWorkSamplesByVendorId, getBookings, getEventById, getWalletById, logoutClient, saveClientFCMToken, getClientNotifications, markNotificationAsRead, checkEventBookingAvailability, rescheduleBookingApproval   } from '@/services/client/clientService';
+import { addReview, cancelBooking, cancelTicket, clientBookingService, clientChangePassword, clientCreateAccount, clientForgotPassword, clientGetAllServices, clientGetServiceById, clientGoogleLogin, clientLogin, clientProfileEdit, clientResendOtp, clientResetPassword, clientSignup, confirmBookingPayment, confirmTicketAndPayment, createBookingPayment, createTicket, getAllEvents, getAllReviews, getAllTickets, getAllWorkSamplesByVendorId, getBookings, getEventById, getWalletById, logoutClient, saveClientFCMToken, getClientNotifications, markNotificationAsRead, checkEventBookingAvailability, rescheduleBookingApproval, getAllLocationBasedEvents   } from '@/services/client/clientService';
 import { ILoginData } from '@/types/User';
-import { PaginationParams } from '@/types/event';
+import { LocationEventParams, PaginationParams } from '@/types/event';
 import { TicketEntity } from '@/types/ticket';
 import { ReviewData } from '@/types/worksample/review';
 import { GetAllServicesParams } from '@/types/service';
+import { Booking } from '@/types/bookings';
+import { FormData } from '@/utils/validationForms/validationForms';
 
 
 interface FormValues {
@@ -24,6 +26,7 @@ type loginData = {
 export interface GetAllBookingsParams {
   page?: number;
   limit?: number;
+  status?: string;
   search?: string;
   sortOrder?: string;
 }
@@ -45,7 +48,7 @@ export const useSaveClientFCMTokenMutation = () => {
 
 export const useCreateAccountMutation = () => {
   return useMutation({
-      mutationFn: ({ formdata, otpString }: { formdata: Record<string, string | boolean | number>; otpString: string }) => clientCreateAccount({ formdata, otpString })
+      mutationFn: ({ formdata, otpString }: { formdata: FormData; otpString: string }) => clientCreateAccount({ formdata, otpString })
 
   })
 }
@@ -152,7 +155,7 @@ export const useBookingServiceMutation = () => {
 
 export const  useCreateBookingPaymentMutation = () => {
   return useMutation({
-    mutationFn: ({bookingId,paymentIntentId,bookingDetails}: {bookingId:string,paymentIntentId:string,bookingDetails:Record<string, string|number|boolean>}) => createBookingPayment(bookingId,paymentIntentId,bookingDetails)
+    mutationFn: ({bookingId,paymentIntentId,bookingDetails}: {bookingId:string,paymentIntentId:string,bookingDetails:Booking}) => createBookingPayment(bookingId,paymentIntentId,bookingDetails)
   })
 }
 
@@ -186,6 +189,12 @@ export const useGetAllEventsMutation = () => {
   })
 }
 
+
+export const useGetAllLocationBasedEventsMutation = () =>{
+  return useMutation({
+    mutationFn: (params:LocationEventParams) => getAllLocationBasedEvents(params)
+  })
+}
 
 
 

@@ -37,12 +37,12 @@ export const ForgotPasswordEmail = ({ userType }: ForgotPasswordProps) => {
     setIsSubmitting(true)
     setIsLoading(true)
     forgotPasswordMutation.mutate(email,{
-      onSuccess:(data:any)=>{
+      onSuccess:(data)=>{
          console.log(data)
          setIsSubmitted(true)
       },
-      onError:(error:any)=>{
-        setError(error?.response?.data?.message)
+      onError:(error)=>{
+        setError(error?.message)
       },
       onSettled:()=>{
         setIsLoading(false)

@@ -8,19 +8,10 @@ import { Button } from "@/components/ui/button"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { useBlockServiceMutation } from "@/hooks/VendorCustomHooks"
 import toast from "react-hot-toast"
+import { ServiceType } from "@/types/service"
 
 interface ServiceCardProps {
-  service: {
-    _id: string
-    serviceId: string
-    serviceTitle: string
-    serviceCategory: string
-    yearsOfExperience: number
-    servicePrice: number
-    serviceDuration: number
-    serviceDescription: string
-    status: string
-  }
+  service: ServiceType
   onEdit: () => void
   onDelete: () => void
   setService: (service: any) => void
@@ -53,14 +44,14 @@ export const ServiceCard = ({ service, onEdit,setService }: ServiceCardProps) =>
       {
         onSuccess: (data) => {
           toast.success(data.message);
-          setService((prevService:any) =>
-            prevService.map((service:any) =>
+          setService((prevService:ServiceType[]) =>
+            prevService.map((service:ServiceType) =>
               service.serviceId === serviceId ? { ...service, status: data.status } : service
             )
           );
         },
-        onError: (error: any) => {
-          toast.error(error.response?.data?.message);
+        onError: (error) => {
+          toast.error(error.message);
         }
       }
     );

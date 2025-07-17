@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { debounce } from "lodash";
 import { VendorApplicationList } from "@/components/admin/application/AdminVendorApplication";
 import { useAllVendorQueryMutation, useUpdateVendorStatusMutation } from "@/hooks/AdminCustomHooks";
@@ -11,13 +11,22 @@ export default function AdminVendorApplicationPage() {
 	const [debouncedSearch, setDebouncedSearch] = useState(searchQuery);
 	const limit = 10;
 
-	useEffect(() => {
-		const handler = debounce(() => setDebouncedSearch(searchQuery), 300);
-		handler();
-		return () => handler.cancel();
-	}, [searchQuery]);
+	const debouncedHandleSearch = useMemo(
+    () =>
+      debounce((query: string) => {
+        setDebouncedSearch(query);
+      }, 1000),
+    []
+  );
 
-	// const { errorToast, successToast } = useToaster();
+  // ✅ Cleanup debounce on unmount
+  useEffect(() => {
+    return () => {
+      debouncedHandleSearch.cancel();
+    };
+  }, [debouncedHandleSearch]);
+
+
 
 	const { data, refetch, isLoading } = useAllVendorQueryMutation(
     getAllVendors,
@@ -29,11 +38,11 @@ export default function AdminVendorApplicationPage() {
 	const vendor = data?.vendor || [];
 	const totalPages = data?.totalPages || 1;
 
-	const handleSearchChange = (query: string) => {
-		setSearchQuery(query);
-		setCurrentPage(1);
-	};
-
+  const handleSearchChange = (query: string) => {
+    setSearchQuery(query); 
+    setCurrentPage(1); 
+    debouncedHandleSearch(query); 
+  };
 	const handlePageChange = (page: number) => {
 		setCurrentPage(page);
 	};
@@ -58,7 +67,6 @@ export default function AdminVendorApplicationPage() {
 			}
 		);
 	};
-	console.log('vendor--------',vendor)
 
 	return (
 		<VendorApplicationList

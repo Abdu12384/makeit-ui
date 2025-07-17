@@ -1,5 +1,6 @@
+import React from "react";
 
-export function ChevronLeft(props: any) {
+export function ChevronLeft(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -18,7 +19,7 @@ export function ChevronLeft(props: any) {
   );
 }
 
-export function ChevronRight(props: any) {
+export function ChevronRight(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"

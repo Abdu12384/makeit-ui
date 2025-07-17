@@ -3,6 +3,7 @@ import authAxiosInstance from "@/api/auth.axios";
 import { PaginationParams } from "@/types/event";
 import { IAllVendorResponse, IAuthResponse, IAxiosResponse } from "@/types/response";
 import {FetchVendorParams, ILoginData, IVendor } from "@/types/User";
+import { isAxiosError } from "axios";
 
 
 
@@ -35,7 +36,7 @@ export const adminLogin = async (user:ILoginData) => {
      return response?.data
   } catch (error) {
     console.log('error while admin login')
-    throw error
+    throw new Error(isAxiosError(error) ? error.response?.data.message : 'error while admin login')	
   }
 }
 
@@ -66,6 +67,7 @@ export const getAllUsers = async ({ page, limit, search, userType }: UserQueryPa
 
 
 export  const updateUserStatus = async (data:{userType: string; userId: string}): Promise<IAxiosResponse> =>{
+	try {
     const response = await adminAxiosInstance.patch('/admin/user/status',
       {},
       {
@@ -75,6 +77,10 @@ export  const updateUserStatus = async (data:{userType: string; userId: string})
       }
     })
     return response.data
+  } catch (error) {
+    console.log('error while updating user status',error)
+    throw new Error(isAxiosError(error) ? error.response?.data.message : 'error while updating user status')	
+  }
 }
 
 
@@ -126,7 +132,7 @@ export const createCategory = async (data: Category) => {
 		return response.data;
 	} catch (error) {
 		console.log(error);
-		throw error;
+		throw new Error(isAxiosError(error) ? error.response?.data.message : 'error while creating category')	
 	  }
 };
 
@@ -145,7 +151,7 @@ export const updateCategoryStatus = async (id: string, status: string) => {
 	return response.data;
   } catch (error) {
     console.log('error while updating category status',error)
-    throw error
+    throw new Error(isAxiosError(error) ? error.response?.data.message : 'error while updating category status')	
   }
 };
 
@@ -156,8 +162,8 @@ export const editCategory = async ({data,categoryId}: {data: Category,categoryId
 		return response.data;
 	} catch (error) {
 		console.log(error);
-		throw error;
-	}
+		throw new Error(isAxiosError(error) ? error.response?.data.message : 'error while editing category')	
+		}
 };
 
 
@@ -231,6 +237,11 @@ export const getAllDashboardData = async (period:string) => {
 
 
 export const logoutAdmin = async (): Promise<IAxiosResponse> => {
+	try {
 	const response = await adminAxiosInstance.post("/admin/logout");
 	return response.data;
+} catch (error) {
+	console.log('error while admin logout',error)
+	throw new Error(isAxiosError(error) ? error.response?.data.message : 'error while logging out')	
+}
 };

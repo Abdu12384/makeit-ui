@@ -5,6 +5,7 @@ import { User, Calendar, Home, ChevronLeft, Wallet, Ticket, MessageCircle } from
 import { useSelector } from "react-redux"
 import type { RootState } from "@/store/store"
 import { useState, useEffect } from "react"
+import { CLOUDINARY_BASE_URL } from "@/types/config/config"
 
 interface SidebarProps {
   isOpen: boolean
@@ -123,7 +124,7 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
                   <div className="w-12 h-12 rounded-full bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center shadow-lg">
                     {client.client?.profileImage ? (
                       <img
-                        src={client.client.profileImage || "/placeholder.svg"}
+                        src={`${CLOUDINARY_BASE_URL}/${client.client.profileImage}`}
                         alt="User avatar"
                         className="w-11 h-11 rounded-full object-cover border-2 border-white"
                         onClick={() => navigate("/")}

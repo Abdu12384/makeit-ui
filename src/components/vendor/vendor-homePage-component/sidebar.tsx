@@ -1,6 +1,7 @@
 import { useLogoutVendor } from "@/hooks/VendorCustomHooks"
 import { vendorLogout } from "@/store/slices/vendor.slice"
 import { RootState } from "@/store/store"
+import { CLOUDINARY_BASE_URL } from "@/types/config/config"
 import { disconnectSocket } from "@/utils/socket/socket"
 import { motion, AnimatePresence } from "framer-motion"
 import {
@@ -21,10 +22,6 @@ interface SidebarProps {
   isOpen: boolean
   onClose: () => void
 }
-
-
-
-
 
 
 export const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
@@ -90,8 +87,8 @@ export const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
         }, 2000);
 				toast.success(data.message);
 			},
-			onError: (err: any) => {
-				toast.error(err.response.data.message);
+			onError: (err) => {
+				toast.error(err.message);
 			},
 		});
 	};
@@ -157,7 +154,7 @@ export const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
                 <div className="h-24 w-24 rounded-full bg-purple-200 flex items-center justify-center text-purple-700 font-bold text-2xl mb-4">
                 {vendor?.profileImage ? (
                     <img
-                    src={vendor?.profileImage}
+                    src={CLOUDINARY_BASE_URL + vendor?.profileImage}
                     alt="Profile"
                     className="h-full w-full rounded-full object-cover"
                   />):(
@@ -204,15 +201,6 @@ export const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
                   <User className="h-5 w-5 text-gray-600" />
                   <span className="text-gray-700">Edit Profile</span>
                 </motion.div>
-
-                {/* <motion.a
-                  whileHover={{ x: 5 }}
-                  href="#"
-                  className="flex items-center space-x-3 p-3 rounded-lg hover:bg-white/50 backdrop-blur-sm"
-                >
-                  <Bell className="h-5 w-5 text-gray-600" />
-                  <span className="text-gray-700">Notifications</span>
-                </motion.a> */}
 
                 <motion.a
                   whileHover={{ x: 5 }}

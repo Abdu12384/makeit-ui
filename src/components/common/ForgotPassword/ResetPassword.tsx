@@ -137,14 +137,14 @@ export const ResetPassword = ({userType}:ResetPasswordProps) => {
     clientResetPasswordMutation.mutate(
       {password,token:token as string},
       {
-      onSuccess:(data:any)=>{
+      onSuccess:(data)=>{
         console.log(data)
         setIsSuccess(true)
       },
-      onError:(error:any)=>{
+      onError:(error)=>{
         console.log('error while client reset password',error)
         setErrors({
-          general: error?.response?.data?.message
+          general: error?.message
         })
       }
     })

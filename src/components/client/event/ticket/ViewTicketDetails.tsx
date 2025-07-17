@@ -23,13 +23,11 @@ export const TicketDetailsModal: React.FC<{
 
   const handleDownloadTicket = async () => {
     try {
-      // Create a canvas element to generate the ticket image
       const canvas = document.createElement('canvas')
       const ctx = canvas.getContext('2d')
       
       if (!ctx) return
       
-      // Set canvas dimensions for a larger, more detailed ticket
       canvas.width = 800
       canvas.height = 400
       
@@ -58,7 +56,7 @@ export const TicketDetailsModal: React.FC<{
       // Event details
       ctx.font = '18px Arial'
       ctx.fillStyle = '#374151'
-      ctx.fillText(`📅 ${ticket?.eventDetails?.date ? new Date(ticket.eventDetails.date).toISOString().split('T')[0] : ''}  `, 30, 100)
+      ctx.fillText(`📅 ${ticket?.eventDetails?.date ? ticket.eventDetails.date.map((entry) => entry.date).join(', ') : ''}  `, 30, 100)
       ctx.fillText(`🕐 ${formatTo12Hour(ticket?.eventDetails?.startTime || "")}`, 30, 130)
       ctx.fillText(`🎫 ${ticket.ticketType || 'General Admission'}`, 30, 160)
       
@@ -192,7 +190,7 @@ TICKET DETAILS
 ==============
 
 Event: ${ticket.eventDetails?.title || 'N/A'}
-Date:  ${ticket.eventDetails?.date?.substring(0, 10) || 'N/A'}
+Date:  ${ticket.eventDetails?.date?.map((entry) => entry.date).join(', ') || 'N/A'}
 Time: ${ticket.eventDetails?.startTime || 'N/A'}
 Ticket Type: ${ticket.ticketType || 'N/A'}
 Total Amount: ₹${ticket.totalAmount || 'N/A'}
@@ -243,14 +241,27 @@ Generated on: ${new Date().toLocaleString()}
           </button>
           <h3 className="text-2xl font-bold">{ticket?.eventDetails?.title}</h3>
           <div className="flex items-center mt-2 space-x-4">
-            <div className="flex items-center">
-              <Calendar className="h-4 w-4 mr-2" />
-              {ticket?.eventDetails?.date ? new Date(ticket.eventDetails.date).toISOString().split('T')[0] : ''}
-              </div>
-            <div className="flex items-center">
-              <Clock className="h-4 w-4 mr-2" />
-              <span>{formatTo12Hour(ticket?.eventDetails?.startTime || "")}</span>
-            </div>
+              {ticket?.eventDetails?.date?.map((entry, index) => (
+                <div key={index} className="flex items-center space-x-4 text-white text-sm">
+                  <div className="flex items-center">
+                    <Calendar className="h-4 w-4 mr-1" />
+                    <span>
+                      {new Date(entry.date).toLocaleDateString("en-US", {
+                        year: "numeric",
+                        month: "short",
+                        day: "numeric",
+                      })}
+                    </span>
+                  </div>
+
+                  <div className="flex items-center">
+                    <Clock className="h-4 w-4 mr-1" />
+                    <span>
+                      {formatTo12Hour(entry.startTime)} - {formatTo12Hour(entry.endTime)}
+                    </span>
+                  </div>
+                </div>
+              ))}          
             <div className="flex items-center">
               <User className="h-4 w-4 mr-2" />
               <span>{ticket?.ticketCount > 1 ? `${ticket?.ticketCount} tickets` : "1 ticket"}</span>

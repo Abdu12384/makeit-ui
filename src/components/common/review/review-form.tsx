@@ -21,6 +21,12 @@ interface ReviewFormProps {
   className?: string
 }
 
+interface ReviewFormValues {
+  comment: string;
+  rating: number;
+}
+
+
 const validationSchema = Yup.object({
   comment: Yup.string()
     .required("Please share your thoughts")
@@ -98,7 +104,7 @@ const ReviewForm: React.FC<ReviewFormProps> = ({
 
   const addReviewMutation = useAddReviewMutation()
 
-  const handleSubmitReview = (values: any, action: any) => {
+  const handleSubmitReview = (values: ReviewFormValues, action: any) => {
     console.log('values', values)
     // action.setSubmitting(true)
     addReviewMutation.mutate(
@@ -114,9 +120,8 @@ const ReviewForm: React.FC<ReviewFormProps> = ({
         toast.success(data.message)
         action.setSubmitting(false)
       },
-      onError: (error: any) => {
-        console.log(error)
-        toast.error(error.response.data.message)
+      onError: (error) => {
+        toast.error(error.message)
         action.setSubmitting(false)
       }
     })

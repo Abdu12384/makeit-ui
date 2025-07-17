@@ -11,6 +11,7 @@ import { useSelector } from "react-redux"
 import type { RootState } from "@/store/store"
 import { useNavigate } from "react-router-dom"
 import { IEventFormValues } from "@/types/event"
+import { CLOUDINARY_BASE_URL } from "@/types/config/config"
 
 
 export default function Events() {
@@ -242,7 +243,7 @@ export default function Events() {
                         transition={{ duration: 0.5 }}
                       >
                         <img
-                          src={event?.posterImage[0] || "/placeholder.svg"}
+                          src={CLOUDINARY_BASE_URL + event?.posterImage[0] || "/placeholder.svg"}
                           alt={event?.title}
                           className="h-full w-full object-cover"
                         />

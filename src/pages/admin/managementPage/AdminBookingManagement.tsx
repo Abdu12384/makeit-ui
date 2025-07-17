@@ -8,58 +8,15 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { useGetAllBookingsMutation } from "@/hooks/AdminCustomHooks"
 import { Pagination1 } from "@/components/common/paginations/Pagination"
+import { BookingType } from "@/types/bookings"
 
-// Booking Types
-interface Client {
-  email: string
-  name: string
-  phone: string
-  userId: string
-}
-
-interface Service {
-  serviceTitle: string
-  serviceDescription: string
-  servicePrice: number
-  serviceDuration: string
-  additionalHourFee: number
-  yearsOfExperience: number
-}
-
-interface Vendor {
-  email: string
-  name: string
-  phone: string
-  userId: string
-}
-
-interface Booking {
-  bookingId: string
-  clientId: string
-  client: Client
-  date: string[]
-  email: string
-  phone: string
-  paymentStatus: string
-  serviceId: string
-  service: Service
-  vendorApproval: string
-  vendorId: string
-  vendor: Vendor
-  status: string
-  createdAt: string
-  updatedAt: string
-  isComplete: boolean
-  rejectionReason?: string
-  _id: string
-}
 
 export default function AdminBookingsPage() {
-  const [bookings, setBookings] = useState<Booking[]>([])
+  const [bookings, setBookings] = useState<BookingType[]>([])
   const [searchQuery, _setSearchQuery] = useState("")
   const [currentPage, setCurrentPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
-  const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null)
+  const [selectedBooking, setSelectedBooking] = useState<BookingType | null>(null)
   const limit = 10
 
   const getAllBookingsMutation = useGetAllBookingsMutation()
@@ -90,12 +47,12 @@ export default function AdminBookingsPage() {
       booking.status.toLowerCase().includes(searchQuery.toLowerCase())
   )
 
-  const getStatusColor = (status: string) => {
+  const getStatusColor = (status: string): "default" | "secondary" | "destructive" | "outline" => {
     switch (status.toLowerCase()) {
       case "confirmed":
-        return "success"
+        return "default"      
       case "pending":
-        return "warning"
+        return "outline"      
       case "rejected":
       case "cancelled":
       case "completed":
@@ -104,14 +61,13 @@ export default function AdminBookingsPage() {
         return "secondary"
     }
   }
-
-  const getPaymentStatusColor = (status: string) => {
+  const getPaymentStatusColor = (status: string): "default" | "secondary" | "destructive" | "outline" => {
     switch (status.toLowerCase()) {
       case "completed":
       case "successfull":
-        return "success"
+        return "default"      
       case "pending":
-        return "warning"
+        return "outline"      
       case "refunded":
         return "destructive"
       default:
@@ -119,7 +75,7 @@ export default function AdminBookingsPage() {
     }
   }
 
-  const handleViewDetails = (booking: Booking) => {
+  const handleViewDetails = (booking: BookingType) => {
     setSelectedBooking(booking)
   }
 
@@ -169,10 +125,10 @@ export default function AdminBookingsPage() {
                       <div className="text-gray-400 text-xs">{booking.phone}</div>
                     </TableCell>
                     <TableCell className="text-center">
-                      <Badge variant={getStatusColor(booking.status) as any}>{booking.status}</Badge>
+                      <Badge variant={getStatusColor(booking.status) }>{booking.status}</Badge>
                     </TableCell>
                     <TableCell className="text-center">
-                      <Badge variant={getPaymentStatusColor(booking.paymentStatus) as any}>
+                      <Badge variant={getPaymentStatusColor(booking.paymentStatus) }>
                         {booking.paymentStatus}
                       </Badge>
                     </TableCell>
@@ -282,7 +238,7 @@ export default function AdminBookingsPage() {
                   </div>
                   <div className="flex items-center gap-3">
                     <Badge
-                      variant={getStatusColor(selectedBooking.status) as any}
+                      variant={getStatusColor(selectedBooking.status)}
                       className={selectedBooking.isComplete ? "bg-green-600 text-white" : ""}
                     >
                       {selectedBooking.status}

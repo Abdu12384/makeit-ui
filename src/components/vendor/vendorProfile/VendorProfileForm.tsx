@@ -1,6 +1,6 @@
 import { useMemo, useState, useRef, useEffect } from "react"
 import { motion } from "framer-motion"
-import { Camera, Save, X, Edit3, Award, Phone, Mail, User, KeyRound } from "lucide-react"
+import { Camera, Save, X, Edit3, Award, Phone, Mail, User, KeyRound, Loader2 } from "lucide-react"
 import { useSelector, useDispatch } from "react-redux"
 import { RootState } from "@/store/store"
 import dummyDP from "@/assets/images/profile-img.jpg"
@@ -11,6 +11,7 @@ import toast from "react-hot-toast"
 import { Formik, Form, Field, ErrorMessage } from "formik"
 import * as Yup from "yup"
 import { ChangePassword } from "@/components/common/changePassword/ChangePassword"
+import { CLOUDINARY_BASE_URL } from "@/types/config/config"
 
 
 const validationSchema = Yup.object().shape({
@@ -67,7 +68,6 @@ export default function ProfileForm() {
 
   const handleSave = async (values: typeof initialValues) => {
     console.log(`handleSave is running with ${JSON.stringify(values)}`) // [CHANGED! (added log)]
-    setIsEditing(false)
 
     try {
       let profileImageUrl = vendor?.profileImage
@@ -85,7 +85,10 @@ export default function ProfileForm() {
         cloudinaryFormData.append("upload_preset", "vendor_id")
 
         const uploadResponse = await uploadToCloudinaryMutation.mutateAsync(cloudinaryFormData)
-        profileImageUrl = uploadResponse.secure_url
+        // profileImageUrl = uploadResponse.secure_url
+        const fullUrl = uploadResponse.secure_url
+        const uniquePath = new URL(fullUrl).pathname.split("/image/upload/")[1] // ✅ cut the path
+        profileImageUrl = uniquePath
       }
 
       const updatedVendorData = {
@@ -103,6 +106,7 @@ export default function ProfileForm() {
             const user = response.data.user
             dispatch(vendorLogin(user as IVendor))
             toast.success(response.data.message)
+             setIsEditing(false)
           },
           onError: (error) => {
             console.log("Profile Updating Error", error)
@@ -139,8 +143,12 @@ export default function ProfileForm() {
     },
   ]
 
-
-
+  function resolveImageUrl(imagePath: string | undefined): string {
+    if (!imagePath) return "/placeholder.svg";
+    if (imagePath.startsWith("data:image") || imagePath.startsWith("blob:")) return imagePath;
+    if (imagePath.startsWith("http")) return imagePath;
+    return `${CLOUDINARY_BASE_URL}/${imagePath}`;
+  }
 
     useEffect(() => {
       if (showChangePassword && changePasswordRef.current) {
@@ -177,7 +185,7 @@ export default function ProfileForm() {
       }}     
        validationSchema={validationSchema}
     >
-      {({ values, setFieldValue }) => (
+      {({ values, setFieldValue ,isSubmitting}) => (
         <Form>
           <motion.div
             initial="hidden"
@@ -211,11 +219,14 @@ export default function ProfileForm() {
                       type="submit"
                       className="flex items-center px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 font-medium"
                     >
-                      <Save className="h-4 w-4 mr-2" />
-                      Save
+                    {isSubmitting ? (
+                          <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                        ) : (
+                          <Save className="h-4 w-4 mr-2" />
+                        )}            
+                     Save
                     </button>
                     <button
-                      onClick={() => setIsEditing(false)}
                       type="button"
                       className="flex items-center px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 font-medium"
                     >
@@ -230,12 +241,21 @@ export default function ProfileForm() {
             <div className="p-6 relative">
               <div className="flex justify-center mb-8">
                 <div className="relative">
-                  <motion.div className="h-32 w-32 rounded-full border-4 border-white shadow-md overflow-hidden">
-                    <img
-                      src={values.profileImage || "/placeholder.svg"}
-                      alt="Profile"
-                      className="w-full h-full object-cover"
-                    />
+                  <motion.div className="h-32 w-32 rounded-full border-4 border-white shadow-md overflow-hidden bg-gray-100 flex items-center justify-center">
+                  {values.profileImage ? (
+                          <img
+                            src={resolveImageUrl(values.profileImage)}
+                            alt="Profile"
+                            className="w-full h-full object-cover"
+                            onError={(e) => {
+                              e.currentTarget.onerror = null;
+                              e.currentTarget.src = ""; 
+                              setFieldValue("profileImage", ""); 
+                            }}
+                          />
+                        ) : (
+                          <User className="w-16 h-16 text-gray-400" />
+                        )}
                   </motion.div>
                   {isEditing && (
                     <motion.div className="absolute bottom-0 right-0 p-2 bg-primary rounded-full text-white cursor-pointer hover:bg-primary/90">

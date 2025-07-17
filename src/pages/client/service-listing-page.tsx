@@ -32,6 +32,7 @@ import Navbar from "@/components/common/NavBar"
 import { Pagination1 } from "@/components/common/paginations/Pagination"
 import { containerVariants, itemVariants } from "@/animations/variants"
 import { debounce } from "lodash"
+import { CLOUDINARY_BASE_URL } from "@/types/config/config"
 
 interface Service {
   _id: string
@@ -95,7 +96,7 @@ export default function ServiceListings() {
         {
           onSuccess: (response) => {
             setServices(response.services.services)
-            setCategories(response.services.services.map((service: any) => service.category.title))
+            setCategories(response.services.services.map((service: Service) => service.category.title))
             setTotalPages(response.services.total)
             setIsLoading(false)
           },
@@ -303,7 +304,7 @@ export default function ServiceListings() {
                 <Card className="h-full overflow-hidden border-none shadow-lg hover:shadow-xl transition-all duration-300">
                   <div className="relative h-48 overflow-hidden">
                   <img
-                      src={service.category.image}
+                      src={CLOUDINARY_BASE_URL + service.category.image}
                       alt={service.category.title}
                       className="w-full h-full object-cover"
                     />
