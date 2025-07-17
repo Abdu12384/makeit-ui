@@ -129,8 +129,7 @@ export const VendorWallet = () => {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
         <div>
           <h1 className="text-3xl font-bold text-slate-800 flex items-center">
-            <Wallet className="mr-2 h-7 w-7 text-teal-600" />
-            My Wallet
+            <Wallet className="mr-2 h-7 w-7 text-teal-600" /> My Wallet
           </h1>
           <p className="text-slate-500 mt-1">Manage your funds and transactions</p>
         </div>
@@ -166,7 +165,7 @@ export const VendorWallet = () => {
           </div>
           <h3 className="text-lg font-medium text-slate-900 mb-2">No Transactions Yet</h3>
           <p className="text-slate-500 max-w-md mx-auto mb-6">
-            It looks like you haven't made transactions yet. Your transaction history will appear here once you do.
+            It looks like you haven't made any transactions yet. Your transaction history will appear here once you do.
           </p>
         </motion.div>
       ) : (
@@ -188,7 +187,6 @@ export const VendorWallet = () => {
               </Select>
             </div>
           </div>
-
           <div className="divide-y divide-slate-100">
             <AnimatePresence>
               {filteredTransactions.map((transaction, index) => (
@@ -200,19 +198,17 @@ export const VendorWallet = () => {
                   transition={{ duration: 0.3, delay: index * 0.03 }}
                   className="flex flex-col sm:flex-row sm:items-center justify-between py-4 hover:bg-slate-50 px-4 -mx-4 rounded-lg"
                 >
-                  <div className="flex items-center space-x-4 mb-2 sm:mb-0">
+                  {/* Left Section: Icon + Main Title + Date/Time + Vendor */}
+                  <div className="flex items-center space-x-4 mb-2 sm:mb-0 flex-grow-[2] min-w-0">
                     {getTransactionIcon(transaction.paymentStatus)}
                     <div>
-                      <p className="font-medium text-slate-800">{transaction.paymentType}</p>
+                      {/* Main title for the transaction, using relatedTitle or a generic "Transaction" */}
+                      <p className="font-medium text-slate-800">{transaction.relatedTitle || "Transaction"}</p>
                       <div className="flex items-center text-sm text-slate-500 mt-1">
                         <Calendar className="h-3.5 w-3.5 mr-1" />
                         {formatDate(transaction.date)} at {formatTime(transaction.date)}
                       </div>
-                      {transaction.relatedTitle && (
-                        <div className="text-sm text-slate-500 mt-1">
-                          <span className="font-medium">Related:</span> {transaction.relatedTitle}
-                        </div>
-                      )}
+                      {/* Vendor is still here if it exists */}
                       {transaction.vendor && (
                         <div className="text-sm text-slate-500 mt-1">
                           <span className="font-medium">Vendor:</span> {transaction?.vendor}
@@ -220,26 +216,26 @@ export const VendorWallet = () => {
                       )}
                     </div>
                   </div>
-                  <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-6">
-                    <div className="text-right sm:text-left">
-                      <p
-                        className={`font-semibold ${
-                           transaction.paymentStatus === "credit"
-                            ? "text-teal-600"
-                            : "text-rose-600"
-                        }`}
-                      >
-                        {transaction.paymentStatus === "credit" ? "+" : "-"}
-                        {transaction.amount.toFixed(2)}
-                      </p>
-                    </div>
-                    <div>{transaction.paymentType}</div>
+
+                  {/* Middle Section: Payment Type (explicitly centered, hidden on small screens) */}
+                  <div className="flex-grow-[1] text-center hidden sm:block">
+                    <p className="text-sm text-slate-600">{transaction.paymentType}</p>
+                  </div>
+
+                  {/* Right Section: Amount (right-aligned, fixed position) */}
+                  <div className="flex-shrink-0 text-right w-24">
+                    <p
+                      className={`font-semibold ${
+                        transaction.paymentStatus === "credit" ? "text-teal-600" : "text-rose-600"
+                      }`}
+                    >
+                      {transaction.paymentStatus === "credit" ? "+" : "-"}₹{transaction.amount.toFixed(2)}
+                    </p>
                   </div>
                 </motion.div>
               ))}
             </AnimatePresence>
           </div>
-
           {filteredTransactions.length === 0 && (
             <div className="py-12 text-center">
               <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-slate-100 mb-4">
@@ -260,14 +256,14 @@ export const VendorWallet = () => {
           )}
         </div>
       )}
-          <Pagination1
-              currentPage={currentPage}
-              totalPages={totalPages}
-              onPagePrev={() => setCurrentPage(currentPage - 1)}
-              onPageNext={() => setCurrentPage(currentPage + 1)}
-            /> 
+      <Pagination1
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPagePrev={() => setCurrentPage(currentPage - 1)}
+        onPageNext={() => setCurrentPage(currentPage + 1)}
+      />
     </div>
-  );
+  )
 };
 
 export default VendorWallet;

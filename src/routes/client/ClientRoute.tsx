@@ -81,9 +81,6 @@ const NearbyEventsPage = lazyWithFallback(() => import("@/components/client/even
                      <Route path="*" element={<NotFound404 />} />
 
            </Routes>
-            
-           
-            
-        
+              
      )
 }

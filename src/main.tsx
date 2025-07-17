@@ -8,6 +8,7 @@ import { Provider } from 'react-redux'
 import { persistor, store } from './store/store.ts'
 import { PersistGate } from 'redux-persist/integration/react'
 import StripePaymentGatewayProvider from './components/paymentGateway/StripePaymentGateway'
+import ErrorBoundary from './utils/error-boundary/ErrorBoundary.tsx'
 const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID
 const queryClient = new QueryClient()
 
@@ -17,9 +18,12 @@ createRoot(document.getElementById('root')!).render(
            <PersistGate persistor={persistor}>
              <GoogleOAuthProvider clientId={clientId}>
               <StripePaymentGatewayProvider>
-               <QueryClientProvider client={queryClient}>
-                  <App />
-              </QueryClientProvider>
+                  <QueryClientProvider client={queryClient}>
+                    <ErrorBoundary>
+                  
+                    <App />
+                   </ErrorBoundary>
+                 </QueryClientProvider>
               </StripePaymentGatewayProvider>
             </GoogleOAuthProvider> 
            </PersistGate>
