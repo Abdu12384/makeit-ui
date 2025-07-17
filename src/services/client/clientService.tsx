@@ -357,7 +357,7 @@ export const getAllLocationBasedEvents = async ({
   limit = 10,
 }: LocationEventParams) => {
   try {
-    const response = await clientAxiosInstance.get("/client/nearby", {
+    const response = await clientAxiosInstance.get("/nearby", {
       params: {
         lat,
         lng,
