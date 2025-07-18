@@ -54,7 +54,7 @@ export default function BookedEventsList() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredEvents.map((event) => (
+            {events?.map((event) => (
               <motion.div key={event.eventId} whileHover={{ y: -5 }} transition={{ type: "spring", stiffness: 300 }}>
                 <Card className="overflow-hidden h-full flex flex-col">
                   <div className="relative h-48 bg-gradient-to-r from-purple-500 to-pink-500">

@@ -461,28 +461,34 @@ import { useParams } from "react-router-dom"
 import type { ITicketEntity } from "@/types/ticket"
 import { useGetAttendeesByIdMutation } from "@/hooks/VendorCustomHooks"
 import { CLOUDINARY_BASE_URL } from "@/types/config/config"
+import { Pagination1 } from "@/components/common/paginations/Pagination"
 
 export default function TicketsList() {
   const { eventId } = useParams<{ eventId: string }>()
   const [tickets, setTickets] = useState<ITicketEntity[]>([])
   const [selectedTicket, setSelectedTicket] = useState<ITicketEntity | null>(null)
+  const [currentPage, setCurrentPage] = useState(1)
+  const [totalPages, setTotalPages] = useState(1)
+  const limit = 10
 
 
   const getAttendeesByIdMutation = useGetAttendeesByIdMutation()
 
     console.log(eventId)
   
-  
-  
     useEffect(() => {
   
       getAttendeesByIdMutation.mutate(
-        eventId!,
+        {
+          eventId:eventId!,
+          page:currentPage,
+          limit:limit
+        },
         {
           onSuccess: (data) => {
-            console.log('attendees',data.attendees            )
-            setTickets(data.attendees)
-  
+            console.log('attendees',data)
+            setTickets(data.attendees.clients)
+            setTotalPages(data.attendees.total)
           },
           onError: (err) => {
             console.log(err)
@@ -490,7 +496,7 @@ export default function TicketsList() {
         }
       )
        
-    }, [eventId])
+    }, [eventId,currentPage])
 
 
   const getInitials = (name: string) => {
@@ -633,24 +639,6 @@ export default function TicketsList() {
                 </div>
               </div>
               <Separator />
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Client Status</h3>
-                <div className="p-4 rounded-lg bg-muted/50">
-                  <div className="flex items-center">
-                    {client?.status === "active" ? (
-                      <CheckCircle2 className="h-6 w-6 mr-3 text-green-500" />
-                    ) : (
-                      <XCircle className="h-6 w-6 mr-3 text-red-500" />
-                    )}
-                    <div>
-                      <p className="font-medium">Client Status: {client?.status || "Unknown"}</p>
-                      <p className="text-sm text-muted-foreground">
-                        {client?.status === "active" ? "Account is active" : "Account is inactive"}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
             </TabsContent>
             <TabsContent value="ticket">
               <div className="space-y-6">
@@ -684,7 +672,7 @@ export default function TicketsList() {
                   <div className="mt-6 flex justify-center">
                     <div className="p-4 bg-muted rounded-lg">
                       <div className="h-48 w-48 bg-white flex items-center justify-center">
-                        {ticket.qrCodeLink ? (
+                        {ticket?.qrCodeLink ? (
                           <img
                             src={ticket.qrCodeLink || "/placeholder.svg"}
                             alt={`QR Code for ${ticket.ticketId}`}
@@ -696,7 +684,7 @@ export default function TicketsList() {
                       </div>
                       <p className="text-center mt-2 text-sm text-muted-foreground">Scan to check in</p>
                       <p className="text-center mt-1 text-xs text-muted-foreground">
-                        Ticket ID: {ticket.ticketId || "N/A"}
+                        Ticket ID: {ticket?.ticketId || "N/A"}
                       </p>
                     </div>
                   </div>
@@ -715,15 +703,15 @@ export default function TicketsList() {
                       <div className="flex justify-between">
                         <p className="font-medium">Ticket purchased</p>
                         <p className="text-sm text-muted-foreground">
-                          {new Date(ticket.createdAt).toLocaleString() || "N/A"}
+                          {new Date(ticket?.createdAt).toLocaleString() || "N/A"}
                         </p>
                       </div>
                       <p className="text-sm text-muted-foreground mt-1">
-                        Purchased ticket for ₹{ticket.totalAmount?.toFixed(2) || "0.00"}
+                        Purchased ticket for ₹{ticket?.totalAmount?.toFixed(2) || "0.00"}
                       </p>
                     </div>
                   </div>
-                  {ticket.checkedIn === "checked_in" && (
+                  {ticket?.checkedIn === "checked_in" && (
                     <div className="flex items-start gap-3 pb-4 border-b">
                       <div className="h-8 w-8 rounded-full bg-muted flex items-center justify-center mt-0.5">
                         <CheckCircle2 className="h-4 w-4" />
@@ -731,10 +719,10 @@ export default function TicketsList() {
                       <div className="flex-grow">
                         <div className="flex justify-between">
                           <p className="font-medium">Checked in to event</p>
-                          <p className="text-sm text-muted-foreground">{ticket.checkedInTime || "N/A"}</p>
+                          <p className="text-sm text-muted-foreground">{ticket?.checkedInTime || "N/A"}</p>
                         </div>
                         <p className="text-sm text-muted-foreground mt-1">
-                          Checked in by {ticket.checkedInBy || "Self check-in"}
+                          Checked in by {ticket?.checkedInBy || "Self check-in"}
                         </p>
                       </div>
                     </div>
@@ -751,7 +739,7 @@ export default function TicketsList() {
 
   const TicketCard = ({ ticket, onClick }: { ticket: ITicketEntity; onClick: () => void }) => {
     console.log("ticket", ticket)
-    const client = ticket.client // Access the nested client object
+    const client = ticket?.client // Access the nested client object
 
     return (
       <motion.div
@@ -806,12 +794,12 @@ export default function TicketsList() {
                     <div className="flex items-center">
                       <IndianRupee className="h-4 w-4 mr-1 text-gray-400" />
                       <span className="font-mono bg-gray-100 px-2 py-1 rounded text-xs">
-                        ₹{ticket.totalAmount?.toFixed(2) || "0.00"}
+                        ₹{ticket?.totalAmount?.toFixed(2) || "0.00"}
                       </span>
                     </div>
                   </div>
                   <div className="flex items-center text-sm text-gray-500">
-                    <span>Payment: {ticket.paymentStatus || "N/A"}</span>
+                    <span>Payment: {ticket?.paymentStatus || "N/A"}</span>
                   </div>
                 </div>
               </div>
@@ -845,15 +833,21 @@ export default function TicketsList() {
             </div>
           </div>
           <div className="grid grid-cols-1 gap-4">
-            {tickets.map((ticket: ITicketEntity) => (
+            {tickets?.map((ticket: ITicketEntity) => (
               <TicketCard key={ticket._id} ticket={ticket} onClick={() => setSelectedTicket(ticket)} />
             ))}
-            {tickets.length === 0 && (
+            {tickets?.length === 0 && (
               <div className="col-span-full py-12 text-center">
                 <p className="text-muted-foreground">No tickets found.</p>
               </div>
             )}
           </div>
+          <Pagination1
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPagePrev={() => setCurrentPage(currentPage - 1)}
+          onPageNext={() => setCurrentPage(currentPage + 1)}
+        />
         </motion.div>
       )}
     </div>

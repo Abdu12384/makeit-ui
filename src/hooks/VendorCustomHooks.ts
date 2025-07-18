@@ -223,7 +223,7 @@ export const useVerifyTicketMutation = () => {
 
 export const useGetAttendeesByIdMutation = () => {
   return useMutation({
-    mutationFn: (eventId:string) => getAttendeesById(eventId),
+    mutationFn: ({eventId,page,limit}:{eventId:string,page:number,limit:number}) => getAttendeesById({eventId,page,limit}),
   });
 }
 

@@ -376,9 +376,14 @@ export const verifyTicket = async ({ticketId,eventId,status}: {ticketId:string,e
 
 
 
-export const getAttendeesById = async (eventId:string) => {
+export const getAttendeesById = async ({eventId,page,limit}:{eventId:string,page:number,limit:number}) => {
    try {
-   const response = await VendorAxiosInstance.get(`/vendor/events/attendees/${eventId}`);
+   const response = await VendorAxiosInstance.get(`/vendor/events/attendees/${eventId}`,{
+      params:{
+         page,
+         limit
+      }
+   });
    return response.data;
  } catch (error) {
    console.log(error)
