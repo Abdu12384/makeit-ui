@@ -28,7 +28,6 @@ export default function ClientWallet() {
       },
       {
         onSuccess: (data) => {
-          console.log(data);
           setBalance(data.wallet.wallet.balance);
           setTransaction(data.wallet.transaction);
           setTotalPages(data.wallet.total);
@@ -42,7 +41,6 @@ export default function ClientWallet() {
 
 
   useEffect(() => {
-    console.log("useEffect running, filterPeriod:", filterPeriod, "allTransactions length:", transaction.length);
     const now = new Date();
     const filtered = transaction.filter((tx:Transaction) => {
       const txDate = new Date(tx.date);
@@ -65,7 +63,6 @@ export default function ClientWallet() {
 
 
     if (JSON.stringify(filtered) !== JSON.stringify(filteredTransactions)) {
-      console.log("Updating filteredTransactions, count:", filtered.length);
       setFilteredTransactions(filtered);
     }
   }, [filterPeriod, transaction, filteredTransactions]);
@@ -164,7 +161,7 @@ export default function ClientWallet() {
           </div>
           <h3 className="text-lg font-medium text-slate-900 mb-2">No Transactions Yet</h3>
           <p className="text-slate-500 max-w-md mx-auto mb-6">
-            It looks like you haven't made any transactions yet. Your transaction history will appear here once you do.
+            It looks like you haven't made transactions yet. Your transaction history will appear here once you do.
           </p>
         </motion.div>
       ) : (

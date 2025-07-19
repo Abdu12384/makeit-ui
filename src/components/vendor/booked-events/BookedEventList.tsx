@@ -27,7 +27,6 @@ export default function BookedEventsList() {
     },
     {
       onSuccess:(data)=>{
-        console.log('event',data)
         setEvents(data.events.events)
       },
       onError:(error)=>{

@@ -30,7 +30,6 @@ export const AdminWallet = () => {
           setBalance(data.wallet.wallet.balance);
           setTransaction(data.wallet.transaction);
           setTotalPages(data.wallet.total);
-          console.log(data);
         },
         onError: (error) => {
           console.log(error);
@@ -40,7 +39,6 @@ export const AdminWallet = () => {
   }, [currentPage]);
 
   useEffect(() => {
-    console.log("useEffect running, filterPeriod:", filterPeriod, "allTransactions length:", transaction.length);
     const now = new Date();
     const filtered = transaction.filter((tx: Transaction) => {
       const txDate = new Date(tx.date);
@@ -62,7 +60,6 @@ export const AdminWallet = () => {
     });
 
     if (JSON.stringify(filtered) !== JSON.stringify(filteredTransactions)) {
-      console.log("Updating filteredTransactions, count:", filtered.length);
       setFilteredTransactions(filtered);
     }
   }, [filterPeriod, transaction, filteredTransactions]);

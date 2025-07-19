@@ -67,7 +67,6 @@ export default function ProfileForm() {
   
 
   const handleSave = async (values: typeof initialValues) => {
-    console.log(`handleSave is running with ${JSON.stringify(values)}`) // [CHANGED! (added log)]
 
     try {
       let profileImageUrl = vendor?.profileImage
@@ -117,7 +116,6 @@ export default function ProfileForm() {
       console.log(error)
     }
 
-    console.log(`handleSave is returning updated vendor`) // [CHANGED! (log completion)]
   }
 
   const formFields = [
@@ -180,7 +178,6 @@ export default function ProfileForm() {
       initialValues={initialValues}
       enableReinitialize={true}
       onSubmit={(values, { setSubmitting }) => {
-        console.log("Form submission triggered with values:", values); 
         handleSave(values).finally(() => setSubmitting(false));
       }}     
        validationSchema={validationSchema}

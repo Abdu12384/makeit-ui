@@ -36,7 +36,6 @@ export default function BookingCard({ event, ticketCount, setTicketCount, handle
   }
   };
 
-  console.log('event in booking form',event)
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}

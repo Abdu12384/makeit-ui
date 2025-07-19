@@ -29,7 +29,6 @@ export default function AdminEventsPage() {
       },
       {
         onSuccess: (data) => {
-          console.log("Events data:", data)
           setEvents(data.events.events)
           setTotalPages(data.events.total)
         },

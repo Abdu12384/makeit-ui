@@ -1,6 +1,7 @@
 import type React from "react"
 import { motion } from "framer-motion"
 import { Star, User, Calendar } from "lucide-react"
+import { CLOUDINARY_BASE_URL } from "@/types/config/config"
 
 interface Review {
   _id?: string
@@ -104,7 +105,7 @@ const ReviewDisplay: React.FC<ReviewDisplayProps> = ({
                 <div className="flex-shrink-0">
                   {review?.client?.profileImage ? (
                     <img
-                      src={review?.client?.profileImage || "/placeholder.svg"}
+                      src={CLOUDINARY_BASE_URL + review?.client?.profileImage || "/placeholder.svg"}
                       alt={review?.client?.name || "Reviewer"}
                       className="w-12 h-12 rounded-full object-cover"
                     />

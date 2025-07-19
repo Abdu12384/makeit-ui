@@ -172,7 +172,6 @@ const VendorDetailsPage: React.FC<VendorDetailsPageProps> = ({ vendor , onClose 
     },
   }
 
-console.log('vendor',vendor)
 
   useEffect(() => {
     getAllWorkSamplesByVendorIdMutation.mutate(
@@ -183,7 +182,6 @@ console.log('vendor',vendor)
        },
       {
         onSuccess: (data) => {
-          console.log('work samples',data)
           setWorkSamples(data.workSamples.workSamples)
         },
         onError: (error) => {
@@ -348,7 +346,7 @@ console.log('vendor',vendor)
                 <ExternalLink size={32} className="text-gray-400" />
               </div>
               <h3 className="text-xl font-semibold text-gray-700 mb-2">No work samples available</h3>
-              <p className="text-gray-500">This vendor hasn't uploaded any work samples yet.</p>
+              <p className="text-gray-500">This vendor hasn't uploaded work samples yet.</p>
             </div>
           </motion.div>
         ) : (

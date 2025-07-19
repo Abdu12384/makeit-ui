@@ -46,6 +46,7 @@ export interface Service {
 }
 
 export interface ServiceType {
+  id?:string
   _id: string
   title?: string
   serviceId: string

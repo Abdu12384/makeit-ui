@@ -93,7 +93,6 @@ export default function SimpleBookingCalendar({ onClose }: SimpleBookingCalendar
      undefined,
      {
       onSuccess: (data) => {
-        console.log('dates',data)
         setBookedDates(data.booking.dates.map((date:{date:string; count:number})=>({
           date: date.date,
           bookingCount: date.count

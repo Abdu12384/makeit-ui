@@ -67,7 +67,6 @@ export default function EnhancedServicesCards() {
       },
       {
         onSuccess: (data) => {
-          console.log('data',data.services.services)
           setServicesData(data.services.services)
           setTotalPages(data.totalPages)
         },

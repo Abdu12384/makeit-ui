@@ -96,7 +96,6 @@ export const getAllVendors = async ({
 	const response = await adminAxiosInstance.get("/admin/vendors", {
 		params: { forType, page, limit, search },
 	});
-    console.log(response)
 	return {
 		vendor: response.data.vendor as IVendor[],
 		totalPages: response.data.totalPages,
@@ -138,7 +137,6 @@ export const createCategory = async (data: Category) => {
 
 
 export const getAllCategories = async (params: { limit?: number; page?: number; search?: string }) => {
-  console.log('params',params)
   const response = await adminAxiosInstance.get("/admin/category", { params });
   return response.data;
 };

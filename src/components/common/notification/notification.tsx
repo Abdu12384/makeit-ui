@@ -108,7 +108,6 @@ export default function NotificationDropdown() {
     notificationMutation.mutate(undefined, {
       onSuccess: (data) => {
         setNotifications(data.items)
-        console.log("Notifications:", data)
       },
       onError: (err) => {
         console.error("Failed to fetch notifications:", err)

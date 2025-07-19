@@ -35,7 +35,6 @@ const VendorProfile = () => {
   const vendor = useSelector((state: RootState) => state.vendor.vendor);
   
 
-  console.log(vendor)
 
   return (
     <SimpleAppLayout>

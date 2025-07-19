@@ -13,7 +13,6 @@ export default function ProtectedRoute({
 	allowedRoles,
 }: ProtectedRouteProps) {
 	const session = useSelector(getActiveSession);
-  console.log('the session',session)
 
 	if (!session) return <Navigate to="/" />;
 

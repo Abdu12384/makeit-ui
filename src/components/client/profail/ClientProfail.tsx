@@ -91,11 +91,10 @@ const ClientProfile = () => {
         email: values.emailAddress,
         profileImage: uniquePath ?? "",
       }
-      console.log("updatedClientData", updatedClientData)
+
       await updateClientMutation.mutate(updatedClientData, {
         onSuccess: (response) => {
           const user = response.user
-          console.log("Profile Updated", user)
           
           dispatch(clientLogin(user as IClient))
           toast.success(response.message)

@@ -47,6 +47,10 @@ interface Booking {
   phone: string
   date: string[]
   status: string
+  service: {
+    _id: string
+    serviceTitle: string
+  }
   paymentStatus: string
   vendorApproval: string
   isComplete: boolean
@@ -57,7 +61,7 @@ interface Booking {
 interface BookingDetailsProps {
   booking: Booking
   onBack?: () => void
-  onCancel?: (bookingId: string, reason: string) => void
+  onCancel?: () => void
   onComplete?: (bookingId: string) => void
   onChat?: (clientId: string) => void
   onReschedule?: (bookingId: string, newDate: Date, reason: string) => void
@@ -95,7 +99,7 @@ const StatusBadge = ({ status }: { status: string }) => {
   )
 }
 
-const BookingDetails = ({ booking, onBack, onComplete, onChat }: BookingDetailsProps) => {
+const BookingDetails = ({ booking, onBack,onCancel, onComplete, onChat }: BookingDetailsProps) => {
   const [showCancelDialog, setShowCancelDialog] = useState(false)
   const [showCompleteDialog, setShowCompleteDialog] = useState(false)
   const [showRescheduleDialog, setShowRescheduleDialog] = useState(false)
@@ -103,6 +107,7 @@ const BookingDetails = ({ booking, onBack, onComplete, onChat }: BookingDetailsP
   const [rescheduleReason, setRescheduleReason] = useState("")
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined)
   const [isLoading, setIsLoading] = useState(false)
+
 
   const vendorCancelBookingMutation = useVendorCancelBookingMutation()
   const rescheduleBookingMutation = useRescheduleBookingMutation()
@@ -140,6 +145,7 @@ const BookingDetails = ({ booking, onBack, onComplete, onChat }: BookingDetailsP
           toast.success(response.message)
           setShowCancelDialog(false)
           setCancelReason("")
+          onCancel?.()
         },
         onError: (error) => {
           toast.error(error.message || "Failed to cancel booking")
@@ -161,6 +167,7 @@ const BookingDetails = ({ booking, onBack, onComplete, onChat }: BookingDetailsP
       setIsLoading(false)
     }
   }
+
 
   const handleReschedule = async () => {
     if (!selectedDate) {
@@ -256,7 +263,7 @@ const BookingDetails = ({ booking, onBack, onComplete, onChat }: BookingDetailsP
                   <div className="space-y-3">
                     <div>
                       <p className="text-sm font-medium text-slate-500">Service Name</p>
-                      <p className="text-lg font-bold text-slate-800">{booking.serviceName}</p>
+                      <p className="text-lg font-bold text-slate-800">{booking.service.serviceTitle}</p>
                     </div>
                     <div>
                       <p className="text-sm font-medium text-slate-500">Appointment Date</p>

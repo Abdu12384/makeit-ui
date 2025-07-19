@@ -11,7 +11,6 @@ import {
   TrendingDown,
   IndianRupee,
   MoreHorizontal,
-  Eye,
 } from "lucide-react"
 import { useGetDashboardDataMutation } from "@/hooks/VendorCustomHooks"
 import { WalletTransactionGraph } from "@/components/common/dashboard-tracking/RevenewTracking"
@@ -100,22 +99,26 @@ interface Transaction {
 interface RecentBooking {
   _id: string
   eventName: string
-  clientName: string
+  client?: {
+    name: string
+  }
   bookingDate: string
   amount: number
   status: "confirmed" | "pending" | "cancelled"
   service?: {
     serviceTitle: string
   }
-  date?: string[]
+  date?: string[],
 }
 
 interface RecentTicket {
   _id: string
-  eventName: string
-  ticketsSold: number
+  eventDetails: {
+    title: string
+  }
+  ticketCount: number
   saleDate: string
-  revenue: number
+  totalAmount: number
 }
 
 // Default empty data structure
@@ -193,7 +196,6 @@ export default function VendorDashboard() {
         selectedPeriod,
         {
           onSuccess: (data) => {
-            console.log("data", data)
             
             // Set data with fallback to 0 for numeric values and empty arrays for lists
             setDashboardData({
@@ -422,7 +424,7 @@ export default function VendorDashboard() {
                           {booking?.service?.serviceTitle || booking?.eventName || "Untitled Event"}
                         </h4>
                         <div className="flex items-center gap-2 text-sm text-gray-600">
-                          <span>{booking?.clientName || "Unknown Client"}</span>
+                          <span>{booking?.client?.name || "Unknown Client"}</span>
                           <span>•</span>
                           <span>{formatDate(booking?.date?.[0] || booking?.bookingDate)}</span>
                         </div>
@@ -446,10 +448,10 @@ export default function VendorDashboard() {
               )}
             </div>
 
-            <button className="w-full mt-4 py-2 text-purple-600 hover:text-purple-700 font-medium flex items-center justify-center gap-2">
+            {/* <button className="w-full mt-4 py-2 text-purple-600 hover:text-purple-700 font-medium flex items-center justify-center gap-2">
               <Eye size={16} />
               View All Bookings
-            </button>
+            </button> */}
           </motion.div>
 
           {/* Recent Ticket Sales */}
@@ -482,17 +484,17 @@ export default function VendorDashboard() {
                         <Ticket size={16} className="text-green-600" />
                       </div>
                       <div>
-                        <h4 className="font-medium text-gray-900">{ticket?.eventName || "Untitled Event"}</h4>
+                        <h4 className="font-medium text-gray-900">{ticket?.eventDetails?.title || "Untitled Event"}</h4>
                         <div className="flex items-center gap-2 text-sm text-gray-600">
-                          <span>{ticket?.ticketsSold || 0} tickets</span>
+                          <span>{ticket?.ticketCount || 0} tickets</span>
                           <span>•</span>
                           <span>{formatDate(ticket?.saleDate)}</span>
                         </div>
                       </div>
                     </div>
                     <div className="text-right">
-                      <div className="font-bold text-gray-900">₹{(ticket?.revenue || 0).toLocaleString()}</div>
-                      <div className="text-xs text-gray-500">{ticket?.ticketsSold || 0} sold</div>
+                      <div className="font-bold text-gray-900">₹{(ticket?.totalAmount || 0).toLocaleString()}</div>
+                      <div className="text-xs text-gray-500">{ticket?.ticketCount || 0} sold</div>
                     </div>
                   </div>
                 ))
@@ -504,10 +506,10 @@ export default function VendorDashboard() {
               )}
             </div>
 
-            <button className="w-full mt-4 py-2 text-green-600 hover:text-green-700 font-medium flex items-center justify-center gap-2">
+            {/* <button className="w-full mt-4 py-2 text-green-600 hover:text-green-700 font-medium flex items-center justify-center gap-2">
               <Eye size={16} />
               View All Sales
-            </button>
+            </button> */}
           </motion.div>
         </div>
       </motion.div>

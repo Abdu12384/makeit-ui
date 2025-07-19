@@ -46,7 +46,6 @@ export default function Events() {
         },
         {
           onSuccess: (response) => {
-            console.log('events',response)
             setEvents(response.events.events)
             setTotalPages(response.events.total)
             setIsLoading(false)

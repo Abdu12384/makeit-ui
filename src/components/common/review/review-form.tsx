@@ -105,7 +105,6 @@ const ReviewForm: React.FC<ReviewFormProps> = ({
   const addReviewMutation = useAddReviewMutation()
 
   const handleSubmitReview = (values: ReviewFormValues, action: any) => {
-    console.log('values', values)
     // action.setSubmitting(true)
     addReviewMutation.mutate(
       {
@@ -116,7 +115,6 @@ const ReviewForm: React.FC<ReviewFormProps> = ({
       },
     {
       onSuccess: (data) => {
-        console.log('review added', data)
         toast.success(data.message)
         action.setSubmitting(false)
       },

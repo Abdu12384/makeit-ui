@@ -7,6 +7,7 @@ import type { Socket } from "socket.io-client"
 import type { Message } from "@/types/chat"
 import { motion, AnimatePresence } from "framer-motion"
 import { Send, ImageIcon, MoreVertical, ArrowLeft, CheckCheck, Check } from "lucide-react"
+import { CLOUDINARY_BASE_URL } from "@/types/config/config"
 
 interface ChatWindowProps {
   chatId: string
@@ -15,6 +16,20 @@ interface ChatWindowProps {
   socket: Socket
   onBackClick?: () => void
 }
+interface SocketResponse<T = unknown> {
+  status: "success" | "error";
+  message?: string;
+  data?: T;
+}
+
+interface ChatInfo {
+  chatId: string;
+  senderId: string;
+  receiverId: string;
+  receiverName: string;
+  receiverProfileImage: string;
+}
+
 
 const ChatWindow: React.FC<ChatWindowProps> = ({ chatId, userId, userModel, socket, onBackClick }) => {
   const [messages, setMessages] = useState<Message[]>([])
@@ -30,20 +45,19 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ chatId, userId, userModel, sock
   const messageInputRef = useRef<HTMLInputElement>(null)
   const [showAttachMenu, _setShowAttachMenu] = useState(false)
 
-  console.log('chatInfo', chatInfo)
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
   }
 
   useEffect(() => {
-    socket.emit("join-room", { roomId: chatId, userId }, (response: any) => {
+    socket.emit("join-room", { roomId: chatId, userId }, (response:SocketResponse<ChatInfo[]>) => {
       if (response.status !== "success") {
-        setError(response.message)
+        setError(response.message!)
       }
 
-      socket.emit("get-chats", { userId }, (response: any) => {
+      socket.emit("get-chats", { userId }, (response: SocketResponse<ChatInfo[]>) => {
         if (response.status === "success") {
-          const chat = response.data.find((c: any) => c.chatId === chatId);
+          const chat = response.data?.find((c: ChatInfo) => c.chatId === chatId);
           if (chat) {
             const receiverId = chat.senderId === userId ? chat.receiverId : chat.senderId;
             setChatInfo({
@@ -55,7 +69,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ chatId, userId, userModel, sock
             setError("Chat not found");
           }
         } else {
-          setError(response.message);
+          setError(response.message!);
         }
       });
     })
@@ -64,7 +78,6 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ chatId, userId, userModel, sock
     socket.emit("get-messages", { chatId }, (response: any) => {
       setLoading(false)
       if (response.status === "success") {
-        console.log("Messages fetched:", response.data)
         setMessages(response.data)
 
         // Get chat info (this is a placeholder - you would need to implement this)
@@ -187,7 +200,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ chatId, userId, userModel, sock
           <div className="w-10 h-10 rounded-full bg-gradient-to-r from-purple-500 to-purple-700 flex items-center justify-center text-white font-medium">
             {chatInfo?.avatar ? (
               <img
-                src={chatInfo.avatar}
+                src={CLOUDINARY_BASE_URL + chatInfo.avatar}
                 alt={chatInfo.name}
                 className="w-10 h-10 rounded-full"
               />

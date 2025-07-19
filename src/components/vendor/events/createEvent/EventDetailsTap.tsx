@@ -13,6 +13,7 @@ interface EventDetailsTabProps {
   errors: EventFormErrors
   touched: EventFormTouched
   setFieldValue: (field: string, value: string) => void
+  isEditing: boolean
 }
 
 const eventCategories = [
@@ -27,7 +28,7 @@ const eventCategories = [
 ]
 const eventStatuses = ["upcoming", "ongoing", "cancelled"]
 
-export default function EventDetailsTab({ errors, touched, setFieldValue }: EventDetailsTabProps) {
+export default function EventDetailsTab({ errors, touched, setFieldValue,isEditing }: EventDetailsTabProps) {
   return (
     <motion.div
       initial={{ opacity: 0, x: -20 }}
@@ -118,7 +119,7 @@ export default function EventDetailsTab({ errors, touched, setFieldValue }: Even
             </Label>
             <Field name="category">
               {({ field }: { field: FieldInputProps<string> }) => (
-                <Select value={field.value} onValueChange={(value) => setFieldValue("category", value)}>
+                <Select disabled={isEditing} value={field.value} onValueChange={(value) => setFieldValue("category", value)}>
                   <SelectTrigger
                     className={`h-14 text-lg transition-all duration-300 focus:ring-2 focus:ring-sky-300 border-2 ${
                       errors.category && touched.category

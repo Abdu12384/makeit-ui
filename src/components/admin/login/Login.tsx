@@ -78,7 +78,6 @@ export function AdminLoginPage() {
     } 
     setIsLoading(true)
     try {
-     console.log('usedata',formData)
     loginMutation.mutate(formData,{
        onSuccess:(data) =>{
         setCommonLoading(true)

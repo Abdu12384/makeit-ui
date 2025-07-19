@@ -50,7 +50,6 @@ const VendorHomePage = () => {
     const setupFCM = useCallback(async () => {
       try {
         if (Notification.permission === 'denied') {
-          console.log('Notifications are blocked by user');
           return;
         }
     

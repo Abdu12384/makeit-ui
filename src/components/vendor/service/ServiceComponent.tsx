@@ -31,7 +31,6 @@ export default function ServiceListingPage() {
       },
       {
         onSuccess: (response) => {
-          console.log("Fetched services:", response.services);
           setAllServices(response.services.services)
           setTotalPages(response.services.total||1)
         },

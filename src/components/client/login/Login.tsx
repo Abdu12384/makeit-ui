@@ -27,12 +27,6 @@ interface FormData {
   role: UserRoles
 }
 
-type GoogleAuth = {
-  email: string;
-  googleVerified: boolean;
-  name: string;
-  picture: string;
-}
 
 interface FormErrors {
   email?: string
@@ -79,19 +73,17 @@ export default function LoginComponent() {
 
   const googleAuthenticate = (credentialResponse: CredentialResponse) =>{
       try {
-        console.log('abcd',credentialResponse.credential)
+
  
          if(credentialResponse.credential){
-           const credential: GoogleAuth = jwtDecode(credentialResponse.credential);
-           console.log(credential)
-          
+            jwtDecode(credentialResponse.credential);
+        
            googleLoginMutation.mutate({
             credential: credentialResponse.credential,
             client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID,
             role: "client",
           },{
              onSuccess: (data) =>{
-                console.log('login sucess')
                 setCommonLoading(true)
                 window.setTimeout(() => {
                   dispatch(clientLogin(data.user as IClient))
@@ -131,7 +123,6 @@ export default function LoginComponent() {
     }
     setIsLoading(true)
     try {
-     console.log('user data',formData)
     loginMutation.mutate(formData,{
        onSuccess:async(data) =>{
         await initializeSocket()

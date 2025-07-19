@@ -1,7 +1,7 @@
 
 import type React from "react"
 import { motion } from "framer-motion"
-import { Search, UserPlus, Filter, Ban, CheckCircle } from 'lucide-react'
+import { Search, Ban, CheckCircle } from 'lucide-react'
 import { Pagination1 } from "@/components/common/paginations/Pagination"
 import { IClient } from "@/types/User"
 import { ConfirmationButton } from "@/components/common/customButtons/ConfirmButton"
@@ -29,7 +29,6 @@ export const ClientManagementComponent: React.FC<ClientManagementProps> = ({
   onPageChange,
   onStatusUpdate,
 }) => {
-  console.log(clients)
   return (
     <motion.div
       className="p-6"
@@ -37,13 +36,6 @@ export const ClientManagementComponent: React.FC<ClientManagementProps> = ({
       animate={{ opacity: 1 }}
       transition={{ duration: 0.3 }}
     >
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">User Management</h1>
-        <button className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg flex items-center text-sm transition-colors">
-          <UserPlus size={16} className="mr-2" />
-          Add User
-        </button>
-      </div>
 
       <div className="bg-gray-800 rounded-xl p-6">
         <div className="flex flex-col md:flex-row justify-between mb-6 gap-4">
@@ -57,10 +49,6 @@ export const ClientManagementComponent: React.FC<ClientManagementProps> = ({
               className="bg-transparent border-none w-full ml-2 focus:outline-none"
             />
           </div>
-          <button className="flex items-center bg-gray-700/50 hover:bg-gray-700 px-4 py-2 rounded-lg text-sm transition-colors">
-            <Filter size={16} className="mr-2" />
-            Filter
-          </button>
         </div>
        
        {isLoading ? (

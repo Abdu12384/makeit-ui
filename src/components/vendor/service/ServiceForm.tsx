@@ -61,7 +61,6 @@ const defaultInitialValues: ServiceFormValues = {
 };
 
 export const  ServiceAddForm = ({ onClose, onSubmit, initialData, isEdit, refetchServices }: ServiceAddFormProps) => {
-  console.log('isEding',isEdit)
   const [step, setStep] = useState(1)
   const [categories, setCategories] = useState<Category[]>([])
 
@@ -87,7 +86,6 @@ export const  ServiceAddForm = ({ onClose, onSubmit, initialData, isEdit, refetc
       },
       onError: (error) => {
         console.log("Error fetching categories:", error)
-        toast.error("Failed to fetch categories")
       },
     })
   }, []);

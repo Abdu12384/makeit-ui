@@ -42,7 +42,6 @@ export default function VendorEventsPage() {
       },
       {
         onSuccess: (data) => {
-          console.log(data)
           setEvents(data.events.events);
           setTotalPages(data.events.total)
           setIsLoading(false);

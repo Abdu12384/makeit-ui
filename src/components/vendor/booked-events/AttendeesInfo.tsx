@@ -474,7 +474,6 @@ export default function TicketsList() {
 
   const getAttendeesByIdMutation = useGetAttendeesByIdMutation()
 
-    console.log(eventId)
   
     useEffect(() => {
   
@@ -486,7 +485,6 @@ export default function TicketsList() {
         },
         {
           onSuccess: (data) => {
-            console.log('attendees',data)
             setTickets(data.attendees.clients)
             setTotalPages(data.attendees.total)
           },
@@ -570,7 +568,6 @@ export default function TicketsList() {
 
   // Ticket Details Component (embedded)
   const TicketDetails = ({ ticket, onClose }: { ticket: ITicketEntity; onClose: () => void }) => {
-    console.log("ticket in the details", ticket)
     const client = ticket.client // Access the nested client object
 
     return (
@@ -738,7 +735,6 @@ export default function TicketsList() {
   }
 
   const TicketCard = ({ ticket, onClick }: { ticket: ITicketEntity; onClick: () => void }) => {
-    console.log("ticket", ticket)
     const client = ticket?.client // Access the nested client object
 
     return (

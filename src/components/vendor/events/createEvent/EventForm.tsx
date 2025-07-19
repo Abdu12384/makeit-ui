@@ -159,7 +159,6 @@ export default function EventFormTabs({ eventData, onSuccess, onCancel }: EventF
         dateTimeEntries: validEntries,
       }
 
-      console.log('event new data', finalValues)
       if (isEditing && eventData) {
         editEventMutation.mutate(
           { data: finalValues, eventId: eventData.eventId },
@@ -274,7 +273,12 @@ export default function EventFormTabs({ eventData, onSuccess, onCancel }: EventF
                 {/* Tab Content with proper sizing */}
                 <div className="w-full">
                   <TabsContent value="details" className="mt-0">
-                    <EventDetailsTab errors={errors} touched={touched} setFieldValue={setFieldValue} />
+                    <EventDetailsTab 
+                    errors={errors} 
+                    touched={touched} 
+                    setFieldValue={setFieldValue} 
+                    isEditing={isEditing}
+                    />
                   </TabsContent>
 
                   <TabsContent value="datetime" className="mt-0">
@@ -285,6 +289,7 @@ export default function EventFormTabs({ eventData, onSuccess, onCancel }: EventF
                       setFieldValue={setFieldValue}
                       dateTimeEntries={dateTimeEntries}
                       setDateTimeEntries={setDateTimeEntries}
+                      isEditing={isEditing}
                     />
                   </TabsContent>
 

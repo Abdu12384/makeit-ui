@@ -74,7 +74,6 @@ function TicketScanner() {
       isVerifyingRef.current = false; // 🔓 Unlock if failure
 
     }
-    console.log('Scanner cleared');
 
 
   };
@@ -93,7 +92,6 @@ function TicketScanner() {
     handleScanAgain()
     setIsOpen(false)
   scannerInstance?.clear().then(() => {
-    console.log("Camera stopped.");
   }).catch((err) => {
     console.error("Error stopping camera:", err);
   });

@@ -29,7 +29,6 @@ const WorkSamplePage: React.FC = () => {
       },
       {
         onSuccess: (response) => {
-          console.log(response)
           setWorkSamples(response.workSamples.workSamples)
           setTotalPages(response.workSamples.totalWorkSamples)
         },
@@ -54,9 +53,7 @@ const WorkSamplePage: React.FC = () => {
 
   
   const handleSubmitWorkSample = async (data: WorkSample) => {
-    console.log('submit',data)
     const cloudinaryUrls = [];
-    console.log(data.images)
     for (const imageUrl of data.images) {
       const isLocal = imageUrl.startsWith("data:image") || imageUrl.startsWith("blob:");
       const isShortCloudinaryPath = imageUrl.startsWith("v");
@@ -82,7 +79,6 @@ const WorkSamplePage: React.FC = () => {
       }
     }
 
-    console.log(cloudinaryUrls)
     const updatedWorkSample = {
       ...data,
       images: cloudinaryUrls,
@@ -100,7 +96,6 @@ const WorkSamplePage: React.FC = () => {
         },
         {
           onSuccess: (response) => {
-            console.log(response)
             toast.success(response.message)
             setWorkSamples((prev) =>
               prev.map((sample) =>
@@ -124,7 +119,6 @@ const WorkSamplePage: React.FC = () => {
         newWorkSample,
         {
           onSuccess: (response) => {
-            console.log(response)
             toast.success(response.message)
             setWorkSamples((prev) => [...prev, newWorkSample])
           },

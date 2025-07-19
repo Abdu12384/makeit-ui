@@ -58,7 +58,6 @@ export default function NearbyEventsPage() {
       },
       {
         onSuccess: (res) => {
-          console.log("res", res)
           setEvents(res.events)
           setIsLoading(false)
         },

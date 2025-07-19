@@ -73,9 +73,7 @@ export const saveClientFCMToken = async (token:string) => {
 
 export const clientSignup = async (values: SignupPayload): Promise<SingupResponse> =>{
    try {
-     console.log('serverci file data',values)
      const response = await authAxiosInstance.post('/send-otp',values)
-     console.log('send otp',response)
      return response.data
    } catch (error) {
      console.error('Signup failed',error)

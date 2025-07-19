@@ -13,6 +13,7 @@ import { VendorDetailsDialog } from "@/components/client/vendor-info/VendorInfoD
 import { ServiceDetailsSkeleton } from "@/components/common/skelton/SkeltonLoading"
 import { ServiceNF } from "@/components/common/NotFound/ItemsNotFound"
 import { BookingFormComponent } from "@/components/client/service/ServiceBookingForm"
+import { CLOUDINARY_BASE_URL } from "@/types/config/config"
 
 export default function BookingPage() {
   const { id } = useParams<{ id: string }>()
@@ -51,7 +52,6 @@ useEffect(() => {
     },
     {
       onSuccess: (data) => {
-        console.log('reviews', data)
         setReviews(data.reviews.reviews)
       },
       onError: (error) => {
@@ -268,7 +268,7 @@ useEffect(() => {
                     <div className="w-16 h-16 rounded-full overflow-hidden mr-4">
                       {vendor?.profileImage ? (
                         <img
-                          src={vendor?.profileImage}
+                          src={CLOUDINARY_BASE_URL + vendor?.profileImage}
                           alt={vendor?.name}
                           className="w-full h-full object-cover"
                         />
@@ -333,7 +333,7 @@ useEffect(() => {
           </motion.div>
         </div>
       </motion.div>
-      <VendorDetailsDialog
+          <VendorDetailsDialog
             isOpen={showVendorInfo}
             onClose={() => setShowVendorInfo(false)}
             vendor={vendor || null} 

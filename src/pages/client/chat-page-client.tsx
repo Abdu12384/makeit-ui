@@ -28,7 +28,6 @@ const ClientChatPage: React.FC = () => {
 
         // If no socket exists or it's not connected, initialize it
         if (!currentSocket || !currentSocket.connected) {
-          console.log("Initializing socket in ClientChatPage");
           currentSocket = await initializeSocket();
         } else {
           // Wait for existing socket to be ready

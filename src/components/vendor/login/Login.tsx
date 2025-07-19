@@ -69,7 +69,6 @@ export default function VendorLoginPage() {
     e.preventDefault()  
     setIsLoading(true)
     try {
-     console.log('user data',formData)
     loginMutation.mutate(formData,{
        onSuccess:(data) =>{
         initializeSocket()

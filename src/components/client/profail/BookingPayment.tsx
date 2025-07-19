@@ -48,8 +48,6 @@ function BookingPayment() {
             paymentIntentId: paymentIntentId 
         }, {
             onSuccess: (response) => {
-                console.log('booking payment success', response)
-              
                 setTimeout(() => {
                     toast.success(response.message)
                     queryClient.invalidateQueries({ queryKey: ['Bookings in client'] })

@@ -185,6 +185,7 @@ export default function MediaTicketsTab({
                   <Input
                     id="pricePerTicket"
                     type="number"
+                    disabled={isEditing}
                     min="0"
                     step="0.01"
                     placeholder="0.00"

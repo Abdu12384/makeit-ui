@@ -10,7 +10,6 @@ interface ForgotPasswordProps {
 }
 
 export const ForgotPasswordEmail = ({ userType }: ForgotPasswordProps) => {
-   console.log(userType)
   const [email, setEmail] = useState("")
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)
@@ -37,8 +36,7 @@ export const ForgotPasswordEmail = ({ userType }: ForgotPasswordProps) => {
     setIsSubmitting(true)
     setIsLoading(true)
     forgotPasswordMutation.mutate(email,{
-      onSuccess:(data)=>{
-         console.log(data)
+      onSuccess:()=>{
          setIsSubmitted(true)
       },
       onError:(error)=>{

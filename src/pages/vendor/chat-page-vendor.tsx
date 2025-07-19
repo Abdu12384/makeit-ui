@@ -20,7 +20,6 @@ const VendorChatPage: React.FC = () => {
         let currentSocket = getSocket();
         
         if (!currentSocket || !currentSocket.connected) {
-          console.log("Initializing socket in VendorChatPage");
           currentSocket = await initializeSocket();
         } else {
           currentSocket = await waitForSocketConnection();
@@ -28,10 +27,8 @@ const VendorChatPage: React.FC = () => {
 
         setSocketReady(true);
         if (userId) {
-          console.log("Fetching chat history for userId:", userId);
           currentSocket.emit("get-chats", { userId }, (response: { status: string; data: Chat[]; message?: string }) => {
             if (response.status === "success") {
-              console.log("Chat history fetched:", response.data);
               setHasChats(response.data.length > 0);
             } else {
               console.error("Failed to fetch chat history:", response.message);

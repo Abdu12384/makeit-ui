@@ -55,7 +55,6 @@ export default function EventBookingForm({
 
   const handlePayment = (values: { email: string; phone: string }) => {
    
-    console.log(values)
     const ticketPaymentData: TicketEntity = {
       clientId: "clientId",
       email: values.email,
@@ -69,8 +68,7 @@ export default function EventBookingForm({
         ticketCount
       },
       {
-        onSuccess: (response) => {
-          console.log('data',response)
+        onSuccess: () => {
           navigate("/ticket-payment", {
               state: {
             amount: event.pricePerTicket * ticketCount,

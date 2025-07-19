@@ -19,7 +19,6 @@ export default function ClientBookings() {
   const [activeTab, setActiveTab] = useState("pending")
   const limit = 10
 
-  console.log(bookings)
   const clientGetBookingsMutation = useGetBookingsMutation()
 
   useEffect(() => {
@@ -32,7 +31,6 @@ export default function ClientBookings() {
       },
       {
         onSuccess: (response) => {
-          console.log("response", response)
           setTotalPages(response.bookings.total)
           const fetchedBookings = response.bookings.bookings.map((booking: Booking) => ({
             bookingId: booking.bookingId || booking.clientId,
@@ -266,7 +264,7 @@ export default function ClientBookings() {
                   <span className="text-sm font-medium text-red-800">Booking Cancelled</span>
                 </div>
                 <p className="text-sm text-red-700 mt-1">
-                  This booking has been cancelled. If you have any questions, please contact support.
+                  This booking has been cancelled. If you have  questions, please contact support.
                 </p>
               </div>
             )}
@@ -380,7 +378,7 @@ export default function ClientBookings() {
             <div className="text-center py-12">
               <ClockIcon className="h-12 w-12 text-gray-400 mx-auto mb-4" />
               <h3 className="text-lg font-medium text-gray-900 mb-2">No pending bookings</h3>
-              <p className="text-gray-500">You don't have any pending bookings at the moment.</p>
+              <p className="text-gray-500">You don't have pending bookings at the moment.</p>
             </div>
           )}
         </TabsContent>
@@ -421,7 +419,7 @@ export default function ClientBookings() {
             <div className="text-center py-12">
               <ClockIcon className="h-12 w-12 text-gray-400 mx-auto mb-4" />
               <h3 className="text-lg font-medium text-gray-900 mb-2">No pending bookings</h3>
-              <p className="text-gray-500">You don't have any pending bookings at the moment.</p>
+              <p className="text-gray-500">You don't have pending bookings at the moment.</p>
             </div>
           )}
         </TabsContent>
@@ -462,7 +460,7 @@ export default function ClientBookings() {
             <div className="text-center py-12">
               <ClockIcon className="h-12 w-12 text-gray-400 mx-auto mb-4" />
               <h3 className="text-lg font-medium text-gray-900 mb-2">No pending bookings</h3>
-              <p className="text-gray-500">You don't have any pending bookings at the moment.</p>
+              <p className="text-gray-500">You don't have  pending bookings at the moment.</p>
             </div>
           )}
         </TabsContent>
@@ -503,7 +501,7 @@ export default function ClientBookings() {
             <div className="text-center py-12">
               <CheckCircle className="h-12 w-12 text-gray-400 mx-auto mb-4" />
               <h3 className="text-lg font-medium text-gray-900 mb-2">No completed bookings</h3>
-              <p className="text-gray-500">You haven't completed any bookings yet.</p>
+              <p className="text-gray-500">You haven't completed  bookings yet.</p>
             </div>
           )}
         </TabsContent>
@@ -557,7 +555,7 @@ export default function ClientBookings() {
             <div className="text-center py-12">
               <XCircle className="h-12 w-12 text-gray-400 mx-auto mb-4" />
               <h3 className="text-lg font-medium text-gray-900 mb-2">No cancelled bookings</h3>
-              <p className="text-gray-500">Great! You don't have any cancelled bookings.</p>
+              <p className="text-gray-500">Great! You don't have cancelled bookings.</p>
             </div>
           )}
         </TabsContent>

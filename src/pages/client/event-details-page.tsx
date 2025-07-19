@@ -55,7 +55,6 @@ export default function EventDetailsPage() {
         eventId!,
         {
           onSuccess: (data) => {
-            console.log('event data', data)
             setEvent(data.event)
             setIsLoading(false)
           },
@@ -89,7 +88,6 @@ export default function EventDetailsPage() {
       },
       {
         onSuccess: (data) => {
-          console.log('reviews', data)
           setReviews(data.reviews.reviews)
         },
         onError: (error) => {

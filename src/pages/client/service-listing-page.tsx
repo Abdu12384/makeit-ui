@@ -4,7 +4,7 @@ import { useState, useEffect, useMemo } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import {
   Clock,
-  Star,
+  // Star,
   ChevronRight,
   Search,
   Filter,
@@ -311,11 +311,11 @@ export default function ServiceListings() {
                     <div className="absolute top-3 left-3">
                       <Badge className="bg-blue-500 hover:bg-blue-600">{service.category.title}</Badge>
                     </div>
-                    <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm rounded-full px-2 py-1 flex items-center">
+                    {/* <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm rounded-full px-2 py-1 flex items-center">
                       <Star className="h-3.5 w-3.5 fill-yellow-400 text-yellow-400 mr-1" />
                       <span className="text-xs font-semibold">{service.rating}</span>
                       <span className="text-xs text-gray-500 ml-1">({service.reviewCount})</span>
-                    </div>
+                    </div> */}
                   </div>
 
                   <CardContent className="p-6">

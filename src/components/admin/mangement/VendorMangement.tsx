@@ -29,7 +29,6 @@ export const VendorManagementComponent: React.FC<AdminVendorManagementProps> = (
   onPageChange,
   onStatusUpdate,
 }) => {
- console.log(vendor)
 
   return (
     <motion.div
@@ -38,10 +37,6 @@ export const VendorManagementComponent: React.FC<AdminVendorManagementProps> = (
       animate={{ opacity: 1 }}
       transition={{ duration: 0.3 }}
     >
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Vendor Management</h1>
-      
-      </div>
 
       <div className="bg-gray-800 rounded-xl p-6">
         <div className="flex flex-col md:flex-row justify-between mb-6 gap-4">

@@ -34,7 +34,6 @@ export const ResetPassword = ({userType}:ResetPasswordProps) => {
   const clientResetPasswordMutation = useClientResetPasswordMutation()
   const loginPath = userType === "vendor" ? "/vendor/login" : "/login"
 
-  console.log(token)
   // Calculate password strength
   useEffect(() => {
     if (!password) {
@@ -137,8 +136,7 @@ export const ResetPassword = ({userType}:ResetPasswordProps) => {
     clientResetPasswordMutation.mutate(
       {password,token:token as string},
       {
-      onSuccess:(data)=>{
-        console.log(data)
+      onSuccess:()=>{
         setIsSuccess(true)
       },
       onError:(error)=>{

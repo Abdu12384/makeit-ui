@@ -22,6 +22,7 @@ interface DateTimeLocationTabProps {
   setFieldValue: (field: string, value: string | number | Date[] | [number, number] | DateTimeEntry[]) => void
   dateTimeEntries: DateTimeEntry[]
   setDateTimeEntries: React.Dispatch<React.SetStateAction<DateTimeEntry[]>>
+  isEditing: boolean
 }
 
 export default function DateTimeLocationTab({
@@ -31,6 +32,7 @@ export default function DateTimeLocationTab({
   setFieldValue,
   dateTimeEntries,
   setDateTimeEntries,
+  isEditing
 }: DateTimeLocationTabProps) {
   const addDateTimeEntry = () => {
     if (dateTimeEntries.length < 5) {
@@ -76,7 +78,6 @@ export default function DateTimeLocationTab({
     setFieldValue("address", data.address)
   }
 
-  console.log('date time entreees',dateTimeEntries)
 
   return (
     <motion.div
@@ -156,7 +157,7 @@ export default function DateTimeLocationTab({
                           mode="single"
                           selected={entry.date}
                           onSelect={(date) => date && updateDateTimeEntry(index, "date", date)}
-                          disabled={(date) => date < new Date()}
+                          disabled={(date) => date < new Date()||isEditing}
                           initialFocus
                         />
                       </PopoverContent>
@@ -173,6 +174,7 @@ export default function DateTimeLocationTab({
                     <Input
                       type="time"
                       value={entry.startTime}
+                      disabled={isEditing}
                       onChange={(e) => updateDateTimeEntry(index, "startTime", e.target.value)}
                       className="h-14 text-lg border-2 border-sky-200 focus:border-sky-400"
                     />
@@ -188,6 +190,7 @@ export default function DateTimeLocationTab({
                     <Input
                       type="time"
                       value={entry.endTime}
+                      disabled={isEditing}
                       onChange={(e) => updateDateTimeEntry(index, "endTime", e.target.value)}
                       className="h-14 text-lg border-2 border-sky-200 focus:border-sky-400"
                     />
@@ -204,6 +207,7 @@ export default function DateTimeLocationTab({
               <Button
                 type="button"
                 variant="outline"
+                disabled={isEditing}
                 onClick={addDateTimeEntry}
                 className="w-full h-16 border-dashed border-2 border-sky-300 hover:bg-sky-50 text-sky-700 transition-all duration-300 bg-transparent"
               >
@@ -246,6 +250,7 @@ export default function DateTimeLocationTab({
                 {({ field }: { field: FieldInputProps<string> }) => (
                   <Input
                     id="venueName"
+                    disabled={isEditing}
                     placeholder="Enter venue name..."
                     {...field}
                     className={`h-14 text-lg transition-all duration-300 focus:ring-2 focus:ring-sky-300 border-2 ${
@@ -275,6 +280,7 @@ export default function DateTimeLocationTab({
                     id="address"
                     placeholder="Enter full address..."
                     {...field}
+                    disabled={isEditing}
                     className={`h-14 text-lg transition-all duration-300 focus:ring-2 focus:ring-sky-300 border-2 ${
                       errors.address && touched.address
                         ? "border-red-300 bg-red-50 focus:border-red-400"
@@ -290,7 +296,7 @@ export default function DateTimeLocationTab({
           {/* Location Picker Integration */}
           <div className="pt-4">
             <LocationPicker
-              mode="edit"
+              mode={!isEditing ? "edit" : "view"}
               initialLat={values.location.coordinates[1]}
               initialLng={values.location.coordinates[0]}
               initialAddress={values.address}

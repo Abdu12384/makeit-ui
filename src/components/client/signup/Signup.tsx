@@ -124,7 +124,6 @@ export default function SignupComponent() {
   const handleMutationError = (error:unknown) =>{
     let message = "An unexpected error occured"
     if(isAxiosError(error)){
-      console.log(error)
       message = error.response?.data.message || "An error eccurred"
     }
     toast.error(message)

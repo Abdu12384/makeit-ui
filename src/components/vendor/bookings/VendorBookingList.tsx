@@ -44,6 +44,10 @@ interface Booking {
   phone: string
   date: string[]
   status: string
+  service: {
+    _id: string
+    serviceTitle: string
+  }
   paymentStatus: string
   vendorApproval: string
   isComplete: boolean
@@ -130,19 +134,21 @@ const BookingList = ({ isLoading = false }: { isLoading?: boolean }) => {
     }
   }
 
-  useEffect(() => {
-    getAllBookingsMutation.mutate(
-      { page: currentPage, limit , status:activeTab},
-      {
-        onSuccess: (response) => {
-          setLocalBookings(response.bookings.bookings)
-          setTotalPages(response.bookings.total)
-        },
-        onError: (error) => {
-          console.error(error)
-        },
+ const getAllBookings = () =>  getAllBookingsMutation.mutate(
+    { page: currentPage, limit , status:activeTab},
+    {
+      onSuccess: (response) => {
+        setLocalBookings(response.bookings.bookings)
+        setTotalPages(response.bookings.total)
       },
-    )
+      onError: (error) => {
+        console.error(error)
+      },
+    },
+  )
+
+  useEffect(() => {
+    getAllBookings()
   }, [currentPage,activeTab])
 
   const handleVendorApprovalChange = (bookingId: string, newStatus: "Approved" | "Rejected") => {
@@ -191,20 +197,6 @@ const BookingList = ({ isLoading = false }: { isLoading?: boolean }) => {
     )
   }
 
-  const handleCancel = async (bookingId: string, reason: string) => {
-    changeBookingStatusMutation.mutate(
-      { bookingId, status: "Cancelled", reason },
-      {
-        onSuccess: () => {
-          toast.success("Booking cancelled successfully")
-          setLocalBookings((prev) =>
-            prev.map((booking) => (booking.bookingId === bookingId ? { ...booking, status: "Cancelled" } : booking)),
-          )
-        },
-        onError: () => toast.error("Failed to cancel booking"),
-      },
-    )
-  }
 
   const handleComplete = async (bookingId: string) => {
     changeBookingStatusMutation.mutate(
@@ -241,7 +233,7 @@ const BookingList = ({ isLoading = false }: { isLoading?: boolean }) => {
       <BookingDetails
         booking={selectedBooking}
         onBack={() => setSelectedBooking(null)}
-        onCancel={handleCancel}
+        onCancel={()=>setSelectedBooking(null)}
         onComplete={handleComplete}
         onChat={handleChat}
       />
@@ -349,7 +341,7 @@ const BookingList = ({ isLoading = false }: { isLoading?: boolean }) => {
                 <p className="text-slate-500 max-w-md mx-auto">
                   {searchTerm || statusFilter !== "all"
                     ? "Try adjusting your search or filter."
-                    : "You don't have any bookings yet."}
+                    : "You don't have bookings yet."}
                 </p>
                 {(searchTerm || statusFilter !== "all") && (
                   <Button

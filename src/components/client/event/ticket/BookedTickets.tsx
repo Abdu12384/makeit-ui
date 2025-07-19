@@ -32,7 +32,6 @@ export default function MyTickets() {
       },
       {
         onSuccess: (response) => {
-          console.log("data while client get all tickets", response)
           setTickets(response.tickets.tickets)
           setTotalPages(response.tickets.total)
         },
@@ -65,7 +64,6 @@ export default function MyTickets() {
   }
 
   const handleCancelTicket = (ticket: Ticket) => {
-    console.log('ticket',ticket)
     setSelectedTicket(ticket)
     setShowCancelModal(true)
   }

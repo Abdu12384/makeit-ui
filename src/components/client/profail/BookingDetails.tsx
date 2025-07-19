@@ -88,7 +88,6 @@ export default function BookingDetails({ booking, onBack }: BookingDetailsProps)
   const reviewFormRef = useRef<HTMLDivElement>(null)
   const navigate = useNavigate()
 
-  console.log("booking", booking)
 
   // Simulate loading
   useEffect(() => {
@@ -133,7 +132,6 @@ export default function BookingDetails({ booking, onBack }: BookingDetailsProps)
       vendorApproval: enhancedBooking.vendorApproval,
     }
 
-    console.log("navigating to booking payment with data:", bookingPaymentData)
 
     navigate("/booking-payment", {
       state: {
@@ -181,7 +179,6 @@ export default function BookingDetails({ booking, onBack }: BookingDetailsProps)
   const handleCancelBooking = (bookingId: string) => {
     cancelBookingMutation.mutate(bookingId, {
       onSuccess: (data) => {
-        console.log("booking cancelled successfully", data)
         toast.success(data.message)
         onBack()
       },
