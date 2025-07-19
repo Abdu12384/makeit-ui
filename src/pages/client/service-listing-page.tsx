@@ -27,7 +27,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { useClientGetAllServicesMutation } from "@/hooks/ClientCustomHooks"
+import { useClientGetAllCategoriesMutation, useClientGetAllServicesMutation } from "@/hooks/ClientCustomHooks"
 import Navbar from "@/components/common/NavBar"
 import { Pagination1 } from "@/components/common/paginations/Pagination"
 import { containerVariants, itemVariants } from "@/animations/variants"
@@ -54,6 +54,9 @@ interface Service {
     image: string
   }
 }
+interface Category {
+  title: string
+}
 
 export default function ServiceListings() {
   const [services, setServices] = useState<Service[]>([])
@@ -69,7 +72,7 @@ export default function ServiceListings() {
   const [totalPages, setTotalPages] = useState(0)
 
   const clientGetAllServicesMutationn = useClientGetAllServicesMutation()
-
+   const clientGetAllCategoriesMutation = useClientGetAllCategoriesMutation()
 
   const debouncedUpdate = useMemo(() => {
     return debounce((value: string) => {
@@ -96,7 +99,6 @@ export default function ServiceListings() {
         {
           onSuccess: (response) => {
             setServices(response.services.services)
-            setCategories(response.services.services.map((service: Service) => service.category.title))
             setTotalPages(response.services.total)
             setIsLoading(false)
           },
@@ -108,6 +110,20 @@ export default function ServiceListings() {
       )
   }, [currentPage, limit, debouncedSearchTerm])
 
+  useEffect(() => {
+    clientGetAllCategoriesMutation.mutate(
+     undefined,
+      {
+        onSuccess: (response) => {
+          console.log('response',response)
+          setCategories(response.categories.items.map((category: Category) => category.title))
+        },
+        onError: (error) => {
+          console.log(error)
+        },
+      },
+    )
+  }, [])
 
   useEffect(() => {
     let filtered = [...services]
@@ -181,7 +197,7 @@ export default function ServiceListings() {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="w-56">
                   <DropdownMenuGroup>
-                    {categories.map((category) => (
+                    {categories?.map((category) => (
                       <DropdownMenuItem
                         key={category}
                         className={selectedCategory === category ? "bg-blue-50 text-blue-600" : ""}
@@ -246,7 +262,7 @@ export default function ServiceListings() {
               <div className="p-4">
                 <h3 className="font-medium mb-3">Categories</h3>
                 <div className="flex flex-wrap gap-2">
-                  {categories.map((category) => (
+                  {categories?.map((category) => (
                     <Badge
                       key={category}
                       variant={selectedCategory === category ? "default" : "outline"}

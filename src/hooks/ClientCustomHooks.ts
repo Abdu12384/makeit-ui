@@ -1,5 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
-import { addReview, cancelBooking, cancelTicket, clientBookingService, clientChangePassword, clientCreateAccount, clientForgotPassword, clientGetAllServices, clientGetServiceById, clientGoogleLogin, clientLogin, clientProfileEdit, clientResendOtp, clientResetPassword, clientSignup, confirmBookingPayment, confirmTicketAndPayment, createBookingPayment, createTicket, getAllEvents, getAllReviews, getAllTickets, getAllWorkSamplesByVendorId, getBookings, getEventById, getWalletById, logoutClient, saveClientFCMToken, getClientNotifications, markNotificationAsRead, checkEventBookingAvailability, rescheduleBookingApproval, getAllLocationBasedEvents   } from '@/services/client/clientService';
+import { addReview, cancelBooking, cancelTicket, clientBookingService, clientChangePassword, clientCreateAccount, clientForgotPassword, clientGetAllServices, clientGetServiceById, clientGoogleLogin, clientLogin, clientProfileEdit, clientResendOtp, clientResetPassword, clientSignup, confirmBookingPayment, confirmTicketAndPayment, createBookingPayment, createTicket, getAllEvents, getAllReviews, getAllTickets, getAllWorkSamplesByVendorId, getBookings, getEventById, getWalletById, logoutClient, saveClientFCMToken, getClientNotifications, markNotificationAsRead, checkEventBookingAvailability, rescheduleBookingApproval, getAllLocationBasedEvents, clientGetAllCategories   } from '@/services/client/clientService';
 import { ILoginData } from '@/types/User';
 import { LocationEventParams, PaginationParams } from '@/types/event';
 import { TicketEntity } from '@/types/ticket';
@@ -196,6 +196,12 @@ export const useGetAllLocationBasedEventsMutation = () =>{
   })
 }
 
+
+export const useClientGetAllCategoriesMutation = () => {
+  return useMutation({
+    mutationFn: () => clientGetAllCategories()
+  })
+}
 
 
 export const useGetEventByIdMutation = () => {

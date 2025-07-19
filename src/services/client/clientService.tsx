@@ -173,7 +173,15 @@ export const clientGoogleLogin = async ({
     }
   }
 
-
+  export const clientGetAllCategories = async () => {
+    try {
+      const response = await clientAxiosInstance.get('/client/categories')
+      return response.data
+    } catch (error) {
+      console.log('error while client get all categories',error)
+      throw error
+    }
+  }
 
   
   export const clientProfileEdit = async (data:Record<string, string|number|boolean>) => {
