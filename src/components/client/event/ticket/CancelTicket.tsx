@@ -90,7 +90,7 @@ export const CancelTicketModal: React.FC<{
               <AlertTriangle className="h-10 w-10" />
             </div>
             <h3 className="text-2xl font-bold mb-2">Cancel Tickets</h3>
-            <p className="text-rose-100 text-sm">Select how many tickets you want to cancel</p>
+            <p className="text-rose-100 text-sm">Select the number of tickets to cancel</p>
           </div>
         </div>
 

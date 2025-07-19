@@ -273,11 +273,11 @@ export default function Events() {
                           >
                             <Calendar className="h-5 w-5 mr-3 text-[#124E66]" />
                             <span>
-                              {new Date(event?.date).toLocaleDateString("en-US", {
-                                year: "numeric",
-                                month: "long",
-                                day: "numeric",
-                              })}
+                            {new Date(event?.date?.[0]?.date).toLocaleDateString("en-US", {
+                                  year: "numeric",
+                                  month: "long",
+                                  day: "numeric",
+                                })}
                             </span>
                           </motion.div>
                           <motion.div
@@ -287,7 +287,7 @@ export default function Events() {
                             transition={{ duration: 0.3, delay: 0.2 }}
                           >
                             <Clock className="h-5 w-5 mr-3 text-[#124E66]" />
-                            <span>{event?.startTime}</span>
+                            <span>{event?.date?.[0]?.startTime}</span>
                           </motion.div>
                           <motion.div
                             className="flex items-center"

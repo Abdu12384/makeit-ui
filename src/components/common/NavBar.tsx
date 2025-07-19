@@ -175,17 +175,19 @@ export const Navbar: React.FC<NavbarProps> = ({ variant = "solid" }) => {
                       : "hover:bg-gray-100 text-gray-800"
                   }`}
                 >
-                  {client?.profileImage ? (
-                        <img
-                          src={`${CLOUDINARY_BASE_URL}/${client.profileImage}`}
-                          alt="Profile"
-                          className="h-8 w-8 rounded-full object-cover" 
-                        />
-                      ) : (
-                        <div className="h-8 w-8 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white">
-                          {client?.name?.charAt(0).toUpperCase() || <UserCircle size={20} />}
-                        </div>
-                      )}
+                {client?.profileImage && !client.profileImage.includes("lh3.googleusercontent.com")? (
+                      <img
+                        src={client.profileImage.includes("lh3.googleusercontent.com") 
+                          ? client.profileImage 
+                          : `${CLOUDINARY_BASE_URL}/${client.profileImage}`}
+                        alt="Profile"
+                        className="h-8 w-8 rounded-full object-cover"
+                      />
+                    ) : (
+                      <div className="h-8 w-8 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white">
+                        {client?.name ? client.name.charAt(0).toUpperCase() : <UserCircle size={20} />}
+                      </div>
+                    )}
                   <span className="font-medium text-sm">{client?.name || "User"}</span>
                   <ChevronDown size={16} />
                 </button>

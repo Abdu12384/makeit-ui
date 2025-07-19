@@ -9,11 +9,15 @@ import { BookedEventDetails } from "./BookedEventDetails"
 import { useGetAllEventsByVendorIdMutation } from "@/hooks/VendorCustomHooks"
 import { CLOUDINARY_BASE_URL } from "@/types/config/config"
 import { Event } from "@/types/event"
+import { Pagination1 } from "@/components/common/paginations/Pagination"
 
 
 export default function BookedEventsList() {
   const [events,setEvents] = useState<Event[]>([])
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null)
+  const [currentPage , setCurrentPage] = useState(1)
+  const [totalPage , setTotalPages] = useState(1)
+  let limit = 10
 
 
   const getAllEventsMutation = useGetAllEventsByVendorIdMutation()
@@ -22,19 +26,20 @@ export default function BookedEventsList() {
   useEffect(() => {
     getAllEventsMutation.mutate(
       {
-      page: 1,
-      limit: 10,
+      page: currentPage,
+      limit: limit,
     },
     {
       onSuccess:(data)=>{
         setEvents(data.events.events)
+        setTotalPages(data.events.total)
       },
       onError:(error)=>{
         console.log(error)
       }
     }
   )
-  }, [])
+  }, [currentPage])
 
 
   const filteredEvents = events?.filter((event) => {
@@ -152,6 +157,12 @@ export default function BookedEventsList() {
           </div>
         </motion.div>
       )}
+        <Pagination1
+        currentPage={currentPage}
+        totalPages={totalPage}
+        onPagePrev={()=>setCurrentPage(currentPage-1)}
+        onPageNext={()=>setCurrentPage(currentPage+1)}
+        />
     </div>
   )
 }

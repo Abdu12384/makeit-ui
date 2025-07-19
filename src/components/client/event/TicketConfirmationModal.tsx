@@ -26,13 +26,13 @@ export default function TicketConfirmationModal({ isOpen, setIsOpen, ticket,even
   // const eventImage = ticket?.eventImage || "/placeholder.svg?height=400&width=600";
 
   // Format data for display
-  const formattedDate = new Date(event?.date as string)
-    .toLocaleDateString("en-IN", {
+  const formattedDate = event?.date?.[0]?.date
+  ? new Date(event.date[0].date).toLocaleDateString("en-IN", {
       year: "numeric",
       month: "2-digit",
       day: "2-digit",
-    })
-    .replace(/\//g, ".");
+    }).replace(/\//g, ".")
+  : "N/A";
   // const formattedAmount = (ticket.totalAmount / 100).toFixed(2);
   const ticketIdShort = ticket.ticketId.substring(ticket.ticketId.length - 8);
   const transactionIdShort = ticket.paymentTransactionId.substring(0, 12);

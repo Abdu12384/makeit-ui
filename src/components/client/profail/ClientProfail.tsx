@@ -1,6 +1,6 @@
 import { useMemo, useState, useRef, useEffect } from "react"
 import { motion } from "framer-motion"
-import { Camera, Save, X, User, Phone, Mail, Loader2, KeyRound } from "lucide-react"
+import { Camera, Save, X, User, Phone, Mail, Loader2, KeyRound, UserCircle, } from "lucide-react"
 import { useSelector, useDispatch } from "react-redux"
 import type { RootState } from "@/store/store"
 import dummyDP from "@/assets/images/profile-img.jpg"
@@ -246,7 +246,7 @@ const ClientProfile = () => {
                        {values.profileImage &&
                           (values.profileImage.startsWith("data:") ||
                             values.profileImage.startsWith("blob:") ||
-                            (values.profileImage !== dummyDP && values.profileImage)) ? (
+                            (values.profileImage !== dummyDP && values.profileImage &&!values.profileImage.includes("lh3.googleusercontent.com"))) ? (
                             <img
                               src={
                                 values.profileImage.startsWith("data:") || values.profileImage.startsWith("blob:")
@@ -257,8 +257,10 @@ const ClientProfile = () => {
                               className="w-full h-full object-cover"
                             />
                           ) : (
-                            <User className="w-16 h-16 text-gray-400" />
-                          )}
+                     <div className="h-32 w-32 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white">
+                        {values?.name ? values.name.charAt(0).toUpperCase() : <UserCircle size={32} />}
+                      </div>                   
+                       )}                                            
                     </motion.div>
                     {isEditing && (
                       <motion.div

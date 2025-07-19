@@ -5,12 +5,11 @@ export interface IEventFormValues {
     eventId?: string;
     description: string;
     category: string;
-    dates: Date[];
+    date: DateTimeEntry[];
     startTime: string;
     endTime: string;
     venueName: string;
     address: string;
-    date: string;
     location: {
       type: "Point";
       coordinates: number[];
