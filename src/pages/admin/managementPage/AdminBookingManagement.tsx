@@ -8,15 +8,15 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { useGetAllBookingsMutation } from "@/hooks/AdminCustomHooks"
 import { Pagination1 } from "@/components/common/paginations/Pagination"
-import { BookingType } from "@/types/bookings"
+import { IBooking } from "@/types/bookings"
 
 
 export default function AdminBookingsPage() {
-  const [bookings, setBookings] = useState<BookingType[]>([])
+  const [bookings, setBookings] = useState<IBooking[]>([])
   const [searchQuery, _setSearchQuery] = useState("")
   const [currentPage, setCurrentPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
-  const [selectedBooking, setSelectedBooking] = useState<BookingType | null>(null)
+  const [selectedBooking, setSelectedBooking] = useState<IBooking | null>(null)
   const limit = 10
 
   const getAllBookingsMutation = useGetAllBookingsMutation()
@@ -75,7 +75,7 @@ export default function AdminBookingsPage() {
     }
   }
 
-  const handleViewDetails = (booking: BookingType) => {
+  const handleViewDetails = (booking: IBooking) => {
     setSelectedBooking(booking)
   }
 
@@ -171,7 +171,7 @@ export default function AdminBookingsPage() {
               <div className="absolute inset-0 bg-gradient-to-t from-gray-900/90 to-transparent" />
               <div className="relative flex items-center justify-center">
                 <div className="w-24 h-24 sm:w-32 sm:h-32 rounded-full bg-indigo-600 flex items-center justify-center text-4xl sm:text-5xl font-bold text-white shadow-lg">
-                  {selectedBooking.vendor.name.trim()
+                  {selectedBooking.vendor?.name.trim()
                     ? selectedBooking.vendor.name.trim()[0].toUpperCase()
                     : "?"}
                 </div>
@@ -208,16 +208,16 @@ export default function AdminBookingsPage() {
                     <User className="h-5 w-5 text-indigo-400" />
                     <div>
                       <p className="text-sm text-gray-400">Client</p>
-                      <p className="text-white font-medium">{selectedBooking.client.name.trim()}</p>
-                      <p className="text-sm text-gray-300">{selectedBooking.client.email}</p>
+                      <p className="text-white font-medium">{selectedBooking.client?.name.trim()}</p>
+                      <p className="text-sm text-gray-300">{selectedBooking.client?.email}</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
                     <User className="h-5 w-5 text-indigo-400" />
                     <div>
                       <p className="text-sm text-gray-400">Vendor</p>
-                      <p className="text-white font-medium">{selectedBooking.vendor.name}</p>
-                      <p className="text-sm text-gray-300">{selectedBooking.vendor.email}</p>
+                      <p className="text-white font-medium">{selectedBooking.vendor?.name}</p>
+                      <p className="text-sm text-gray-300">{selectedBooking.vendor?.email}</p>
                     </div>
                   </div>
                 </div>

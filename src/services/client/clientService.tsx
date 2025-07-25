@@ -1,7 +1,7 @@
 import authAxiosInstance from "@/api/auth.axios";
 import { clientAxiosInstance } from "@/api/client.axios";
 import { GetAllBookingsParams } from "@/hooks/ClientCustomHooks";
-import { Booking } from "@/types/bookings";
+import { IBooking } from "@/types/bookings";
 import { LocationEventParams, PaginationParams } from "@/types/event";
 import { IAuthResponse, IAxiosResponse } from "@/types/response";
 import { GetAllServicesParams } from "@/types/service";
@@ -297,7 +297,7 @@ export const getBookings = async ({
 
 
 
-export const createBookingPayment = async (bookingId:string,paymentIntentId:string,bookingDetails:Booking) => {
+export const createBookingPayment = async (bookingId:string,paymentIntentId:string,bookingDetails:IBooking) => {
   try {
     const response = await clientAxiosInstance.post(`/client/create-booking-payment`,{bookingId,paymentIntentId,bookingDetails})
     return response.data

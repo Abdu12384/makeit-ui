@@ -5,7 +5,7 @@ import { LocationEventParams, PaginationParams } from '@/types/event';
 import { TicketEntity } from '@/types/ticket';
 import { ReviewData } from '@/types/worksample/review';
 import { GetAllServicesParams } from '@/types/service';
-import { Booking } from '@/types/bookings';
+import { IBooking } from '@/types/bookings';
 import { FormData } from '@/utils/validationForms/validationForms';
 
 
@@ -155,7 +155,7 @@ export const useBookingServiceMutation = () => {
 
 export const  useCreateBookingPaymentMutation = () => {
   return useMutation({
-    mutationFn: ({bookingId,paymentIntentId,bookingDetails}: {bookingId:string,paymentIntentId:string,bookingDetails:Booking}) => createBookingPayment(bookingId,paymentIntentId,bookingDetails)
+    mutationFn: ({bookingId,paymentIntentId,bookingDetails}: {bookingId:string,paymentIntentId:string,bookingDetails:IBooking}) => createBookingPayment(bookingId,paymentIntentId,bookingDetails)
   })
 }
 
