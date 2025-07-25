@@ -2,7 +2,7 @@ import authAxiosInstance from "@/api/auth.axios";
 import { VendorAxiosInstance } from "@/api/vendor.axios";
 import {  NewEventFormValues } from "@/types/event";
 import { IAuthResponse, IAxiosResponse } from "@/types/response";
-import { GetAllServicesParams, ServiceFormValues } from "@/types/service";
+import { GetAllServicesParams, IService } from "@/types/service";
 import { VendorData } from "@/types/signup";
 import { ILoginData } from "@/types/User";
 import { WorkSample } from "@/types/worksample/work-sample";
@@ -139,7 +139,7 @@ export const vendorChangePassword = async (data:Record<string, string | number |
 
 
 
-export const createService = async (data:ServiceFormValues) => {
+export const createService = async (data:IService) => {
   try {
      const response = await VendorAxiosInstance.post("/vendor/service",data);
      return response.data
@@ -182,7 +182,7 @@ export const getAllServicesByVendorId = async ({
 
 
 
-export const updateService = async ({serviceId,data}: {serviceId:string,data:ServiceFormValues}) => {
+export const updateService = async ({serviceId,data}: {serviceId:string,data:IService}) => {
   try {
      const response = await VendorAxiosInstance.put(`/vendor/service/${serviceId}`,
       data

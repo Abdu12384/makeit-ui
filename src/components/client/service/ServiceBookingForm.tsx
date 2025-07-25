@@ -10,7 +10,7 @@ interface BookingFormProps {
   serviceId: string;
   vendorId: string;
   servicePrice: number;
-  serviceDuration: string;
+  serviceDuration: string | number;
   additionalHourFee: number;
   yearsOfExperience: number;
   cancellationPolicySnippet: string;

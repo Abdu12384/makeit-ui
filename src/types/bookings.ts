@@ -1,9 +1,9 @@
-import { Service } from "./service";
+import { IService } from "./service";
 import { IClient, IVendor } from "./User";
 
 // export interface Booking {
 //   _id?:string;
-//   bookingId: string;
+//   bookingId: string; 
 //   clientId: string;
 //   date: string[];
 //   paymentStatus: "Paid" | "Pending" | "Failed";
@@ -57,7 +57,7 @@ export interface IBooking {
   phone: string;
   paymentStatus: "Paid" | "Pending" | "Failed" | string;
   serviceId: string;
-  service: Service;
+  service: IService;
   vendorApproval: "Approved" | "Pending" | "Rejected" | string;
   vendorId: string;
   vendor?: IVendor;

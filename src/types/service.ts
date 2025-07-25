@@ -1,16 +1,3 @@
-export interface ServiceFormValues {
-  serviceTitle: string
-  yearsOfExperience: number
-  serviceId?:string
-  categoryId: string
-  serviceDescription: string
-  cancellationPolicy: string
-  termsAndCondition: string
-  serviceDuration: number
-  servicePrice: number
-  additionalHourFee: number
-}
-
 
 export interface GetAllServicesParams {
    page: number;    
@@ -21,41 +8,33 @@ export interface GetAllServicesParams {
  }
 
 
+export interface IService {
+  _id?: string;
+  id?: string; 
+  serviceId?: string;
 
+  serviceTitle: string;
+  title?: string; 
+  serviceDescription: string ;
+  category?: string;
+  categoryId?: string; 
 
-// Define the Service type
-export interface Service {
-  id: string
-  serviceId: string
-  serviceTitle: string
-  serviceDescription: string
-  servicePrice: number
-  serviceDuration: string
-  yearsOfExperience: number
-  additionalHourFee: number
-  cancellationPolicy: string
-  termsAndCondition: string
-  imageUrl: string
-  rating: number
-  reviewCount: number
-  category: string
-  providerName: string
-  providerImage: string
-  providerRating: number
-  gallery: string[]
+  yearsOfExperience: number;
+  serviceDuration: string | number; 
+  servicePrice: number;
+  additionalHourFee: number;
+
+  cancellationPolicy: string;
+  termsAndCondition: string;
+
+  status?: "active" | "blocked" | string;
+
+  imageUrl?: string;
+  rating?: number;
+  reviewCount?: number;
+  gallery?: string[];
+
+  providerName?: string;
+  providerImage?: string;
+  providerRating?: number;
 }
-
-export interface ServiceType {
-  id?:string
-  _id: string
-  title?: string
-  serviceId: string
-  serviceTitle: string
-  serviceCategory: string
-  yearsOfExperience: number
-  servicePrice: number
-  serviceDuration: number
-  serviceDescription: string
-  status: "active" | "blocked" | string  // You can restrict values if known
-}
-

@@ -6,13 +6,13 @@ import { ServiceAddForm } from "./ServiceForm"
 import { ServiceCard } from "./ServiceCards"
 import { useGetAllServicesByVendorIdMutation } from "@/hooks/VendorCustomHooks"
 import { Pagination1 } from "@/components/common/paginations/Pagination"
-import { ServiceType } from "@/types/service"
+import { IService } from "@/types/service"
 
 export default function ServiceListingPage() {
   const [isFormOpen, setIsFormOpen] = useState(false)
   const [searchQuery, _setSearchQuery] = useState("")
-  const [allServices, setAllServices] = useState<ServiceType[]>([])
-  const [serviceToEdit, setServiceToEdit] = useState<any>(null)
+  const [allServices, setAllServices] = useState<IService[]>([])
+  const [serviceToEdit, setServiceToEdit] = useState<IService | null>(null)
   const [currentPage, setCurrentPage] = useState(1)
   const [isEdit, setIsEdit] = useState(false);
   const [totalPages, setTotalPages] = useState(1)
@@ -45,18 +45,18 @@ export default function ServiceListingPage() {
    }, [currentPage]);
 
 
-  const handleAddService = (newService: any) => {
+  const handleAddService = (newService: IService) => {
     setAllServices([...allServices, { ...newService, id: (allServices.length + 1).toString() }])
     setIsFormOpen(false)
   }
 
   const handleDeleteService = (id: string) => {
-    setAllServices(allServices.filter((service:ServiceType) => service._id !== id))
+    setAllServices(allServices.filter((service:IService) => service._id !== id))
   }
 
   const handleEditService = (id: string) => {
-    const service = allServices.find((service:ServiceType) => service._id === id)
-    setServiceToEdit(service) 
+    const service = allServices.find((service:IService) => service._id === id)
+    setServiceToEdit(service!) 
     setIsEdit(true)
     setIsFormOpen(true) 
   }
@@ -132,8 +132,8 @@ export default function ServiceListingPage() {
             <ServiceCard
               key={service._id}
               service={service}
-              onEdit={() => handleEditService(service._id)}
-              onDelete={() => handleDeleteService(service._id)}
+              onEdit={() => handleEditService(service._id!)}
+              onDelete={() => handleDeleteService(service._id!)}
               setService={setAllServices}
             />
           ))}

@@ -9,15 +9,15 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { ServiceFormValues } from "@/types/service"
+import { IService } from "@/types/service"
 import { useCreateServiceMutation, useGetAllCategoriesMutation, useUpdateServiceMutation } from "@/hooks/VendorCustomHooks"
 import toast from "react-hot-toast"
 import { Category } from "@/types/category"
 
 interface ServiceAddFormProps {
   onClose: () => void
-  onSubmit?: (values: ServiceFormValues) => void
-  initialData?: ServiceFormValues
+  onSubmit?: (values: IService) => void
+  initialData?: IService | null
   isEdit?: boolean
   refetchServices?: () => void// <--- new
 }
@@ -48,7 +48,7 @@ const step2ValidationSchema = Yup.object({
 })
 
 // Default initial values for adding a new service
-const defaultInitialValues: ServiceFormValues = {
+const defaultInitialValues: IService = {
   serviceTitle: "",
   yearsOfExperience: 0,
   categoryId: "",
@@ -68,7 +68,7 @@ export const  ServiceAddForm = ({ onClose, onSubmit, initialData, isEdit, refetc
   const getAllCategoriesMutation = useGetAllCategoriesMutation()
  const updateServiceMutation = useUpdateServiceMutation()
 
-  const initialValues: ServiceFormValues = isEdit && initialData ? 
+  const initialValues: IService = isEdit && initialData ? 
   { ...initialData } 
   : { ...defaultInitialValues };
 
@@ -90,7 +90,7 @@ export const  ServiceAddForm = ({ onClose, onSubmit, initialData, isEdit, refetc
     })
   }, []);
 
-  const handleSubmit = (values: ServiceFormValues, actions: FormikHelpers<ServiceFormValues>) => {
+  const handleSubmit = (values: IService, actions: FormikHelpers<IService>) => {
     console.log(values)
     if (step === 1) {
       setStep(2)

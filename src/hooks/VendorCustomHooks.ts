@@ -1,7 +1,7 @@
 
 import { changeBookingStatus, createEvent, createService, createWorkSample, editEvent, getAllBookings, getAllCategories, getAllEventsByVendorId, getAllServicesByVendorId, getAllWorkSamplesByVendorId, getAttendeesById, getDashboardData, getWalletById, logoutVendor, saveVendorFCMToken, updateService, updateVendorProfile, updateWorkSample, uploadImageCloudinary, vendorCancelBooking, vendorChangePassword, vendorCreateAccount, VendorLogin, vendorSignup, verifyTicket, getVendorNotifications, markVendorNotificationAsRead, blockEvent, blockService, RescheduleBooking, getVendorBookedDates } from "@/services/vendor/vendorService";
 import { NewEventFormValues } from "@/types/event";
-import { ServiceFormValues } from "@/types/service";
+import { IService } from "@/types/service";
 import { VendorData } from "@/types/signup";
 import { ILoginData } from "@/types/User";
 import { WorkSample } from "@/types/worksample/work-sample";
@@ -108,7 +108,7 @@ export const useUpdateVendorProfileMutation = () =>{
 
 export const useCreateServiceMutation = () => {
    return useMutation({
-     mutationFn:(data: ServiceFormValues) => createService(data)
+     mutationFn:(data: IService) => createService(data)
    })
 }
 
@@ -130,7 +130,7 @@ export const useGetAllServicesByVendorIdMutation = () => {
 
 export const useUpdateServiceMutation = () => {
   return useMutation({
-    mutationFn: ({serviceId,data}: {serviceId:string,data:ServiceFormValues}) => updateService({serviceId,data}),
+    mutationFn: ({serviceId,data}: {serviceId:string,data:IService}) => updateService({serviceId,data}),
   });
 }
 

@@ -7,7 +7,7 @@ import { IVendor } from "@/types/User"
 import Navbar from "@/components/common/NavBar"
 import ReviewDisplay from "@/components/common/review/review-display"
 import { ReviewData } from "@/types/worksample/review"
-import { Service } from "@/types/service"
+import { IService } from "@/types/service"
 import { containerVariants, itemVariants } from "@/animations/variants"
 import { VendorDetailsDialog } from "@/components/client/vendor-info/VendorInfoDialog"
 import { ServiceDetailsSkeleton } from "@/components/common/skelton/SkeltonLoading"
@@ -17,7 +17,7 @@ import { CLOUDINARY_BASE_URL } from "@/types/config/config"
 
 export default function BookingPage() {
   const { id } = useParams<{ id: string }>()
-  const [service, setService] = useState<Service | null>(null)
+  const [service, setService] = useState<IService | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [vendor, setVendor] = useState<IVendor | null>(null)
   const [activeTab, setActiveTab] = useState("description")
@@ -127,7 +127,7 @@ useEffect(() => {
             <span className="mx-2 text-gray-400">•</span>
             <span className="text-gray-600">{service.reviewCount} reviews</span>
             <span className="mx-2 text-gray-400">•</span>
-            <span className="text-gray-600">{service.category}</span>
+            <span className="text-gray-600">{service?.category}</span>
           </div>
         </motion.div>
 
@@ -316,10 +316,10 @@ useEffect(() => {
           <motion.div variants={itemVariants}>
             {service && vendor ? (
               <BookingFormComponent
-                serviceId={service.serviceId}
+                serviceId={service.serviceId!}
                 vendorId={vendor.userId!}
                 servicePrice={service.servicePrice}
-                serviceDuration={service.serviceDuration}
+                serviceDuration={service?.serviceDuration}
                 additionalHourFee={service.additionalHourFee}
                 yearsOfExperience={service.yearsOfExperience}
                 cancellationPolicySnippet={service.cancellationPolicy.slice(0, 50) + '...'}
