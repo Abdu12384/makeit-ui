@@ -8,5 +8,4 @@ export interface Transaction {
   vendor?: string;
   service?: string;
   relatedTitle?: string;
-
 }

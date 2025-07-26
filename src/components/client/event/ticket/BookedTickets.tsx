@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react"
 import { X, Eye, CheckCircle, XCircle, Clock3 } from "lucide-react"
 import { useGetAllTicketsMutation } from "@/hooks/ClientCustomHooks"
-import type { Ticket } from "@/types/ticket"
+import type { ITicket } from "@/types/ticket"
 import { TicketDetailsModal } from "./ViewTicketDetails"
 import { CancelTicketModal } from "./CancelTicket"
 import { Pagination1 } from "@/components/common/paginations/Pagination"
@@ -12,8 +12,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 // Main component
 export default function MyTickets() {
-  const [tickets, setTickets] = useState<Ticket[]>([])
-  const [selectedTicket, setSelectedTicket] = useState<Ticket | null>(null)
+  const [tickets, setTickets] = useState<ITicket[]>([])
+  const [selectedTicket, setSelectedTicket] = useState<ITicket | null>(null)
   const [showDetailsModal, setShowDetailsModal] = useState(false)
   const [showCancelModal, setShowCancelModal] = useState(false)
   const [currentPage, setCurrentPage] = useState(1)
@@ -58,12 +58,12 @@ export default function MyTickets() {
     })
   }
 
-  const handleViewDetails = (ticket: Ticket) => {
+  const handleViewDetails = (ticket: ITicket) => {
     setSelectedTicket(ticket)
     setShowDetailsModal(true)
   }
 
-  const handleCancelTicket = (ticket: Ticket) => {
+  const handleCancelTicket = (ticket: ITicket) => {
     setSelectedTicket(ticket)
     setShowCancelModal(true)
   }
@@ -76,7 +76,7 @@ export default function MyTickets() {
         }
         return ticket
       })
-      setTickets(updatedTickets)
+      setTickets(updatedTickets as ITicket[])
       setShowCancelModal(false)
     }
   }
@@ -87,7 +87,7 @@ export default function MyTickets() {
       case "used":
         return tickets.filter((ticket) => ticket.ticketStatus === "used")
       case "unused":
-        return tickets.filter((ticket) => ticket.ticketStatus === "unused" || ticket.ticketStatus === "active" || ticket.ticketStatus === "partially_refunded")
+        return tickets.filter((ticket) => ticket.ticketStatus === "unused" || ticket?.ticketStatus === "partially_refunded")
       case "cancelled":
         return tickets.filter((ticket) => ticket.ticketStatus === "cancelled")
       default:
@@ -98,7 +98,7 @@ export default function MyTickets() {
   const getTicketCounts = () => {
     return {
       used: tickets.filter((ticket) => ticket.ticketStatus === "used").length,
-      unused: tickets.filter((ticket) => ticket.ticketStatus === "unused" || ticket.ticketStatus === "active").length,
+      unused: tickets.filter((ticket) => ticket.ticketStatus === "unused" || ticket?.ticketStatus === "partially_refunded").length,
       cancelled: tickets.filter((ticket) => ticket.ticketStatus === "cancelled").length,
     }
   }
@@ -106,10 +106,10 @@ export default function MyTickets() {
   const ticketCounts = getTicketCounts()
   const filteredTickets = filterTickets(activeTab)
 
-  const renderTicketCard = (ticket: Ticket) => {
+  const renderTicketCard = (ticket: ITicket) => {
     const isUsed = ticket.ticketStatus === "used"
     const isCancelled = ticket.ticketStatus === "cancelled"
-    const isUnused = ticket.ticketStatus === "unused" || ticket.ticketStatus === "active"
+    const isUnused = ticket.ticketStatus === "unused" || ticket.ticketStatus === "partially_refunded"
 
     return (
       <div key={ticket?.ticketId} className="max-w-md w-full">

@@ -1,10 +1,10 @@
 
-import { Ticket } from "@/types/ticket"
+import { ITicket } from "@/types/ticket"
 import { Calendar, Clock, User, X, Download } from "lucide-react"
 
 //  Component for the ticket details modal
 export const TicketDetailsModal: React.FC<{
-  ticket: Ticket
+  ticket: ITicket
   onClose: () => void
 }> = ({ ticket, onClose }) => {
 
@@ -264,7 +264,7 @@ Generated on: ${new Date().toLocaleString()}
               ))}          
             <div className="flex items-center">
               <User className="h-4 w-4 mr-2" />
-              <span>{ticket?.ticketCount > 1 ? `${ticket?.ticketCount} tickets` : "1 ticket"}</span>
+              <span>{ticket?.ticketCount! > 1 ? `${ticket?.ticketCount} tickets` : "1 ticket"}</span>
             </div>
           </div>
         </div>
@@ -294,7 +294,7 @@ Generated on: ${new Date().toLocaleString()}
                 />
               </div>
               <div className="text-center mt-3">
-                <p className="text-xs text-gray-500">Ticket ID: {ticket?.ticketId.substring(0, 16)}...</p>
+                <p className="text-xs text-gray-500">Ticket ID: {ticket?.ticketId?.substring(0, 16)}...</p>
               </div>
             </div>
           </div>

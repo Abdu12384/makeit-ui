@@ -2,17 +2,16 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {  Calendar, Clock, MapPin, User, Phone, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {  TicketConfirmationModalProps } from "@/types/ticket";
+import {  ITicketConfirmationModalProps } from "@/types/ticket";
 import { CLOUDINARY_BASE_URL } from "@/types/config/config";
 
 
 
-export default function TicketConfirmationModal({ isOpen, setIsOpen, ticket,event }: TicketConfirmationModalProps) {
+export default function TicketConfirmationModal({ isOpen, setIsOpen, ticket,event }: ITicketConfirmationModalProps) {
   const [isAnimating, setIsAnimating] = useState(false);
   const navigate = useNavigate();
 
   const eventName = ticket?.eventName || "EVENT NAME";
-  // const eventLocation = ticket?.eventLocation || "Amazing Venue, City";
   const eventDate =
     ticket?.eventDate ||
     new Date(ticket.createdAt!)
@@ -22,8 +21,6 @@ export default function TicketConfirmationModal({ isOpen, setIsOpen, ticket,even
         day: "numeric",
       })
       .toUpperCase();
-  // const eventTime = ticket?.eventTime || "DOOR OPEN 09 - PM";
-  // const eventImage = ticket?.eventImage || "/placeholder.svg?height=400&width=600";
 
   // Format data for display
   const formattedDate = event?.date?.[0]?.date
@@ -34,8 +31,8 @@ export default function TicketConfirmationModal({ isOpen, setIsOpen, ticket,even
     }).replace(/\//g, ".")
   : "N/A";
   // const formattedAmount = (ticket.totalAmount / 100).toFixed(2);
-  const ticketIdShort = ticket.ticketId.substring(ticket.ticketId.length - 8);
-  const transactionIdShort = ticket.paymentTransactionId.substring(0, 12);
+  const ticketIdShort = ticket?.ticketId?.substring(ticket.ticketId.length - 8);
+  const transactionIdShort = ticket?.paymentTransactionId?.substring(0, 12);
 
   useEffect(() => {
     if (isOpen) {
@@ -170,7 +167,7 @@ export default function TicketConfirmationModal({ isOpen, setIsOpen, ticket,even
 
                 <div className="mb-6">
                   <p className="opacity-80">{eventDate}</p>
-                  <p className="opacity-80 text-sm mt-2">Ticket Status: {ticket.ticketStatus.toUpperCase()}</p>
+                  <p className="opacity-80 text-sm mt-2">Ticket Status: {ticket?.ticketStatus?.toUpperCase()}</p>
                 </div>
 
                 <div className="mt-auto">

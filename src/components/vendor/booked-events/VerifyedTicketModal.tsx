@@ -8,29 +8,12 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { useVerifyTicketMutation } from "@/hooks/VendorCustomHooks"
 import toast from "react-hot-toast"
-
-interface TicketData {
-  ticketId: string
-  clientId: string
-  email: string
-  eventId: string
-  ticketCount: number
-  paymentStatus: string
-  phone: string
-  qrCodeLink: string
-  ticketStatus: string
-  paymentTransactionId: string
-  totalAmount: number
-  checkInHistory?: []
-  createdAt?: Date
-  updatedAt?: Date
-  __v?: number
-}
+import { ITicket } from "@/types/ticket"
 
 interface TicketModalProps {
   isOpen: boolean
   onClose: () => void
-  ticket?: TicketData
+  ticket?: ITicket
   onCheckIn?: () => void
 }
 
@@ -131,14 +114,14 @@ export function TicketModal({ isOpen, onClose, ticket, onCheckIn }: TicketModalP
                   <Ticket className="w-5 h-5 mr-2 text-primary" />
                   <span className="font-medium">Ticket ID</span>
                 </div>
-                <span className="font-mono text-sm">{ticket.ticketId.substring(0, 20)}...</span>
+                <span className="font-mono text-sm">{ticket?.ticketId?.substring(0, 20)}...</span>
               </div>
               <div className="flex items-center justify-between">
                 <div className="flex items-center">
                   <CreditCard className="w-5 h-5 mr-2 text-primary" />
                   <span className="font-medium">Amount</span>
                 </div>
-                <span>{formatCurrency(ticket.totalAmount)}</span>
+                <span>{formatCurrency(ticket?.totalAmount!)}</span>
               </div>
             </div>
 
@@ -151,16 +134,16 @@ export function TicketModal({ isOpen, onClose, ticket, onCheckIn }: TicketModalP
                 <div className="space-y-2">
                   <div className="flex items-center">
                     <Avatar className="h-8 w-8 mr-2">
-                      <AvatarFallback>{ticket.email.charAt(0).toUpperCase()}</AvatarFallback>
+                      <AvatarFallback>{ticket?.email?.charAt(0).toUpperCase()}</AvatarFallback>
                     </Avatar>
                     <div>
                       <p className="text-sm font-medium">Customer</p>
-                      <p className="text-xs text-muted-foreground">{ticket.clientId.substring(0, 20)}...</p>
+                      <p className="text-xs text-muted-foreground">{ticket?.clientId?.substring(0, 20)}...</p>
                     </div>
                   </div>
                   <div className="flex items-center">
                     <Mail className="w-4 h-4 mr-2 text-muted-foreground" />
-                    <span>{ticket.email}</span>
+                    <span>{ticket?.email}</span>
                   </div>
                   <div className="flex items-center">
                     <Phone className="w-4 h-4 mr-2 text-muted-foreground" />

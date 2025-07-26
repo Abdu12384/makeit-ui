@@ -164,7 +164,6 @@ export type LocationEventParams = {
   limit?: number
 }
 
-
 export interface NewEventFormValues {
   title: string
   description: string

@@ -4,10 +4,10 @@ import type React from "react"
 import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Download, ImageIcon, Share2, Check, ChevronDown, Loader2, X } from "lucide-react"
-import type { Ticket } from "@/types/ticket"
+import type { ITicket } from "@/types/ticket"
 
 interface DownloadTicketProps {
-  ticket: Ticket
+  ticket: ITicket
   className?: string
   variant?: "button" | "dropdown" | "modal"
 }
@@ -19,7 +19,7 @@ const truncateText = (text: string, maxLength: number): string => {
 }
 
 // Utility function to generate ticket canvas with full data
-const generateTicketCanvas = async (ticket: Ticket): Promise<HTMLCanvasElement> => {
+const generateTicketCanvas = async (ticket: ITicket): Promise<HTMLCanvasElement> => {
   const canvas = document.createElement("canvas")
   const ctx = canvas.getContext("2d")!
 
@@ -48,7 +48,7 @@ const generateTicketCanvas = async (ticket: Ticket): Promise<HTMLCanvasElement> 
   ctx.font = "16px Arial, sans-serif"
   ctx.fillText(`Date: ${ticket.eventDetails?.date || "N/A"}`, 20, 70)
   ctx.fillText(`Time: ${ticket.eventDetails?.startTime || "N/A"}`, 20, 95)
-  ctx.fillText(`Venue: ${truncateText(ticket.eventDetails?.venue || "N/A", 25)}`, 20, 120)
+  ctx.fillText(`Venue: ${truncateText(ticket.eventDetails?.venueName || "N/A", 25)}`, 20, 120)
 
   // Ticket Details
   ctx.font = "14px Arial, sans-serif"
@@ -108,7 +108,7 @@ const generateTicketCanvas = async (ticket: Ticket): Promise<HTMLCanvasElement> 
 }
 
 // Generate PNG image
-const generatePNG = async (ticket: Ticket): Promise<Blob> => {
+const generatePNG = async (ticket: ITicket): Promise<Blob> => {
   const canvas = await generateTicketCanvas(ticket)
   return new Promise((resolve) => {
     canvas.toBlob((blob) => {
@@ -133,7 +133,7 @@ const downloadFile = (blob: Blob, filename: string, mimeType: string) => {
 }
 
 // Fallback text file download
-const downloadTicketAsText = (ticket: Ticket) => {
+const downloadTicketAsText = (ticket: ITicket) => {
   const ticketContent = `
 TICKET DETAILS
 ==============
@@ -141,7 +141,7 @@ TICKET DETAILS
 Event: ${ticket.eventDetails?.title || "N/A"}
 Date: ${ticket.eventDetails?.date || "N/A"}
 Time: ${ticket.eventDetails?.startTime || "N/A"}
-Venue: ${ticket.eventDetails?.venue || "N/A"}
+Venue: ${ticket.eventDetails?.venueName || "N/A"}
 Ticket Type: ${ticket.ticketType || "N/A"}
 Total Amount: $${ticket.totalAmount || "N/A"}
 Ticket ID: ${ticket.ticketId || "N/A"}

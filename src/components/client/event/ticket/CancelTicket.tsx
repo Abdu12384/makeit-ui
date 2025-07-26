@@ -1,5 +1,5 @@
 import type React from "react"
-import type { Ticket } from "@/types/ticket"
+import type { ITicket } from "@/types/ticket"
 import { useState, useEffect } from "react"
 import { Minus, Plus, AlertTriangle, X } from "lucide-react"
 import { useCancelTicketMutation } from "@/hooks/ClientCustomHooks"
@@ -9,7 +9,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 
 export const CancelTicketModal: React.FC<{
-  ticket: Ticket
+  ticket: ITicket
   onClose: () => void
   onConfirm: () => void
 }> = ({ ticket, onClose, onConfirm }) => {
@@ -37,7 +37,7 @@ export const CancelTicketModal: React.FC<{
     setIsLoading(true)
     cancelTicketMutation.mutate(
       {
-        ticketId: ticket?.ticketId,
+        ticketId: ticket?.ticketId!,
         cancelCount: cancelCount,
       },
       {

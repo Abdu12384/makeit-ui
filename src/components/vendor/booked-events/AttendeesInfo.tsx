@@ -458,15 +458,15 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Separator } from "@/components/ui/separator"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useParams } from "react-router-dom"
-import type { ITicketEntity } from "@/types/ticket"
+import type { ITicket } from "@/types/ticket"
 import { useGetAttendeesByIdMutation } from "@/hooks/VendorCustomHooks"
 import { CLOUDINARY_BASE_URL } from "@/types/config/config"
 import { Pagination1 } from "@/components/common/paginations/Pagination"
 
 export default function TicketsList() {
   const { eventId } = useParams<{ eventId: string }>()
-  const [tickets, setTickets] = useState<ITicketEntity[]>([])
-  const [selectedTicket, setSelectedTicket] = useState<ITicketEntity | null>(null)
+  const [tickets, setTickets] = useState<ITicket[]>([])
+  const [selectedTicket, setSelectedTicket] = useState<ITicket | null>(null)
   const [currentPage, setCurrentPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
   const limit = 10
@@ -567,7 +567,7 @@ export default function TicketsList() {
   }
 
   // Ticket Details Component (embedded)
-  const TicketDetails = ({ ticket, onClose }: { ticket: ITicketEntity; onClose: () => void }) => {
+  const TicketDetails = ({ ticket, onClose }: { ticket: ITicket; onClose: () => void }) => {
     const client = ticket.client // Access the nested client object
 
     return (
@@ -659,7 +659,7 @@ export default function TicketsList() {
                     </div>
                     <div>
                       <p className="text-sm text-muted-foreground">Purchase Date</p>
-                      <p className="font-medium">{new Date(ticket.createdAt).toLocaleDateString() || "Unknown date"}</p>
+                      <p className="font-medium">{new Date(ticket?.createdAt!).toLocaleDateString() || "Unknown date"}</p>
                     </div>
                     <div>
                       <p className="text-sm text-muted-foreground">Payment Status</p>
@@ -700,7 +700,7 @@ export default function TicketsList() {
                       <div className="flex justify-between">
                         <p className="font-medium">Ticket purchased</p>
                         <p className="text-sm text-muted-foreground">
-                          {new Date(ticket?.createdAt).toLocaleString() || "N/A"}
+                          {new Date(ticket?.createdAt!).toLocaleString() || "N/A"}
                         </p>
                       </div>
                       <p className="text-sm text-muted-foreground mt-1">
@@ -734,7 +734,7 @@ export default function TicketsList() {
     )
   }
 
-  const TicketCard = ({ ticket, onClick }: { ticket: ITicketEntity; onClick: () => void }) => {
+  const TicketCard = ({ ticket, onClick }: { ticket: ITicket; onClick: () => void }) => {
     const client = ticket?.client // Access the nested client object
 
     return (
@@ -829,7 +829,7 @@ export default function TicketsList() {
             </div>
           </div>
           <div className="grid grid-cols-1 gap-4">
-            {tickets?.map((ticket: ITicketEntity) => (
+            {tickets?.map((ticket: ITicket) => (
               <TicketCard key={ticket._id} ticket={ticket} onClick={() => setSelectedTicket(ticket)} />
             ))}
             {tickets?.length === 0 && (

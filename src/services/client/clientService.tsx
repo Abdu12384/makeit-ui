@@ -5,7 +5,7 @@ import { IBooking } from "@/types/bookings";
 import { LocationEventParams, PaginationParams } from "@/types/event";
 import { IAuthResponse, IAxiosResponse } from "@/types/response";
 import { GetAllServicesParams } from "@/types/service";
-import { TicketEntity } from "@/types/ticket";
+import { ITicket } from "@/types/ticket";
 import { IClient, ILoginData } from "@/types/User";
 import { ReviewData } from "@/types/worksample/review";
 import { FormData } from "@/utils/validationForms/validationForms";
@@ -409,7 +409,7 @@ export const checkEventBookingAvailability = async ({id,ticketCount}: {id:string
 
 
 
-export const createTicket = async (ticket: TicketEntity) => {
+export const createTicket = async (ticket: ITicket) => {
   try {
     const response = await clientAxiosInstance.post('/client/create-ticket',ticket)
     return response.data
@@ -420,7 +420,7 @@ export const createTicket = async (ticket: TicketEntity) => {
 }
 
 
-export const confirmTicketAndPayment = async (ticket: TicketEntity,paymentIntentId:string,vendorId:string) => {
+export const confirmTicketAndPayment = async (ticket: ITicket,paymentIntentId:string,vendorId:string) => {
   try {
     const response = await clientAxiosInstance.post('/client/confirm-ticket-payment',{ticket,paymentIntentId,vendorId})
     return response.data

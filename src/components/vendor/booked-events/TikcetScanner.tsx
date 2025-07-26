@@ -3,13 +3,13 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Html5QrcodeScanner } from 'html5-qrcode';
 import { useVerifyTicketMutation } from '@/hooks/VendorCustomHooks';
 import toast from 'react-hot-toast';
-import { TicketBackendEntity } from '@/types/ticket';
+import { ITicket } from '@/types/ticket';
 import { TicketModal } from './VerifyedTicketModal';
 function TicketScanner() {
   const [scanResult, setScanResult] = useState<string | null>(null);
   const [scannerInstance, setScannerInstance] = useState<Html5QrcodeScanner | null>(null);
   const [isOpen, setIsOpen] = useState<boolean>(false)
-  const [verifiedTicket, setVerifiedTicket] = useState<TicketBackendEntity | null>(null)
+  const [verifiedTicket, setVerifiedTicket] = useState<ITicket | null>(null)
   const ticketVerify = useVerifyTicketMutation()
   const isVerifyingRef = useRef(false);
 

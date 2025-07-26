@@ -2,7 +2,7 @@ import { useMutation } from '@tanstack/react-query';
 import { addReview, cancelBooking, cancelTicket, clientBookingService, clientChangePassword, clientCreateAccount, clientForgotPassword, clientGetAllServices, clientGetServiceById, clientGoogleLogin, clientLogin, clientProfileEdit, clientResendOtp, clientResetPassword, clientSignup, confirmBookingPayment, confirmTicketAndPayment, createBookingPayment, createTicket, getAllEvents, getAllReviews, getAllTickets, getAllWorkSamplesByVendorId, getBookings, getEventById, getWalletById, logoutClient, saveClientFCMToken, getClientNotifications, markNotificationAsRead, checkEventBookingAvailability, rescheduleBookingApproval, getAllLocationBasedEvents, clientGetAllCategories   } from '@/services/client/clientService';
 import { ILoginData } from '@/types/User';
 import { LocationEventParams, PaginationParams } from '@/types/event';
-import { TicketEntity } from '@/types/ticket';
+import { ITicket } from '@/types/ticket';
 import { ReviewData } from '@/types/worksample/review';
 import { GetAllServicesParams } from '@/types/service';
 import { IBooking } from '@/types/bookings';
@@ -220,7 +220,7 @@ export const useCheckEventBookingAvailabilityMutation = () => {
 
 export const useCreateTicketMutation = () => {
   return useMutation({
-    mutationFn: (ticket:TicketEntity) => createTicket(ticket)
+    mutationFn: (ticket:ITicket) => createTicket(ticket)
   })
 } 
 
@@ -234,7 +234,7 @@ export const useGetAllTicketsMutation = () => {
 
 export const useConfirmTicketAndPaymentMutation = () => {
   return useMutation({
-    mutationFn: ({ticket,paymentIntentId,vendorId}: {ticket:TicketEntity,paymentIntentId:string,vendorId:string}) => confirmTicketAndPayment(ticket,paymentIntentId,vendorId)
+    mutationFn: ({ticket,paymentIntentId,vendorId}: {ticket:ITicket,paymentIntentId:string,vendorId:string}) => confirmTicketAndPayment(ticket,paymentIntentId,vendorId)
   })
 }
 
