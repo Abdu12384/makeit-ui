@@ -1,5 +1,3 @@
-
-
 export interface WorkSample {
     workSampleId?:string,
     title:string,

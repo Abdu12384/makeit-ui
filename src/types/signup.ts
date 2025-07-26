@@ -1,4 +1,3 @@
-
 export interface VendorData {
   name: string;
   email: string;
