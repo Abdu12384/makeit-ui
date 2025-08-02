@@ -7,11 +7,11 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import type { UseMutationResult } from "@tanstack/react-query"
 import toast from "react-hot-toast"
-import { VendorData } from "@/types/signup"
+import { IVendorData } from "@/types/signup"
 import { FormData } from "@/utils/validationForms/validationForms"
 
 
-interface OTPModalProps<T extends FormData | VendorData> {
+interface OTPModalProps<T extends FormData | IVendorData> {
   isOpen: boolean
   onClose?: () => void
   onVerify?: (otp: string) => void
@@ -29,7 +29,7 @@ interface OTPModalProps<T extends FormData | VendorData> {
   handleSuccess: () => void
 }
 
-export function OTPModal<T extends FormData | VendorData>({
+export function OTPModal<T extends FormData | IVendorData>({
   isOpen,
   data,
   setIsOpen,

@@ -18,13 +18,12 @@ import EventDetailsTab from "./EventDetailsTap"
 import DateTimeLocationTab from "./DateTimeAndLocation"
 import MediaTicketsTab from "./MediaTicketsTap"
 import type {
-  DateTimeEntry,
-  NewEventData,
-  NewEventFormValues,
+  IDateTimeEntry,
+  IEvent,
 } from "@/types/event"
 
 interface EventFormPageProps {
-  eventData?: NewEventData
+  eventData?: IEvent
   onSuccess?: () => void
   onCancel?: () => void
 }
@@ -33,7 +32,7 @@ export default function EventFormTabs({ eventData, onSuccess, onCancel }: EventF
   const navigate = useNavigate()
   const [activeTab, setActiveTab] = useState("details")
   const [mounted, setMounted] = useState(false)
-  const [dateTimeEntries, setDateTimeEntries] = useState<DateTimeEntry[]>([
+  const [dateTimeEntries, setDateTimeEntries] = useState<IDateTimeEntry[]>([
     { date: new Date(), startTime: "", endTime: "" },
   ])
 
@@ -52,7 +51,7 @@ export default function EventFormTabs({ eventData, onSuccess, onCancel }: EventF
   useEffect(() => {
     setMounted(true)
     if (eventData) {
-      const entries = eventData.date.map((item:any) => ({
+      const entries = eventData.date.map((item:IDateTimeEntry) => ({
         date: new Date(item.date),
         startTime: item.startTime,
         endTime: item.endTime,
@@ -62,7 +61,7 @@ export default function EventFormTabs({ eventData, onSuccess, onCancel }: EventF
   }, [eventData])
 
 
-  const initialValues: NewEventFormValues = eventData
+  const initialValues: IEvent = eventData
     ? {
         title: eventData.title,
         description: eventData.description,
@@ -112,7 +111,7 @@ export default function EventFormTabs({ eventData, onSuccess, onCancel }: EventF
         endTime: "",
       }
 
-  const handleSubmit = async (values: NewEventFormValues, { setSubmitting }: FormikHelpers<NewEventFormValues>) => {
+  const handleSubmit = async (values: IEvent, { setSubmitting }: FormikHelpers<IEvent>) => {
     try {
       setSubmitting(true)
 
@@ -161,7 +160,7 @@ export default function EventFormTabs({ eventData, onSuccess, onCancel }: EventF
 
       if (isEditing && eventData) {
         editEventMutation.mutate(
-          { data: finalValues, eventId: eventData.eventId },
+          { data: finalValues, eventId: eventData?.eventId! },
           {
             onSuccess: (response) => {
               toast.success(response.message)

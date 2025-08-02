@@ -12,7 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { IService } from "@/types/service"
 import { useCreateServiceMutation, useGetAllCategoriesMutation, useUpdateServiceMutation } from "@/hooks/VendorCustomHooks"
 import toast from "react-hot-toast"
-import { Category } from "@/types/category"
+import { ICategory } from "@/types/category"
 
 interface ServiceAddFormProps {
   onClose: () => void
@@ -62,7 +62,7 @@ const defaultInitialValues: IService = {
 
 export const  ServiceAddForm = ({ onClose, onSubmit, initialData, isEdit, refetchServices }: ServiceAddFormProps) => {
   const [step, setStep] = useState(1)
-  const [categories, setCategories] = useState<Category[]>([])
+  const [categories, setCategories] = useState<ICategory[]>([])
 
   const createServiceMutation = useCreateServiceMutation()
   const getAllCategoriesMutation = useGetAllCategoriesMutation()

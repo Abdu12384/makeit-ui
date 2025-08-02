@@ -5,11 +5,11 @@ import { Separator } from "@/components/ui/separator";
 import { Progress } from "@/components/ui/progress";
 import { Info } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { Event } from "@/types/event";
+import { IEvent } from "@/types/event";
 import toast from "react-hot-toast";
 
 interface BookingCardProps {
-  event: Event;
+  event: IEvent;
   ticketCount: number;
   setTicketCount: (count: number) => void;
   handleBookNow: () => void;

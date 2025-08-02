@@ -7,13 +7,13 @@ import { Label } from "@/components/ui/label";
 import { DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { ITicket } from "@/types/ticket";
 import { useNavigate } from "react-router-dom";
-import { Event } from "@/types/event";
+import { IEvent } from "@/types/event";
 import { useCheckEventBookingAvailabilityMutation } from "@/hooks/ClientCustomHooks";
 import toast from "react-hot-toast";
 
 
 interface BookingFormProps {
-  event: Event;
+  event: IEvent;
   ticketCount: number;
   isBookingOpen: boolean;
   setIsBookingOpen: (open: boolean) => void;
@@ -64,7 +64,7 @@ export default function EventBookingForm({
 
     checkEventBookingAvailabilityMutation.mutate(
       {
-        eventId: event.eventId,
+        eventId: event.eventId!,
         ticketCount
       },
       {

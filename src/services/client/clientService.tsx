@@ -1,13 +1,13 @@
 import authAxiosInstance from "@/api/auth.axios";
 import { clientAxiosInstance } from "@/api/client.axios";
-import { GetAllBookingsParams } from "@/hooks/ClientCustomHooks";
+import { IGetAllBookingsParams } from "@/types/params";
 import { IBooking } from "@/types/bookings";
-import { LocationEventParams, PaginationParams } from "@/types/event";
+import { IPaginationParams,ILocationEventParams } from "@/types/params";
 import { IAuthResponse, IAxiosResponse } from "@/types/response";
 import { GetAllServicesParams } from "@/types/service";
 import { ITicket } from "@/types/ticket";
 import { IClient, ILoginData } from "@/types/User";
-import { ReviewData } from "@/types/worksample/review";
+import { IReview } from "@/types/review";
 import { FormData } from "@/utils/validationForms/validationForms";
 import { isAxiosError } from "axios";
 
@@ -276,7 +276,7 @@ export const getBookings = async ({
   status = "",
   search = "",
   sortOrder = "asc"
-}: GetAllBookingsParams) => {
+}: IGetAllBookingsParams) => {
   try {
     const response = await clientAxiosInstance.get('/client/bookings',{
       params:{
@@ -338,7 +338,7 @@ export const getAllEvents = async ({
   page = 1,
   limit = 10,
   search = "",
-}: PaginationParams) => {
+}: IPaginationParams) => {
   try {
     const response = await clientAxiosInstance.get('/client/events',{
       params:{
@@ -361,7 +361,7 @@ export const getAllLocationBasedEvents = async ({
   radius,
   page = 1,
   limit = 10,
-}: LocationEventParams) => {
+}: ILocationEventParams) => {
   try {
     const response = await clientAxiosInstance.get("/nearby", {
       params: {
@@ -431,7 +431,7 @@ export const confirmTicketAndPayment = async (ticket: ITicket,paymentIntentId:st
 }
 
 
-export const  getAllTickets = async ({page = 1,limit = 10,status}:PaginationParams) => {
+export const  getAllTickets = async ({page = 1,limit = 10,status}:IPaginationParams) => {
   try {
     const response = await clientAxiosInstance.get('/client/tickets',{
       params:{
@@ -461,7 +461,7 @@ export const cancelTicket = async ({ticketId,cancelCount}: {ticketId:string,canc
 
 
 
-export const getWalletById = async ({page = 1,limit = 10}:PaginationParams) => {
+export const getWalletById = async ({page = 1,limit = 10}:IPaginationParams) => {
   try {
     const response = await clientAxiosInstance.get('/client/wallet',{
       params:{
@@ -479,7 +479,7 @@ export const getWalletById = async ({page = 1,limit = 10}:PaginationParams) => {
 
 
 
-export const addReview = async (review: ReviewData) => {
+export const addReview = async (review: IReview) => {
   try {
     const response = await clientAxiosInstance.post('/client/review',review)
     return response.data
@@ -492,7 +492,7 @@ export const addReview = async (review: ReviewData) => {
 
 
 
-export const getAllReviews = async ({page = 1,limit = 10,targetId,targetType}:PaginationParams) => {
+export const getAllReviews = async ({page = 1,limit = 10,targetId,targetType}:IPaginationParams) => {
   try {
     const response = await clientAxiosInstance.get('/client/reviews',{
       params:{

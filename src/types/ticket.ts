@@ -1,11 +1,11 @@
-import { IEventFormValues } from "./event";
+import { IEvent } from "./event";
 import { IClient } from "./User";
 
 export interface ITicketConfirmationModalProps {
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
   ticket:ITicket
-  event?: IEventFormValues
+  event?: IEvent
 }
 
 export interface ITicket {
@@ -22,7 +22,7 @@ export interface ITicket {
   ticketStatus?: "unused" | "used" | "refunded" | "cancelled"|"partially_refunded";
   qrCodeLink?: string;
   paymentTransactionId?: string;
-  checkInHistory?: any[];
+  checkInHistory?: [];
   checkedIn?: "checked_in" | "pending" | "cancelled";
   checkedInTime?: string;
   checkedInBy?: string;
@@ -33,7 +33,7 @@ export interface ITicket {
   eventDate?: string;
   eventTime?: string;
   eventLocation?: string;
-  eventDetails?: IEventFormValues;
+  eventDetails?: IEvent;
   djs?: string[];
   client?: IClient;
   paymentIntentId?: string;

@@ -13,10 +13,10 @@ import { useGetAllReviewsMutation, useGetEventByIdMutation } from "@/hooks/Clien
 import LocationPicker from "@/components/common/location/LocationPicker";
 import EventBookingForm from "@/components/client/event/EventBookingForm";
 import ReviewForm from "@/components/common/review/review-form";
-import { ReviewData } from "@/types/worksample/review";
+import { IReview } from "@/types/review";
 import { useSelector } from "react-redux";
 import ReviewDisplay from "@/components/common/review/review-display";
-import { Event } from "@/types/event";
+import { IEvent } from "@/types/event";
 import BookingCard from "@/components/client/event/BookingCard";
 import EventGalleryDialog from "@/components/client/event/EventGallery";
 import { VendorDetailsDialog } from "@/components/client/vendor-info/VendorInfoDialog";
@@ -30,7 +30,7 @@ import { format } from "date-fns";
 export default function EventDetailsPage() {
   const { eventId } = useParams<{ eventId: string }>();
   const navigate = useNavigate();
-  const [event, setEvent] = useState<Event | null>(null);
+  const [event, setEvent] = useState<IEvent | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("details");
   const [ticketCount, setTicketCount] = useState(1);
@@ -40,12 +40,12 @@ export default function EventDetailsPage() {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const getEventByIdMutation = useGetEventByIdMutation()
   const [showVendorInfo, setShowVendorInfo] = useState(false)
-  const [reviews, setReviews] = useState<ReviewData[]>([])
+  const [reviews, setReviews] = useState<IReview[]>([])
   const { client } = useSelector((state: RootState) => state.client)
   const getAllReviewsMutation = useGetAllReviewsMutation()
   const reviewFormRef = useRef<HTMLDivElement>(null)
 
-  const isSoldOut = event ? event.attendeesCount >= event.totalTicket : false;
+  const isSoldOut = event ? event?.attendeesCount! >= event?.totalTicket : false;
 
   useEffect(() => {
     const fetchEvent = async () => {
@@ -97,7 +97,7 @@ export default function EventDetailsPage() {
     )
   }, [activeTab])
 
-  const handleSubmitReview = (values: ReviewData) => {
+  const handleSubmitReview = (values: IReview) => {
     const newReview = {
       comment: values.comment,
       rating: values.rating,
@@ -299,7 +299,7 @@ export default function EventDetailsPage() {
                             <p className="text-[#748D92] text-sm">
                               ₹{event.pricePerTicket} per person
                               <br />
-                              {event.totalTicket - event.attendeesCount} tickets remaining
+                              {event.totalTicket - event?.attendeesCount!} tickets remaining
                             </p>
                           </div>
                         </div>
@@ -326,7 +326,7 @@ export default function EventDetailsPage() {
                                 <Star className="h-3.5 w-3.5 mr-1 text-yellow-500 fill-yellow-500" />
                                 <span>{event.vendorDetails.rating}/5</span>
                               </div>
-                              <div>{event.vendorDetails.events} events</div>
+                              {/* <div>{event?.vendorDetails?.events!} events</div> */}
                             </div>
                           </div>
                           <Button
@@ -366,7 +366,7 @@ export default function EventDetailsPage() {
                     <CardContent className="p-6">
                       <h2 className="text-xl font-bold text-[#212A31] mb-4">Event Gallery</h2>
                       <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                        {event.posterImage.map((image, index) => (
+                        {event?.posterImage?.map((image, index) => (
                           <motion.div
                             key={index}
                             whileHover={{ scale: 1.03 }}
@@ -433,7 +433,7 @@ export default function EventDetailsPage() {
                               className="mt-4"
                             >
                               <ReviewForm
-                                onSubmit={(data: ReviewData) => {
+                                onSubmit={(data: IReview) => {
                                   handleSubmitReview(data)
                                   setIsReviewFormVisible(false)
                                 }}

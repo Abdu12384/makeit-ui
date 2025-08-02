@@ -63,11 +63,7 @@ export type UserDTO = IAdmin | IClient | IVendor
 
 
 
-
-
-
-
-export interface FetchUsersParams {
+export interface IFetchUsersParams {
 	userType: UserType
 	page: number;
 	limit: number;
@@ -75,8 +71,7 @@ export interface FetchUsersParams {
 }
 
 
-
-export interface FetchVendorParams {
+export interface IFetchVendorParams {
 	forType: ForType;
 	page: number;
 	limit: number;

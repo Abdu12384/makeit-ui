@@ -13,7 +13,7 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useGetAllEventsByVendorIdMutation } from "@/hooks/VendorCustomHooks";
 // import EventFormPage from "@/components/vendor/events/CreateEvents";
-import {  NewEventData } from "@/types/event";
+import {  IEvent } from "@/types/event";
 import { useBlockEventMutation } from "@/hooks/VendorCustomHooks";
 import toast from "react-hot-toast";
 import { CLOUDINARY_BASE_URL } from "@/types/config/config";
@@ -23,9 +23,9 @@ import { Pagination1 } from "@/components/common/paginations/Pagination";
 export default function VendorEventsPage() {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<"upcoming" | "ongoing" |"completed" | "cancelled">("upcoming");
-  const [events, setEvents] = useState<NewEventData[]>([]);
+  const [events, setEvents] = useState<IEvent[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [editingEvent, setEditingEvent] = useState<NewEventData | null>(null);
+  const [editingEvent, setEditingEvent] = useState<IEvent | null>(null);
   const [currentPage,setCurrentPage] = useState(1)
   const [totalPages,setTotalPages] = useState(1)
   let limit = 7
@@ -244,10 +244,10 @@ export default function VendorEventsPage() {
                           Edit Event
                         </DropdownMenuItem>
                         <DropdownMenuItem
-                          onClick={() => handleBlockEvent(event.eventId)}
-                          className={event.isActive ? "text-red-600 hover:bg-red-50 cursor-pointer" : "text-green-600 hover:bg-green-50 cursor-pointer"}
+                          onClick={() => handleBlockEvent(event?.eventId!)}
+                          className={event?.isActive ? "text-red-600 hover:bg-red-50 cursor-pointer" : "text-green-600 hover:bg-green-50 cursor-pointer"}
                         >
-                          {event.isActive ? "Block Event" : "Unblock Event"}
+                          {event?.isActive ? "Block Event" : "Unblock Event"}
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>

@@ -11,7 +11,7 @@ import Navbar from "@/components/common/NavBar"
 import { useGetAllEventsMutation } from "@/hooks/ClientCustomHooks"
 import { Link, useNavigate } from "react-router-dom"
 import { Pagination1 } from "@/components/common/paginations/Pagination"
-import { Event } from "@/types/event"
+import { IEvent } from "@/types/event"
 import { container, item } from "@/animations/variants"
 import { debounce } from "lodash"
 import { CLOUDINARY_BASE_URL } from "@/types/config/config"
@@ -31,7 +31,7 @@ const categories = [
 
 export default function EventsPage() {
   const [activeTab, setActiveTab] = useState<"all" | "trending" | "nearby" | "today">("all")
-  const [events, setEvents] = useState<Event[]>([])
+  const [events, setEvents] = useState<IEvent[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [searchQuery, setSearchQuery] = useState("")
   const [debounceSearch, setDebounceSearch] = useState(searchQuery)
@@ -284,7 +284,7 @@ export default function EventsPage() {
                   className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
                 >
                   {filteredEvents.map((event) => (
-                    <motion.div key={event.id} variants={item} whileHover={{ y: -5 }} className="h-full">
+                    <motion.div key={event._id} variants={item} whileHover={{ y: -5 }} className="h-full">
                       <Card className="overflow-hidden border-none shadow-md bg-white h-full flex flex-col">
                         <div className="relative">
                           <div className="aspect-[3/2] overflow-hidden">

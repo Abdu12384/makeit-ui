@@ -2,12 +2,12 @@ import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import VendorDetailsPage from "./VendorDetails"; 
 import { IVendor } from "@/types/User"; 
-import { Event } from "@/types/event"; 
+import { IEvent } from "@/types/event"; 
 
 interface VendorDetailsDialogProps {
   isOpen: boolean;
   onClose: () => void;
-  vendor?: IVendor | Event['vendorDetails'] |  null;  
+  vendor?: IVendor | IEvent['vendorDetails'] |  null;  
 }
 
 export const VendorDetailsDialog: React.FC<VendorDetailsDialogProps> = React.memo(

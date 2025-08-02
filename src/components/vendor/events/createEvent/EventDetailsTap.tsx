@@ -7,11 +7,12 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import type {  EventFormErrors, EventFormTouched } from "@/types/event"
+import type { IEventFormTouched, IEvent } from "@/types/event"
+import type { FormikErrors } from "formik"
 
 interface EventDetailsTabProps {
-  errors: EventFormErrors
-  touched: EventFormTouched
+  errors: FormikErrors<IEvent>
+  touched: IEventFormTouched
   setFieldValue: (field: string, value: string) => void
   isEditing: boolean
 }

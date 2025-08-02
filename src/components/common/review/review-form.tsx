@@ -6,11 +6,11 @@ import * as Yup from "yup"
 import { Star, Send, MessageCircle, Sparkles } from "lucide-react"
 import { useAddReviewMutation } from "@/hooks/ClientCustomHooks"
 import toast from "react-hot-toast"
-import { ReviewData } from "@/types/worksample/review"
+import { IReview } from "@/types/review"
 
 interface ReviewFormProps {
-  onSubmit: (data: ReviewData) => Promise<void> | void
-  initialData?: Partial<ReviewData>
+  onSubmit: (data: IReview) => Promise<void> | void
+  initialData?: Partial<IReview>
   targetId?: string
   targetType?: string
   isLoading?: boolean
@@ -97,7 +97,7 @@ const ReviewForm: React.FC<ReviewFormProps> = ({
   submitText = "Submit Review",
   className = "",
 }) => {
-  const initialValues: ReviewData = {
+  const initialValues: IReview = {
     comment: initialData.comment || "",
     rating: initialData.rating || 0,
   }

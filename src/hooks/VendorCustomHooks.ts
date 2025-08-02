@@ -1,15 +1,11 @@
 
 import { changeBookingStatus, createEvent, createService, createWorkSample, editEvent, getAllBookings, getAllCategories, getAllEventsByVendorId, getAllServicesByVendorId, getAllWorkSamplesByVendorId, getAttendeesById, getDashboardData, getWalletById, logoutVendor, saveVendorFCMToken, updateService, updateVendorProfile, updateWorkSample, uploadImageCloudinary, vendorCancelBooking, vendorChangePassword, vendorCreateAccount, VendorLogin, vendorSignup, verifyTicket, getVendorNotifications, markVendorNotificationAsRead, blockEvent, blockService, RescheduleBooking, getVendorBookedDates } from "@/services/vendor/vendorService";
-import { NewEventFormValues } from "@/types/event";
+import { IEvent } from "@/types/event";
 import { IService } from "@/types/service";
-import { VendorData } from "@/types/signup";
+import { IVendorData } from "@/types/signup";
 import { ILoginData } from "@/types/User";
-import { WorkSample } from "@/types/worksample/work-sample";
+import { WorkSample } from "@/types/work-sample";
 import { useMutation } from "@tanstack/react-query";
-
-
-
-
 
 interface FormValues{
     name: string
@@ -73,7 +69,7 @@ export const useVendorSignupMutation = () =>{
 
 export const useCreateAccountMutation = () => {
   return useMutation({
-      mutationFn: ({ formdata, otpString }: { formdata: VendorData; otpString: string }) => vendorCreateAccount({ formdata, otpString })
+      mutationFn: ({ formdata, otpString }: { formdata: IVendorData; otpString: string }) => vendorCreateAccount({ formdata, otpString })
 
   })
 }
@@ -174,7 +170,7 @@ export const useVendorCancelBookingMutation = () => {
 
 export const useCreateEventMutation = () => {
    return useMutation({
-     mutationFn: (data:NewEventFormValues) => createEvent(data)
+     mutationFn: (data:IEvent) => createEvent(data)
    })
 }
 
@@ -193,7 +189,7 @@ export const useGetAllEventsByVendorIdMutation = () => {
 
 export const useEditEventMutation = () => {
   return useMutation({
-    mutationFn: ({data,eventId}: {data:NewEventFormValues,eventId:string}) => editEvent({data,eventId}),
+    mutationFn: ({data,eventId}: {data:IEvent,eventId:string}) => editEvent({data,eventId}),
   });
 }
 

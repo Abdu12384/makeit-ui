@@ -6,7 +6,7 @@ import { useClientGetServiceByIdMutation, useGetAllReviewsMutation } from "@/hoo
 import { IVendor } from "@/types/User"
 import Navbar from "@/components/common/NavBar"
 import ReviewDisplay from "@/components/common/review/review-display"
-import { ReviewData } from "@/types/worksample/review"
+import { IReview } from "@/types/review"
 import { IService } from "@/types/service"
 import { containerVariants, itemVariants } from "@/animations/variants"
 import { VendorDetailsDialog } from "@/components/client/vendor-info/VendorInfoDialog"
@@ -21,7 +21,7 @@ export default function BookingPage() {
   const [isLoading, setIsLoading] = useState(true)
   const [vendor, setVendor] = useState<IVendor | null>(null)
   const [activeTab, setActiveTab] = useState("description")
-  const [reviews, setReviews] = useState<ReviewData[]>([])
+  const [reviews, setReviews] = useState<IReview[]>([])
   const [showVendorInfo, setShowVendorInfo] = useState(false)
 
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({

@@ -8,13 +8,13 @@ import { Badge } from "@/components/ui/badge"
 import { BookedEventDetails } from "./BookedEventDetails"
 import { useGetAllEventsByVendorIdMutation } from "@/hooks/VendorCustomHooks"
 import { CLOUDINARY_BASE_URL } from "@/types/config/config"
-import { Event } from "@/types/event"
+import { IEvent } from "@/types/event"
 import { Pagination1 } from "@/components/common/paginations/Pagination"
 
 
 export default function BookedEventsList() {
-  const [events,setEvents] = useState<Event[]>([])
-  const [selectedEvent, setSelectedEvent] = useState<Event | null>(null)
+  const [events,setEvents] = useState<IEvent[]>([])
+  const [selectedEvent, setSelectedEvent] = useState<IEvent | null>(null)
   const [currentPage , setCurrentPage] = useState(1)
   const [totalPage , setTotalPages] = useState(1)
   let limit = 10

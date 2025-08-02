@@ -1,5 +1,4 @@
-// public/firebase-messaging-sw.js
-// Use the compat version for service worker
+
 importScripts('https://www.gstatic.com/firebasejs/10.5.0/firebase-app-compat.js');
 importScripts('https://www.gstatic.com/firebasejs/10.5.0/firebase-messaging-compat.js');
 

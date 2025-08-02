@@ -1,9 +1,9 @@
 import { useMutation } from '@tanstack/react-query';
 import { addReview, cancelBooking, cancelTicket, clientBookingService, clientChangePassword, clientCreateAccount, clientForgotPassword, clientGetAllServices, clientGetServiceById, clientGoogleLogin, clientLogin, clientProfileEdit, clientResendOtp, clientResetPassword, clientSignup, confirmBookingPayment, confirmTicketAndPayment, createBookingPayment, createTicket, getAllEvents, getAllReviews, getAllTickets, getAllWorkSamplesByVendorId, getBookings, getEventById, getWalletById, logoutClient, saveClientFCMToken, getClientNotifications, markNotificationAsRead, checkEventBookingAvailability, rescheduleBookingApproval, getAllLocationBasedEvents, clientGetAllCategories   } from '@/services/client/clientService';
 import { ILoginData } from '@/types/User';
-import { LocationEventParams, PaginationParams } from '@/types/event';
+import { IGetAllBookingsParams, ILocationEventParams, IPaginationParams } from '@/types/params';
 import { ITicket } from '@/types/ticket';
-import { ReviewData } from '@/types/worksample/review';
+import { IReview } from '@/types/review';
 import { GetAllServicesParams } from '@/types/service';
 import { IBooking } from '@/types/bookings';
 import { FormData } from '@/utils/validationForms/validationForms';
@@ -21,14 +21,6 @@ type loginData = {
   credential: string
   client_id: string,
   role : string
-}
-
-export interface GetAllBookingsParams {
-  page?: number;
-  limit?: number;
-  status?: string;
-  search?: string;
-  sortOrder?: string;
 }
 
 
@@ -171,7 +163,7 @@ export const useConfirmBookingPaymentMutation = () => {
 
 export const useGetBookingsMutation = () => {
   return useMutation({
-    mutationFn: (params:GetAllBookingsParams) => getBookings(params)
+    mutationFn: (params:IGetAllBookingsParams) => getBookings(params)
   })
 } 
 
@@ -185,14 +177,14 @@ export const useCancelBookingMutation = () => {
 
 export const useGetAllEventsMutation = () => {
   return useMutation({
-    mutationFn: (params:PaginationParams) => getAllEvents(params)
+    mutationFn: (params:IPaginationParams) => getAllEvents(params)
   })
 }
 
 
 export const useGetAllLocationBasedEventsMutation = () =>{
   return useMutation({
-    mutationFn: (params:LocationEventParams) => getAllLocationBasedEvents(params)
+    mutationFn: (params:ILocationEventParams) => getAllLocationBasedEvents(params)
   })
 }
 
@@ -227,7 +219,7 @@ export const useCreateTicketMutation = () => {
 
 export const useGetAllTicketsMutation = () => {
   return useMutation({
-    mutationFn: (params:PaginationParams) => getAllTickets(params)
+    mutationFn: (params:IPaginationParams) => getAllTickets(params)
   })
 }
 
@@ -248,21 +240,21 @@ export const useCancelTicketMutation = () => {
 
 export const useGetWalletByIdMutation = () => {
   return useMutation({
-    mutationFn: (params:PaginationParams) => getWalletById(params)
+    mutationFn: (params:IPaginationParams) => getWalletById(params)
   })
 }
 
 
 export const useAddReviewMutation = () => {
   return useMutation({
-    mutationFn: (review:ReviewData) => addReview(review)
+    mutationFn: (review:IReview) => addReview(review)
   })
 }
 
 
 export const useGetAllReviewsMutation = () => {
   return useMutation({
-    mutationFn: (params:PaginationParams) => getAllReviews(params)
+    mutationFn: (params:IPaginationParams) => getAllReviews(params)
   })
 }
   

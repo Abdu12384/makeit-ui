@@ -6,7 +6,7 @@ import { ITicket } from '@/types/ticket'
 import toast from 'react-hot-toast'
 import TicketConfirmationModal from '../event/TicketConfirmationModal'
 import TicketBookingLoading from '@/utils/animations/TicketBookingLoading'
-import { IEventFormValues } from '@/types/event'
+import { IEvent } from '@/types/event'
 
 function TicketPaymentForm() {
     const [updatedTicket, setUpdatedTicket] = useState<ITicket>()
@@ -18,7 +18,7 @@ function TicketPaymentForm() {
         amount: number,
         totalTicketCount: number,
         vendorId: string,
-        event: IEventFormValues
+        event: IEvent
     }
     const createTicket = useCreateTicketMutation()
     const confirmTicket = useConfirmTicketAndPaymentMutation()

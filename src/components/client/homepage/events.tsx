@@ -10,7 +10,7 @@ import { useGetAllEventsMutation } from "@/hooks/ClientCustomHooks"
 import { useSelector } from "react-redux"
 import type { RootState } from "@/store/store"
 import { useNavigate } from "react-router-dom"
-import { IEventFormValues } from "@/types/event"
+import { IEvent } from "@/types/event"
 import { CLOUDINARY_BASE_URL } from "@/types/config/config"
 
 
@@ -26,7 +26,7 @@ export default function Events() {
   const [currentPage, _setCurrentPage] = useState(1)
   const [_totalPages, setTotalPages] = useState(1)
   const limit = 6
-  const [events, setEvents] = useState<IEventFormValues[]>([])
+  const [events, setEvents] = useState<IEvent[]>([])
   const [_isLoading, setIsLoading] = useState(true)
 
   const {client} = useSelector((state: RootState) => state.client)

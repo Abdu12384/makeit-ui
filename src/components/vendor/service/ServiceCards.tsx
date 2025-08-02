@@ -14,7 +14,7 @@ interface ServiceCardProps {
   service: IService
   onEdit: () => void
   onDelete: () => void
-  setService: (service: any) => void
+  setService: React.Dispatch<React.SetStateAction<IService[]>>
 }
 
 export const ServiceCard = ({ service, onEdit,setService }: ServiceCardProps) => {
@@ -44,8 +44,8 @@ export const ServiceCard = ({ service, onEdit,setService }: ServiceCardProps) =>
       {
         onSuccess: (data) => {
           toast.success(data.message);
-          setService((prevService:IService[]) =>
-            prevService.map((service:IService) =>
+          setService((prevService) =>
+            prevService.map((service) =>
               service.serviceId === serviceId ? { ...service, status: data.status } : service
             )
           );
