@@ -29,10 +29,4 @@ export type IAllVendorResponse = {
 	vendor: IVendor[];
 };
 
-// export type IAdminResponse = {
-// 	success: boolean;
-// 	message: string;
-// 	user: IAdmin;
-// };
-
 

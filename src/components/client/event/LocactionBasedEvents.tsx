@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { useGetAllLocationBasedEventsMutation } from "@/hooks/ClientCustomHooks"
-import type { Event } from "@/types/event"
+import type { IEvent } from "@/types/event"
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -15,7 +15,7 @@ import { Link } from "react-router-dom"
 
 export default function NearbyEventsPage() {
   const [location, setLocation] = useState<{ lat: number; lng: number } | null>(null)
-  const [events, setEvents] = useState<Event[]>([])
+  const [events, setEvents] = useState<IEvent[]>([])
   const [radius, setRadius] = useState(10)
   const [isLoading, setIsLoading] = useState(false)
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)

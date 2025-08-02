@@ -1,11 +1,11 @@
 import authAxiosInstance from "@/api/auth.axios";
 import { VendorAxiosInstance } from "@/api/vendor.axios";
-import {  NewEventFormValues } from "@/types/event";
+import {  IEvent } from "@/types/event";
 import { IAuthResponse, IAxiosResponse } from "@/types/response";
-import { GetAllServicesParams, ServiceFormValues } from "@/types/service";
-import { VendorData } from "@/types/signup";
+import { GetAllServicesParams, IService } from "@/types/service";
+import { IVendorData } from "@/types/signup";
 import { ILoginData } from "@/types/User";
-import { WorkSample } from "@/types/worksample/work-sample";
+import { WorkSample } from "@/types/work-sample";
 import clodAxios, { isAxiosError } from 'axios'
 
 
@@ -75,7 +75,7 @@ export const markVendorNotificationAsRead = async () => {
 }
 
 
-export const vendorSignup  = async (formdata: VendorData) =>{
+export const vendorSignup  = async (formdata: IVendorData) =>{
    try {
      const response = await authAxiosInstance.post('/send-otp',formdata)
     return  response.data
@@ -86,7 +86,7 @@ export const vendorSignup  = async (formdata: VendorData) =>{
 }
 
 
-export  const vendorCreateAccount = async ({formdata, otpString}:{formdata:VendorData;otpString:string}) =>{
+export  const vendorCreateAccount = async ({formdata, otpString}:{formdata:IVendorData;otpString:string}) =>{
     try {
        const response = await authAxiosInstance.post('/signup',{formdata,otpString})
        return response.data
@@ -139,7 +139,7 @@ export const vendorChangePassword = async (data:Record<string, string | number |
 
 
 
-export const createService = async (data:ServiceFormValues) => {
+export const createService = async (data:IService) => {
   try {
      const response = await VendorAxiosInstance.post("/vendor/service",data);
      return response.data
@@ -182,7 +182,7 @@ export const getAllServicesByVendorId = async ({
 
 
 
-export const updateService = async ({serviceId,data}: {serviceId:string,data:ServiceFormValues}) => {
+export const updateService = async ({serviceId,data}: {serviceId:string,data:IService}) => {
   try {
      const response = await VendorAxiosInstance.put(`/vendor/service/${serviceId}`,
       data
@@ -275,7 +275,7 @@ export const vendorCancelBooking = async ({bookingId,status,reason}: {bookingId:
 }
 
 
-export const createEvent = async (data:NewEventFormValues)=>{
+export const createEvent = async (data:IEvent)=>{
    try {
      const response = await VendorAxiosInstance.post("/vendor/event",data)
      return response.data
@@ -302,7 +302,7 @@ export const getAllEventsByVendorId = async (page:number,limit:number) => {
 }
 
 
-export const editEvent = async ({data,eventId}: {data:NewEventFormValues,eventId:string})=>{
+export const editEvent = async ({data,eventId}: {data:IEvent,eventId:string})=>{
    try {
      const response = await VendorAxiosInstance.put(`/vendor/event/${eventId}`,data)
      return response.data

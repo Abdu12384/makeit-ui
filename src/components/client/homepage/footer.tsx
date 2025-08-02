@@ -29,7 +29,7 @@ export default function Footer() {
           viewport={{ once: true }}
         >
           <motion.div variants={itemVariants}>
-            <h3 className="text-xl font-bold text-white mb-4">Company</h3>
+            <h3 className="text-xl font-bold text-white mb-4"></h3>
             <ul className="space-y-2">
               <motion.li whileHover={{ x: 5, transition: { duration: 0.2 } }}>
                 <a href="#" className="text-[#D3D9D4] hover:text-white transition-colors">

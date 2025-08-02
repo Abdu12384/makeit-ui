@@ -3,7 +3,7 @@
 import type React from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { ImageIcon, Ticket, Upload, Trash2 } from "lucide-react"
-import { FieldArray, Field, ErrorMessage, type FieldInputProps, type FieldArrayRenderProps } from "formik"
+import { FieldArray, Field, ErrorMessage, type FieldInputProps, type FieldArrayRenderProps, FormikErrors } from "formik"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -11,20 +11,18 @@ import { Label } from "@/components/ui/label"
 import { CLOUDINARY_BASE_URL } from "@/types/config/config"
 import toast from "react-hot-toast"
 import type {
-  NewEventFormValues,
-  EventFormErrors,
-  EventFormTouched,
-  NewEventData,
+  IEvent,
+  IEventFormTouched,
   UploadMutation,
 } from "@/types/event"
 
 interface MediaTicketsTabProps {
-  values: NewEventFormValues
-  errors: EventFormErrors
-  touched: EventFormTouched
+  values: IEvent
+  errors:FormikErrors<IEvent>
+  touched: IEventFormTouched
   setFieldValue: (field: string, value: string | number) => void
   uploadToCloudinary: UploadMutation
-  eventData?: NewEventData
+  eventData?: IEvent
   isEditing: boolean
 }
 

@@ -1,9 +1,10 @@
-import { adminLogin, Category, createCategory, editCategory, getAdminWalletById, getAllBookings, getAllCategories, getAllDashboardData, getAllEvents, logoutAdmin, updateCategoryStatus, updateUserStatus, updateVendorStatusById } from "@/services/admin/adminService";
-import { FetchVendorParams, ForType, ILoginData } from "@/types/User";
+import { adminLogin,createCategory, editCategory, getAdminWalletById, getAllBookings, getAllCategories, getAllDashboardData, getAllEvents, logoutAdmin, updateCategoryStatus, updateUserStatus, updateVendorStatusById } from "@/services/admin/adminService";
+import { IFetchVendorParams, ForType, ILoginData } from "@/types/User";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getAllUsers, UserQueryParams } from "@/services/admin/adminService";
 import { IAllVendorResponse, IAxiosResponse } from "@/types/response";
-import { PaginationParams } from "@/types/event";
+import { IPaginationParams } from "@/types/params";
+import { ICategory } from "@/types/category";
 
 
 
@@ -36,18 +37,6 @@ export const useGetAllUsers = (params: UserQueryParams) => {
 
 
 
-// export const useUpdateUserStatusMutaiion = <T = IAxiosResponse>() =>{
-//      const  queryClient = useQueryClient()
-
-//      return useMutation<T, Error, {userType: string; userId: string}>({
-//          mutationFn: updateUserStatus as (data: {userType: string; userId:string}) => Promise<T>,
-//          onSuccess:()=>{
-//           queryClient.invalidateQueries({queryKey: ['users']})
-//          }
-//      })
-// }
-
-
 export const useUpdateUserStatusMutaiion = <T = IAxiosResponse>() => {
   return useMutation<T, Error, { userType: string; userId: string }>({
     mutationFn: updateUserStatus as (data: { userType: string; userId: string }) => Promise<T>,
@@ -58,9 +47,8 @@ export const useUpdateUserStatusMutaiion = <T = IAxiosResponse>() => {
 
 
 
-
 export const useAllVendorQueryMutation = (
-	queryFunc: (params: FetchVendorParams) => Promise<IAllVendorResponse>,
+	queryFunc: (params: IFetchVendorParams) => Promise<IAllVendorResponse>,
 	page: number,
 	limit: number,
 	search: string,
@@ -77,7 +65,6 @@ export const useAllVendorQueryMutation = (
 			}),
 	});
 };
-
 
 
 
@@ -99,7 +86,7 @@ export const useUpdateVendorStatusMutation = () => {
 export const useCreateCategoryMutation = () => {
 	const queryClient = useQueryClient();
 
-	return useMutation<IAxiosResponse, Error, Category>({
+	return useMutation<IAxiosResponse, Error, ICategory>({
 		mutationFn: createCategory,
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ["categories"] });
@@ -119,18 +106,6 @@ export const useGetAllCategoriesQuery = (params: QueryParams) => {
 
 
 
-
-
-// export const useUpdateCategoryStatusMutation = () => {
-//   const queryClient = useQueryClient();
-
-//   return useMutation<IAxiosResponse, Error, { id: string; status: string; }>({
-//     mutationFn: ({ id, status}) => updateCategoryStatus(id, status),
-//     onSuccess: () => {
-//       queryClient.invalidateQueries({ queryKey: ["categories"] });
-//     },
-//   });
-// };    
 
 
 export const useUpdateCategoryStatusMutation = () => {
@@ -157,21 +132,21 @@ export const useEditCategoryMutation = () => {
 
 export const useGetAdminWalletByIdMutation = () => {
   return useMutation({
-    mutationFn: (params:PaginationParams) => getAdminWalletById(params)
+    mutationFn: (params:IPaginationParams) => getAdminWalletById(params)
   })
 }
   
 
 export const useGetAllBookingsMutation = () => {
   return useMutation({
-    mutationFn: (params:PaginationParams) => getAllBookings(params)
+    mutationFn: (params:IPaginationParams) => getAllBookings(params)
   })
 } 
 
 
 export const useGetAllEventsMutation = () => {
   return useMutation({
-    mutationFn: (params:PaginationParams) => getAllEvents(params)
+    mutationFn: (params:IPaginationParams) => getAllEvents(params)
   })
 } 
 

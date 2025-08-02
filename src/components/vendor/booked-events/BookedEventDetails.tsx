@@ -10,10 +10,10 @@ import { Link, useNavigate } from "react-router-dom";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import TicketScanner from "./TikcetScanner";
 import { CLOUDINARY_BASE_URL } from "@/types/config/config";
-import { Event } from "@/types/event";
+import { IEvent } from "@/types/event";
 
 interface EventDetailsProps {
-  event: Event;
+  event: IEvent;
   onClose: () => void;
 }
 

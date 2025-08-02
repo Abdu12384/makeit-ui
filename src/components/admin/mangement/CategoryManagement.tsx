@@ -12,11 +12,11 @@ import toast from "react-hot-toast";
 import { useUploadeImageToCloudinaryMutation } from "@/hooks/VendorCustomHooks";
 import SquareImageCropper from "@/components/common/imageCropper/ImageCropper";
 import { Pagination1 } from "@/components/common/paginations/Pagination";
-import { Category } from "@/types/category";
+import { ICategory } from "@/types/category";
 import { CLOUDINARY_BASE_URL } from "@/types/config/config";
 
 export default function CategoryManagement() {
-  const [categories, setCategories] = useState<Category[]>([]);
+  const [categories, setCategories] = useState<ICategory[]>([]);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [searchQuery, _setSearchQuery] = useState("");
   const [newCategory, setNewCategory] = useState({
@@ -219,7 +219,7 @@ export default function CategoryManagement() {
     setIsAddModalOpen(true);
   };
 
-  const handleOpenEditModal = (category: Category) => {
+  const handleOpenEditModal = (category: ICategory) => {
     setIsEditing(true);
     setEditingCategoryId(category._id!);
     setNewCategory({

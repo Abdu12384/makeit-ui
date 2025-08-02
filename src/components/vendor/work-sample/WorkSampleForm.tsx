@@ -4,7 +4,7 @@ import { motion } from "framer-motion"
 import { Formik, Form, Field, FieldArray, ErrorMessage } from "formik"
 import * as Yup from "yup"
 import { X, Plus, Upload, ImageIcon, ArrowLeft, Save } from "lucide-react"
-import { WorkSample } from "@/types/worksample/work-sample"
+import { WorkSample } from "@/types/work-sample"
 import { CLOUDINARY_BASE_URL } from "@/types/config/config"
 
 interface WorkSampleFormProps {

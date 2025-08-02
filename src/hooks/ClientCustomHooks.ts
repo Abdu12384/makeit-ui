@@ -1,11 +1,11 @@
 import { useMutation } from '@tanstack/react-query';
 import { addReview, cancelBooking, cancelTicket, clientBookingService, clientChangePassword, clientCreateAccount, clientForgotPassword, clientGetAllServices, clientGetServiceById, clientGoogleLogin, clientLogin, clientProfileEdit, clientResendOtp, clientResetPassword, clientSignup, confirmBookingPayment, confirmTicketAndPayment, createBookingPayment, createTicket, getAllEvents, getAllReviews, getAllTickets, getAllWorkSamplesByVendorId, getBookings, getEventById, getWalletById, logoutClient, saveClientFCMToken, getClientNotifications, markNotificationAsRead, checkEventBookingAvailability, rescheduleBookingApproval, getAllLocationBasedEvents, clientGetAllCategories   } from '@/services/client/clientService';
 import { ILoginData } from '@/types/User';
-import { LocationEventParams, PaginationParams } from '@/types/event';
-import { TicketEntity } from '@/types/ticket';
-import { ReviewData } from '@/types/worksample/review';
+import { IGetAllBookingsParams, ILocationEventParams, IPaginationParams } from '@/types/params';
+import { ITicket } from '@/types/ticket';
+import { IReview } from '@/types/review';
 import { GetAllServicesParams } from '@/types/service';
-import { Booking } from '@/types/bookings';
+import { IBooking } from '@/types/bookings';
 import { FormData } from '@/utils/validationForms/validationForms';
 
 
@@ -21,14 +21,6 @@ type loginData = {
   credential: string
   client_id: string,
   role : string
-}
-
-export interface GetAllBookingsParams {
-  page?: number;
-  limit?: number;
-  status?: string;
-  search?: string;
-  sortOrder?: string;
 }
 
 
@@ -155,7 +147,7 @@ export const useBookingServiceMutation = () => {
 
 export const  useCreateBookingPaymentMutation = () => {
   return useMutation({
-    mutationFn: ({bookingId,paymentIntentId,bookingDetails}: {bookingId:string,paymentIntentId:string,bookingDetails:Booking}) => createBookingPayment(bookingId,paymentIntentId,bookingDetails)
+    mutationFn: ({bookingId,paymentIntentId,bookingDetails}: {bookingId:string,paymentIntentId:string,bookingDetails:IBooking}) => createBookingPayment(bookingId,paymentIntentId,bookingDetails)
   })
 }
 
@@ -171,7 +163,7 @@ export const useConfirmBookingPaymentMutation = () => {
 
 export const useGetBookingsMutation = () => {
   return useMutation({
-    mutationFn: (params:GetAllBookingsParams) => getBookings(params)
+    mutationFn: (params:IGetAllBookingsParams) => getBookings(params)
   })
 } 
 
@@ -185,14 +177,14 @@ export const useCancelBookingMutation = () => {
 
 export const useGetAllEventsMutation = () => {
   return useMutation({
-    mutationFn: (params:PaginationParams) => getAllEvents(params)
+    mutationFn: (params:IPaginationParams) => getAllEvents(params)
   })
 }
 
 
 export const useGetAllLocationBasedEventsMutation = () =>{
   return useMutation({
-    mutationFn: (params:LocationEventParams) => getAllLocationBasedEvents(params)
+    mutationFn: (params:ILocationEventParams) => getAllLocationBasedEvents(params)
   })
 }
 
@@ -220,21 +212,21 @@ export const useCheckEventBookingAvailabilityMutation = () => {
 
 export const useCreateTicketMutation = () => {
   return useMutation({
-    mutationFn: (ticket:TicketEntity) => createTicket(ticket)
+    mutationFn: (ticket:ITicket) => createTicket(ticket)
   })
 } 
 
 
 export const useGetAllTicketsMutation = () => {
   return useMutation({
-    mutationFn: (params:PaginationParams) => getAllTickets(params)
+    mutationFn: (params:IPaginationParams) => getAllTickets(params)
   })
 }
 
 
 export const useConfirmTicketAndPaymentMutation = () => {
   return useMutation({
-    mutationFn: ({ticket,paymentIntentId,vendorId}: {ticket:TicketEntity,paymentIntentId:string,vendorId:string}) => confirmTicketAndPayment(ticket,paymentIntentId,vendorId)
+    mutationFn: ({ticket,paymentIntentId,vendorId}: {ticket:ITicket,paymentIntentId:string,vendorId:string}) => confirmTicketAndPayment(ticket,paymentIntentId,vendorId)
   })
 }
 
@@ -248,21 +240,21 @@ export const useCancelTicketMutation = () => {
 
 export const useGetWalletByIdMutation = () => {
   return useMutation({
-    mutationFn: (params:PaginationParams) => getWalletById(params)
+    mutationFn: (params:IPaginationParams) => getWalletById(params)
   })
 }
 
 
 export const useAddReviewMutation = () => {
   return useMutation({
-    mutationFn: (review:ReviewData) => addReview(review)
+    mutationFn: (review:IReview) => addReview(review)
   })
 }
 
 
 export const useGetAllReviewsMutation = () => {
   return useMutation({
-    mutationFn: (params:PaginationParams) => getAllReviews(params)
+    mutationFn: (params:IPaginationParams) => getAllReviews(params)
   })
 }
   

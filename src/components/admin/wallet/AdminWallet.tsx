@@ -6,13 +6,13 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useGetAdminWalletByIdMutation } from "@/hooks/AdminCustomHooks";
 import { Pagination1 } from "@/components/common/paginations/Pagination";
-import { Transaction } from "@/types/transaction";
+import { ITransaction } from "@/types/transaction";
 
 
 export const AdminWallet = () => {
   const [filterPeriod, setFilterPeriod] = useState("all");
-  const [filteredTransactions, setFilteredTransactions] = useState<Transaction[]>([]);
-  const [transaction, setTransaction] = useState<Transaction[]>([]);
+  const [filteredTransactions, setFilteredTransactions] = useState<ITransaction[]>([]);
+  const [transaction, setTransaction] = useState<ITransaction[]>([]);
   const [balance, setBalance] = useState<number | undefined>(undefined);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -40,7 +40,7 @@ export const AdminWallet = () => {
 
   useEffect(() => {
     const now = new Date();
-    const filtered = transaction.filter((tx: Transaction) => {
+    const filtered = transaction.filter((tx: ITransaction) => {
       const txDate = new Date(tx.date);
       if (filterPeriod === "all") return true;
       if (filterPeriod === "today") {

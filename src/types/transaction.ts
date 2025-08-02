@@ -1,4 +1,4 @@
-export interface Transaction {
+export interface ITransaction {
   _id: string;
   paymentType: string;
   amount: number;
@@ -8,5 +8,4 @@ export interface Transaction {
   vendor?: string;
   service?: string;
   relatedTitle?: string;
-
 }

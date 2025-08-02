@@ -75,22 +75,22 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ chatId, userId, userModel, sock
     })
 
     setLoading(true)
-    socket.emit("get-messages", { chatId }, (response: any) => {
+    socket.emit("get-messages", { chatId }, (response: SocketResponse<Message[]>) => {
       setLoading(false)
       if (response.status === "success") {
-        setMessages(response.data)
+        setMessages(response.data || [])
 
         // Get chat info (this is a placeholder - you would need to implement this)
-        if (response.data.length > 0) {
+        if (response?.data?.length! > 0) {
           const otherUser =
-            response.data[0].senderId === userId ? response.data[0].receiverId : response.data[0].senderId
+            response.data![0].senderId === userId ? response.data![0].receiverId : response.data![0].senderId
           setChatInfo({
-            name: otherUser,
+            name: otherUser!,
             status: "Online",
           })
         }
       } else {
-        setError(response.message)
+        setError(response.message!)
       }
     })
 
@@ -107,9 +107,9 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ chatId, userId, userModel, sock
     })
 
     socket.on("user-joined", () => {
-      socket.emit("get-messages", { chatId }, (response: any) => {
+      socket.emit("get-messages", { chatId }, (response: SocketResponse<Message[]>) => {
         if (response.status === "success") {
-          setMessages(response.data)
+          setMessages(response.data || [])
           scrollToBottom()
         }
       })
@@ -127,12 +127,12 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ chatId, userId, userModel, sock
   const sendMessage = () => {
     if (!message.trim()) return
 
-    socket.emit("send-message", { chatId, message, senderId: userId, senderModel: userModel }, (response: any) => {
+    socket.emit("send-message", { chatId, message, senderId: userId, senderModel: userModel }, (response: SocketResponse<Message>) => {
       if (response.status === "success") {
         setMessage("")
         messageInputRef.current?.focus()
       } else {
-        setError(response.message)
+        setError(response.message!)
       }
     })
   }
@@ -164,7 +164,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ chatId, userId, userModel, sock
   // Group messages by date
   const groupedMessages: { date: string; messages: Message[] }[] = []
   messages.forEach((msg) => {
-    const date = getMessageDate(msg.sendedTime)
+    const date = getMessageDate(msg.sendedTime!)
     const lastGroup = groupedMessages[groupedMessages.length - 1]
 
     if (lastGroup && lastGroup.date === date) {
@@ -278,7 +278,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ chatId, userId, userModel, sock
                     <div className={`flex ${isMine ? "flex-row-reverse" : "flex-row"} items-end gap-2 max-w-[80%]`}>
                       {!isMine && showAvatar && (
                         <div className="w-8 h-8 rounded-full bg-gray-300 flex-shrink-0 flex items-center justify-center text-xs text-white">
-                          {msg.senderId.charAt(0).toUpperCase()}
+                          {msg?.senderId?.charAt(0).toUpperCase()}
                         </div>
                       )}
                       <div
@@ -288,11 +288,11 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ chatId, userId, userModel, sock
                             : "bg-white text-gray-800 rounded-tl-none shadow-sm"
                         }`}
                       >
-                        <p className="whitespace-pre-wrap break-words">{msg.messageContent}</p>
+                        <p className="whitespace-pre-wrap break-words">{msg?.messageContent}</p>
                         <div
                           className={`flex items-center justify-end gap-1 mt-1 text-xs ${isMine ? "text-purple-200" : "text-gray-500"}`}
                         >
-                          <span>{formatTime(msg.sendedTime)}</span>
+                          <span>{formatTime(msg?.sendedTime!)}</span>
                           {isMine &&
                             (msg.seen ? <CheckCheck size={12} className="text-blue-400" /> : <Check size={12} />)}
                         </div>

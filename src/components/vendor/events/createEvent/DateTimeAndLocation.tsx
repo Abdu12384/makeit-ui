@@ -13,15 +13,16 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { format } from "date-fns"
 import { cn } from "@/lib/utils"
 import LocationPicker from "@/components/common/location/LocationPicker"// Assuming this is the correct path
-import type { NewEventFormValues, EventFormErrors, EventFormTouched, DateTimeEntry } from "@/types/event"
+import type { IEvent, IEventFormTouched, IDateTimeEntry } from "@/types/event"
+import type { FormikErrors } from "formik"
 
 interface DateTimeLocationTabProps {
-  values: NewEventFormValues
-  errors: EventFormErrors
-  touched: EventFormTouched
-  setFieldValue: (field: string, value: string | number | Date[] | [number, number] | DateTimeEntry[]) => void
-  dateTimeEntries: DateTimeEntry[]
-  setDateTimeEntries: React.Dispatch<React.SetStateAction<DateTimeEntry[]>>
+  values: IEvent
+  errors: FormikErrors<IEvent>
+  touched: IEventFormTouched
+  setFieldValue: (field: string, value: string | number | Date[] | [number, number] | IDateTimeEntry[]) => void
+  dateTimeEntries: IDateTimeEntry[]
+  setDateTimeEntries: React.Dispatch<React.SetStateAction<IDateTimeEntry[]>>
   isEditing: boolean
 }
 
@@ -52,7 +53,7 @@ export default function DateTimeLocationTab({
     }
   }
 
-  const updateDateTimeEntry = (index: number, field: keyof DateTimeEntry, value: Date | string) => {
+  const updateDateTimeEntry = (index: number, field: keyof IDateTimeEntry, value: Date | string) => {
     const newEntries = [...dateTimeEntries]
     newEntries[index] = { ...newEntries[index], [field]: value }
     setDateTimeEntries(newEntries)
@@ -216,10 +217,6 @@ export default function DateTimeLocationTab({
               </Button>
             </motion.div>
           )}
-
-          {/* <ErrorMessage name="date" component="div" className="text-red-500 text-sm font-medium animate-pulse" /> */}
-          {/* <ErrorMessage name="startTime" component="div" className="text-red-500 text-sm font-medium animate-pulse" />
-          <ErrorMessage name="endTime" component="div" className="text-red-500 text-sm font-medium animate-pulse" /> */}
         </CardContent>
       </Card>
 

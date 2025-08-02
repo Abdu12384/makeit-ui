@@ -1,8 +1,9 @@
 import { adminAxiosInstance } from "@/api/admin.axios";
 import authAxiosInstance from "@/api/auth.axios";
-import { PaginationParams } from "@/types/event";
+import { ICategory } from "@/types/category";
+import { IPaginationParams } from "@/types/params";
 import { IAllVendorResponse, IAuthResponse, IAxiosResponse } from "@/types/response";
-import {FetchVendorParams, ILoginData, IVendor } from "@/types/User";
+import {IFetchVendorParams, ILoginData, IVendor } from "@/types/User";
 import { isAxiosError } from "axios";
 
 
@@ -14,11 +15,6 @@ export interface UserQueryParams {
   userType: string;
 }
 
-export interface Category {
-	title: string;
-	description: string;
-	image?:string
-}
 
 
 export const refreshAdminSession = async (): Promise<IAuthResponse> => {
@@ -92,7 +88,7 @@ export const getAllVendors = async ({
 	page = 1,
 	limit = 10,
 	search = "",
-}: FetchVendorParams): Promise<IAllVendorResponse> => {
+}: IFetchVendorParams): Promise<IAllVendorResponse> => {
 	const response = await adminAxiosInstance.get("/admin/vendors", {
 		params: { forType, page, limit, search },
 	});
@@ -125,7 +121,7 @@ export const updateVendorStatusById = async ({
 
 
 
-export const createCategory = async (data: Category) => {
+export const createCategory = async (data: ICategory) => {
 	try {
 		const response = await adminAxiosInstance.post("/admin/category", data);
 		return response.data;
@@ -154,7 +150,7 @@ export const updateCategoryStatus = async (id: string, status: string) => {
 };
 
 
-export const editCategory = async ({data,categoryId}: {data: Category,categoryId: string}) => {
+export const editCategory = async ({data,categoryId}: {data: ICategory,categoryId: string}) => {
 	try {
 		const response = await adminAxiosInstance.put(`/admin/category/${categoryId}`, data);
 		return response.data;
@@ -165,7 +161,7 @@ export const editCategory = async ({data,categoryId}: {data: Category,categoryId
 };
 
 
-export const getAdminWalletById = async ({page = 1,limit = 10}:PaginationParams) => {
+export const getAdminWalletById = async ({page = 1,limit = 10}:IPaginationParams) => {
 	try {
 		const response = await adminAxiosInstance.get('/admin/wallet',{
 			params:{
@@ -181,7 +177,7 @@ export const getAdminWalletById = async ({page = 1,limit = 10}:PaginationParams)
 }
 
 
-export const getAllBookings = async ({page = 1,limit = 10}:PaginationParams) => {
+export const getAllBookings = async ({page = 1,limit = 10}:IPaginationParams) => {
 	try {
 		const response = await adminAxiosInstance.get('/admin/bookings', {
 			params:{
@@ -198,7 +194,7 @@ export const getAllBookings = async ({page = 1,limit = 10}:PaginationParams) => 
 
 
 
-export const getAllEvents = async ({page = 1,limit = 10}:PaginationParams) => {
+export const getAllEvents = async ({page = 1,limit = 10}:IPaginationParams) => {
 	try {
 		const response = await adminAxiosInstance.get('/admin/events', {
 			params:{

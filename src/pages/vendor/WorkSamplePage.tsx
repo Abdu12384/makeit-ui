@@ -6,7 +6,7 @@ import WorkSampleForm from "@/components/vendor/work-sample/WorkSampleForm"
 import { useCreateWorkSampleMutation, useGetAllWorkSamplesByVendorIdMutation, useUpdateWorkSampleMutation, useUploadeImageToCloudinaryMutation } from "@/hooks/VendorCustomHooks"
 import toast from "react-hot-toast"
 import { Pagination1 } from "@/components/common/paginations/Pagination"
-import { WorkSample } from "@/types/worksample/work-sample"
+import { WorkSample } from "@/types/work-sample"
 
 const WorkSamplePage: React.FC = () => {
   const [workSamples, setWorkSamples] = useState<WorkSample[]>([])

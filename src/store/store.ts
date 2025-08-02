@@ -7,15 +7,6 @@ import vendorReducer from "./slices/vendor.slice"
 import adminReducer from "./slices/admin.slice";
 import { useDispatch } from "react-redux";
 
-// const clientPersistConfig = {
-// 	key: "client",
-// 	storage,
-// };
-
-// const barberPersistConfig = {
-// 	key: "vendor",
-// 	storage,
-// };
 
 const rootPersistConfig = {
 	key: "session",

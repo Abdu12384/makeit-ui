@@ -1,5 +1,4 @@
-
-export interface VendorData {
+export interface IVendorData {
   name: string;
   email: string;
   idProof?: string;

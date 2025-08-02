@@ -2,7 +2,7 @@ import type React from "react"
 import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Edit, Plus, Eye } from "lucide-react"
-import { WorkSample } from "@/types/worksample/work-sample"
+import { WorkSample } from "@/types/work-sample"
 import { CLOUDINARY_BASE_URL } from "@/types/config/config"
 
 interface WorkSamplesListProps {

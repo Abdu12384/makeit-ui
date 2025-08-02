@@ -14,12 +14,13 @@ export interface Chat {
 }
 
 export interface Message {
-  chatId: string;
-  senderId: string;
-  senderModel: "client" | "vendors";
-  messageContent: string;
-  sendedTime: string;
-  seen: boolean;
+  chatId?: string;
+  senderId?: string;
+  receiverId?: string;
+  senderModel?: "client" | "vendors";
+  messageContent?: string;
+  sendedTime?: string;
+  seen?: boolean;
 }
 
 

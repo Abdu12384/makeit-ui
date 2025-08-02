@@ -8,15 +8,15 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { useGetAllEventsMutation } from "@/hooks/AdminCustomHooks"
 import { Pagination1 } from "@/components/common/paginations/Pagination"
-import { AdEvent } from "@/types/event"
+import { IEvent } from "@/types/event"
 import { CLOUDINARY_BASE_URL } from "@/types/config/config"
 
 export default function AdminEventsPage() {
   const [searchQuery, _setSearchQuery] = useState("")
-  const [events, setEvents] = useState<AdEvent[]>([])
+  const [events, setEvents] = useState<IEvent[]>([])
   const [currentPage, setCurrentPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
-  const [selectedEvent, setSelectedEvent] = useState<AdEvent | null>(null)
+  const [selectedEvent, setSelectedEvent] = useState<IEvent | null>(null)
   const limit = 10
 
   const getAllEventsMutation = useGetAllEventsMutation()
@@ -46,7 +46,7 @@ export default function AdminEventsPage() {
       event.venueName.toLowerCase().includes(searchQuery.toLowerCase())
   )
 
-  const handleViewDetails = (event: AdEvent) => {
+  const handleViewDetails = (event: IEvent) => {
     setSelectedEvent(event)
   }
 
@@ -245,7 +245,7 @@ export default function AdminEventsPage() {
                 </div>
                 <div>
                   <p className="text-gray-400">Created At</p>
-                  <p className="text-white font-medium">{new Date(selectedEvent.createdAt).toLocaleString()}</p>
+                  <p className="text-white font-medium">{new Date(selectedEvent?.createdAt!).toLocaleString()}</p>
                 </div>
               </div>
             </div>
