@@ -82,8 +82,6 @@ export default function EventFormTabs({ eventData, onSuccess, onCancel }: EventF
           startTime: entry?.startTime,
           endTime: entry?.endTime,
         })),
-        startTime: eventData.startTime,
-        endTime: eventData.endTime,
       }
     : {
         title: "",
@@ -107,8 +105,6 @@ export default function EventFormTabs({ eventData, onSuccess, onCancel }: EventF
             endTime: "",
           },
         ],
-        startTime: "",
-        endTime: "",
       }
 
   const handleSubmit = async (values: IEvent, { setSubmitting }: FormikHelpers<IEvent>) => {
@@ -153,8 +149,6 @@ export default function EventFormTabs({ eventData, onSuccess, onCancel }: EventF
           startTime: entry.startTime,
           endTime: entry.endTime,
         })),
-        startTime: validEntries[0].startTime,
-        endTime: validEntries[0].endTime,
         dateTimeEntries: validEntries,
       }
 

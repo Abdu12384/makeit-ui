@@ -107,7 +107,7 @@ export default function TicketConfirmationModal({ isOpen, setIsOpen, ticket,even
                     <Clock className="text-purple-600" size={18} />
                     <div>
                       <p className="text-sm text-gray-500">Time</p>
-                      <p className="font-semibold">{event?.startTime}</p>
+                      <p className="font-semibold">{event?.date[0].startTime}</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-2">

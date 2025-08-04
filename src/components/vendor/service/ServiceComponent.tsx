@@ -46,7 +46,7 @@ export default function ServiceListingPage() {
 
 
   const handleAddService = (newService: IService) => {
-    setAllServices([...allServices, { ...newService, id: (allServices.length + 1).toString() }])
+    setAllServices([...allServices, { ...newService, _id: (allServices.length + 1).toString() }])
     setIsFormOpen(false)
   }
 

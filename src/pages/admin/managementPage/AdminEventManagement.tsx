@@ -89,7 +89,7 @@ export default function AdminEventsPage() {
                     <TableCell className="font-medium text-white">{event.title}</TableCell>
                     <TableCell className="text-gray-300">{event.category}</TableCell>
                     <TableCell className="text-gray-300">{event.venueName}</TableCell>
-                    <TableCell className="text-gray-300">{`${event.startTime} - ${event.endTime}`}</TableCell>
+                    <TableCell className="text-gray-300">{`${event.date[0].startTime} - ${event.date[0].endTime}`}</TableCell>
                     <TableCell className="text-right text-gray-300">₹{event.pricePerTicket}</TableCell>
                     <TableCell className="text-center text-gray-300">
                       {event.ticketPurchased}/{event.totalTicket}
@@ -174,7 +174,7 @@ export default function AdminEventsPage() {
                     <Clock className="h-5 w-5 text-indigo-400" />
                     <div>
                       <p className="text-sm text-gray-400">Time</p>
-                      <p className="text-white font-medium">{`${selectedEvent.startTime} - ${selectedEvent.endTime}`}</p>
+                      <p className="text-white font-medium">{`${selectedEvent.date[0].startTime} - ${selectedEvent.date[0].endTime}`}</p>
                     </div>
                   </div>
                   <div className="flex items-start gap-3">

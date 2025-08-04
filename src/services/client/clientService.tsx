@@ -1,5 +1,4 @@
 import authAxiosInstance from "@/api/auth.axios";
-import { clientAxiosInstance } from "@/api/client.axios";
 import { IGetAllBookingsParams } from "@/types/params";
 import { IBooking } from "@/types/bookings";
 import { IPaginationParams,ILocationEventParams } from "@/types/params";
@@ -10,6 +9,9 @@ import { IClient, ILoginData } from "@/types/User";
 import { IReview } from "@/types/review";
 import { FormData } from "@/utils/validationForms/validationForms";
 import { isAxiosError } from "axios";
+import { axiosInstance } from "@/api/privet.axios";
+import { CLIENT_ROUTES } from "@/constants/client.route";
+import { AUTH_ROUTES } from "@/constants/auth.route";
 
 interface SignupPayload{
   name: string,
@@ -33,8 +35,8 @@ type CreateAccountParams = {
 
 
 export const refreshClientSession = async (): Promise<IAuthResponse> => {
-  const response = await clientAxiosInstance.get<IAuthResponse>(
-    "/client/refresh-session"
+  const response = await axiosInstance.get<IAuthResponse>(
+    CLIENT_ROUTES.REFRESH_SESSION
   );
   return response.data;
 };
@@ -42,7 +44,7 @@ export const refreshClientSession = async (): Promise<IAuthResponse> => {
 
 export const saveClientFCMToken = async (token:string) => {
   try {
-     const response = await clientAxiosInstance.post("/client/save-fcm-token", { token });
+     const response = await axiosInstance.post(CLIENT_ROUTES.SAVE_FCM_TOKEN, { token });
      return response.data;
    } catch (error) {
      console.log(error);
@@ -52,7 +54,7 @@ export const saveClientFCMToken = async (token:string) => {
 
  export const getClientNotifications = async () => {
    try {
-     const response = await clientAxiosInstance.get("/client/notifications");
+     const response = await axiosInstance.get(CLIENT_ROUTES.NOTIFICATIONS);
      return response.data;
    } catch (error) {
      console.log(error);
@@ -62,7 +64,7 @@ export const saveClientFCMToken = async (token:string) => {
 
  export const markNotificationAsRead = async () => {
    try {
-     const response = await clientAxiosInstance.put(`/client/notifications/read`);
+     const response = await axiosInstance.put(CLIENT_ROUTES.MARK_NOTIFICATION_READ);
      return response.data;
    } catch (error) {
      console.log(error);
@@ -73,7 +75,7 @@ export const saveClientFCMToken = async (token:string) => {
 
 export const clientSignup = async (values: SignupPayload): Promise<SingupResponse> =>{
    try {
-     const response = await authAxiosInstance.post('/send-otp',values)
+     const response = await authAxiosInstance.post(AUTH_ROUTES.SEND_OTP,values)
      return response.data
    } catch (error) {
      console.error('Signup failed',error)
@@ -85,7 +87,7 @@ export const clientSignup = async (values: SignupPayload): Promise<SingupRespons
 
 export const clientCreateAccount = async ({formdata, otpString}:CreateAccountParams): Promise<SingupResponse> =>{
    try {
-     const response = await authAxiosInstance.post('/signup',{
+     const response = await authAxiosInstance.post(AUTH_ROUTES.SIGNUP,{
       formdata,
       otpString
      })   
@@ -99,7 +101,7 @@ export const clientCreateAccount = async ({formdata, otpString}:CreateAccountPar
 
 export const clientResendOtp = async (email: string) =>{
      try {
-       const response = await authAxiosInstance.post('/send-otp',{email})
+       const response = await authAxiosInstance.post(AUTH_ROUTES.SEND_OTP,{email})
        return response.data
      } catch (error) {
        console.log('error while client resend otp',error)
@@ -113,7 +115,7 @@ export const clientResendOtp = async (email: string) =>{
 
 export const clientLogin = async (user:ILoginData)=>{
    try {
-     const response = await authAxiosInstance.post('/login',user)
+     const response = await authAxiosInstance.post(AUTH_ROUTES.LOGIN,user)
      return response.data
    } catch (error) {
        console.log('error while client login', error)
@@ -136,7 +138,7 @@ export const clientGoogleLogin = async ({
 }) => {
   try {
     const response = await authAxiosInstance.post(
-      '/google-auth',
+      AUTH_ROUTES.GOOGLE_AUTH,
       {
         credential,
         client_id,
@@ -154,7 +156,7 @@ export const clientGoogleLogin = async ({
 
   export const clientForgotPassword = async (email:string) => {
     try {
-      const response = await authAxiosInstance.post('/forgot-password',{email})
+      const response = await authAxiosInstance.post(AUTH_ROUTES.FORGOT_PASSWORD,{email})
       return response.data
     } catch (error) {
       console.log('error while client forgot password',error)
@@ -165,7 +167,7 @@ export const clientGoogleLogin = async ({
 
   export const clientResetPassword = async (password:string,token:string) => {
     try {
-      const response = await authAxiosInstance.post('/reset-password',{password,token})
+      const response = await authAxiosInstance.post(AUTH_ROUTES.RESET_PASSWORD,{password,token})
       return response.data
     } catch (error) {
       console.log('error while client reset password',error)
@@ -175,7 +177,7 @@ export const clientGoogleLogin = async ({
 
   export const clientGetAllCategories = async () => {
     try {
-      const response = await clientAxiosInstance.get('/client/categories')
+      const response = await axiosInstance.get(CLIENT_ROUTES.CATEGORIES)
       return response.data
     } catch (error) {
       console.log('error while client get all categories',error)
@@ -186,7 +188,7 @@ export const clientGoogleLogin = async ({
   
   export const clientProfileEdit = async (data:Record<string, string|number|boolean>) => {
     try {
-       const response = await clientAxiosInstance.put('/client/details',data)
+       const response = await axiosInstance.put(CLIENT_ROUTES.DETAILS,data)
       return response.data
     } catch (error) {
       console.log('error while client profile edit',error)
@@ -199,7 +201,7 @@ export const clientGoogleLogin = async ({
 
  export const clientChangePassword = async(data:Record<string, string|number|boolean>)=>{
    try {
-    const response = await clientAxiosInstance.put('/client/change-password',data)
+    const response = await axiosInstance.put(CLIENT_ROUTES.CHANGE_PASSWORD,data)
     return response.data
    } catch (error) {
     console.log('error while client change password',error)
@@ -215,7 +217,7 @@ export const clientGetAllServices = async ({
   search = ""
 }: GetAllServicesParams) => {
   try {
-    const response = await clientAxiosInstance.get('/client/services', {
+    const response = await axiosInstance.get(CLIENT_ROUTES.SERVICES, {
       params: {
         page,
         limit,
@@ -234,7 +236,7 @@ export const clientGetAllServices = async ({
 
 export const clientGetServiceById = async (id:string) => {
   try {
-    const response = await clientAxiosInstance.get(`/client/services/${id}`)
+    const response = await axiosInstance.get(CLIENT_ROUTES.SERVICE_BY_ID(id))
     return response.data
   } catch (error) {
     console.log('error while client get service by id',error)
@@ -247,7 +249,7 @@ export const clientGetServiceById = async (id:string) => {
 export const clientBookingService = async (id:string,bookingData:Record<string, string|number|boolean>) => {
   try {
     console.log('client booking service',id,bookingData)
-    const response = await clientAxiosInstance.post(`/client/services/${id}/book`,bookingData)
+    const response = await axiosInstance.post(CLIENT_ROUTES.BOOK_SERVICE(id),bookingData)
     return response.data
   } catch (error) {
     console.log('error while client booking service',error)
@@ -258,7 +260,7 @@ export const clientBookingService = async (id:string,bookingData:Record<string, 
 
 export const rescheduleBookingApproval = async (bookingId:string,status:string) => {
   try {
-    const response = await clientAxiosInstance.patch(`/client/bookings/${bookingId}/reschedule`,
+    const response = await axiosInstance.patch(CLIENT_ROUTES.RESCHEDULE_BOOKING(bookingId),
       {status})
     return response.data
   } catch (error) {
@@ -278,7 +280,7 @@ export const getBookings = async ({
   sortOrder = "asc"
 }: IGetAllBookingsParams) => {
   try {
-    const response = await clientAxiosInstance.get('/client/bookings',{
+    const response = await axiosInstance.get(CLIENT_ROUTES.BOOKINGS,{
       params:{
         page,
         limit,
@@ -299,7 +301,7 @@ export const getBookings = async ({
 
 export const createBookingPayment = async (bookingId:string,paymentIntentId:string,bookingDetails:IBooking) => {
   try {
-    const response = await clientAxiosInstance.post(`/client/create-booking-payment`,{bookingId,paymentIntentId,bookingDetails})
+    const response = await axiosInstance.post(CLIENT_ROUTES.CREATE_BOOKING_PAYMENT,{bookingId,paymentIntentId,bookingDetails})
     return response.data
   } catch (error) {
     console.log('error while client create booking payment',error)
@@ -311,7 +313,7 @@ export const createBookingPayment = async (bookingId:string,paymentIntentId:stri
 
 export const confirmBookingPayment = async (booking:string,paymentIntentId:string) => {
   try {
-    const response = await clientAxiosInstance.post(`/client/confirm-payment`,{booking,paymentIntentId})
+    const response = await axiosInstance.post(CLIENT_ROUTES.CONFIRM_PAYMENT,{booking,paymentIntentId})
     return response.data
   } catch (error) {
     console.log('error while client confirm booking payment',error)
@@ -322,7 +324,7 @@ export const confirmBookingPayment = async (booking:string,paymentIntentId:strin
 
 export const cancelBooking = async (bookingId:string) => {
   try {
-    const response = await clientAxiosInstance.put(`/client/cancel-booking/${bookingId}`)
+    const response = await axiosInstance.put(CLIENT_ROUTES.CANCEL_BOOKING(bookingId))
     return response.data
   } catch (error) {
     console.log('error while client cancel booking',error)
@@ -340,7 +342,7 @@ export const getAllEvents = async ({
   search = "",
 }: IPaginationParams) => {
   try {
-    const response = await clientAxiosInstance.get('/client/events',{
+    const response = await axiosInstance.get(CLIENT_ROUTES.EVENTS,{
       params:{
         page,
         limit,
@@ -363,7 +365,7 @@ export const getAllLocationBasedEvents = async ({
   limit = 10,
 }: ILocationEventParams) => {
   try {
-    const response = await clientAxiosInstance.get("/nearby", {
+    const response = await axiosInstance.get(CLIENT_ROUTES.NEARBY_EVENTS, {
       params: {
         lat,
         lng,
@@ -382,7 +384,7 @@ export const getAllLocationBasedEvents = async ({
 
 export const getEventById = async (eventId:string) => {
   try {
-    const response = await clientAxiosInstance.get(`/client/events/${eventId}`)
+    const response = await axiosInstance.get(CLIENT_ROUTES.EVENT_BY_ID(eventId))
     return response.data
   } catch (error) {
     console.log('error while client get event by id',error)
@@ -394,7 +396,7 @@ export const getEventById = async (eventId:string) => {
 
 export const checkEventBookingAvailability = async ({id,ticketCount}: {id:string,ticketCount:number}):Promise<string> => {
   try {
-    const response = await clientAxiosInstance.get(`/client/events/${id}/check-booking`,{
+    const response = await axiosInstance.get(CLIENT_ROUTES.CHECK_EVENT_BOOKING(id),{
       params:{
         ticketCount
       }
@@ -411,7 +413,7 @@ export const checkEventBookingAvailability = async ({id,ticketCount}: {id:string
 
 export const createTicket = async (ticket: ITicket) => {
   try {
-    const response = await clientAxiosInstance.post('/client/create-ticket',ticket)
+    const response = await axiosInstance.post(CLIENT_ROUTES.CREATE_TICKET,ticket)
     return response.data
   } catch (error) {
     console.log('error while client create ticket',error)
@@ -422,7 +424,7 @@ export const createTicket = async (ticket: ITicket) => {
 
 export const confirmTicketAndPayment = async (ticket: ITicket,paymentIntentId:string,vendorId:string) => {
   try {
-    const response = await clientAxiosInstance.post('/client/confirm-ticket-payment',{ticket,paymentIntentId,vendorId})
+    const response = await axiosInstance.post(CLIENT_ROUTES.CONFIRM_TICKET_PAYMENT,{ticket,paymentIntentId,vendorId})
     return response.data
   } catch (error) {
     console.log('error while client confirm ticket and payment',error)
@@ -433,7 +435,7 @@ export const confirmTicketAndPayment = async (ticket: ITicket,paymentIntentId:st
 
 export const  getAllTickets = async ({page = 1,limit = 10,status}:IPaginationParams) => {
   try {
-    const response = await clientAxiosInstance.get('/client/tickets',{
+    const response = await axiosInstance.get(CLIENT_ROUTES.TICKETS,{
       params:{
         page,
         limit,  
@@ -451,7 +453,7 @@ export const  getAllTickets = async ({page = 1,limit = 10,status}:IPaginationPar
 export const cancelTicket = async ({ticketId,cancelCount}: {ticketId:string,cancelCount:number}) => {
   try {
     console.log('send -ticketId',ticketId)
-    const response = await clientAxiosInstance.put(`/client/cancel-ticket/${ticketId}`,{cancelCount})
+    const response = await axiosInstance.put(CLIENT_ROUTES.CANCEL_TICKET(ticketId),{cancelCount})
     return response.data
   } catch (error) {
     console.log('error while client cancel ticket',error)
@@ -463,7 +465,7 @@ export const cancelTicket = async ({ticketId,cancelCount}: {ticketId:string,canc
 
 export const getWalletById = async ({page = 1,limit = 10}:IPaginationParams) => {
   try {
-    const response = await clientAxiosInstance.get('/client/wallet',{
+    const response = await axiosInstance.get(CLIENT_ROUTES.WALLET,{
       params:{
         page,
         limit,
@@ -481,7 +483,7 @@ export const getWalletById = async ({page = 1,limit = 10}:IPaginationParams) => 
 
 export const addReview = async (review: IReview) => {
   try {
-    const response = await clientAxiosInstance.post('/client/review',review)
+    const response = await axiosInstance.post(CLIENT_ROUTES.REVIEW,review)
     return response.data
   } catch (error) {
     console.log('error while client add review',error)
@@ -494,7 +496,7 @@ export const addReview = async (review: IReview) => {
 
 export const getAllReviews = async ({page = 1,limit = 10,targetId,targetType}:IPaginationParams) => {
   try {
-    const response = await clientAxiosInstance.get('/client/reviews',{
+    const response = await axiosInstance.get(CLIENT_ROUTES.REVIEWS,{
       params:{
         page,
         limit,
@@ -512,7 +514,7 @@ export const getAllReviews = async ({page = 1,limit = 10,targetId,targetType}:IP
 
 export const getAllWorkSamplesByVendorId = async ({vendorId,page,limit}: {vendorId:string,page:number,limit:number}) => {
   try {
-    const response = await clientAxiosInstance.get(`/client/work-sample/${vendorId}`,{
+    const response = await axiosInstance.get(CLIENT_ROUTES.WORK_SAMPLES_BY_VENDOR(vendorId),{
       params:{
         page,
         limit,
@@ -529,7 +531,7 @@ export const getAllWorkSamplesByVendorId = async ({vendorId,page,limit}: {vendor
 
   export const logoutClient = async (): Promise<IAxiosResponse> => {
     try {
-      const response = await clientAxiosInstance.post("/client/logout");
+      const response = await axiosInstance.post(CLIENT_ROUTES.LOGOUT);
       return response.data;
     } catch (error) {
       console.log('error while client logout',error)

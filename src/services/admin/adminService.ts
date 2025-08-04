@@ -1,11 +1,12 @@
-import { adminAxiosInstance } from "@/api/admin.axios";
 import authAxiosInstance from "@/api/auth.axios";
 import { ICategory } from "@/types/category";
 import { IPaginationParams } from "@/types/params";
 import { IAllVendorResponse, IAuthResponse, IAxiosResponse } from "@/types/response";
 import {IFetchVendorParams, ILoginData, IVendor } from "@/types/User";
 import { isAxiosError } from "axios";
-
+import { ADMIN_ROUTES } from "@/constants/admin.route";
+import { axiosInstance } from "@/api/privet.axios";
+import { AUTH_ROUTES } from "@/constants/auth.route";
 
 
 export interface UserQueryParams {
@@ -18,17 +19,17 @@ export interface UserQueryParams {
 
 
 export const refreshAdminSession = async (): Promise<IAuthResponse> => {
-	const response = await adminAxiosInstance.get<IAuthResponse>(
-		"/admin/refresh-session"
+	const response = await axiosInstance.get<IAuthResponse>(
+		ADMIN_ROUTES.REFRESH_SESSION
 	);
-	return response.data;
+	return response.data;	
 };
 
 
 
 export const adminLogin = async (user:ILoginData) => {
   try {
-     const response = await authAxiosInstance.post('/login',user)
+     const response = await authAxiosInstance.post(AUTH_ROUTES.LOGIN,user)
      return response?.data
   } catch (error) {
     console.log('error while admin login')
@@ -44,7 +45,7 @@ export const adminLogin = async (user:ILoginData) => {
 
 export const getAllUsers = async ({ page, limit, search, userType }: UserQueryParams) => {
   try {
-    const response = await adminAxiosInstance.get('/admin/users', {
+    const response = await axiosInstance.get(ADMIN_ROUTES.USERS, {
       params: {
         page,
         limit,
@@ -64,7 +65,7 @@ export const getAllUsers = async ({ page, limit, search, userType }: UserQueryPa
 
 export  const updateUserStatus = async (data:{userType: string; userId: string}): Promise<IAxiosResponse> =>{
 	try {
-    const response = await adminAxiosInstance.patch('/admin/user/status',
+    const response = await axiosInstance.patch(ADMIN_ROUTES.USER_STATUS,
       {},
       {
       params:{
@@ -89,7 +90,7 @@ export const getAllVendors = async ({
 	limit = 10,
 	search = "",
 }: IFetchVendorParams): Promise<IAllVendorResponse> => {
-	const response = await adminAxiosInstance.get("/admin/vendors", {
+	const response = await axiosInstance.get(ADMIN_ROUTES.VENDORS, {
 		params: { forType, page, limit, search },
 	});
 	return {
@@ -112,8 +113,8 @@ export const updateVendorStatusById = async ({
 	status: string;
 	message?: string;
 }): Promise<IAxiosResponse> => {
-	const response = await adminAxiosInstance.put<IAxiosResponse>(
-		`/admin/vendor/${id}`,
+	const response = await axiosInstance.put<IAxiosResponse>(
+		ADMIN_ROUTES.VENDOR_BY_ID(id),
 		{ status, message }
 	);
 	return response.data;
@@ -123,7 +124,7 @@ export const updateVendorStatusById = async ({
 
 export const createCategory = async (data: ICategory) => {
 	try {
-		const response = await adminAxiosInstance.post("/admin/category", data);
+		const response = await axiosInstance.post(ADMIN_ROUTES.CATEGORY, data);
 		return response.data;
 	} catch (error) {
 		console.log(error);
@@ -133,7 +134,7 @@ export const createCategory = async (data: ICategory) => {
 
 
 export const getAllCategories = async (params: { limit?: number; page?: number; search?: string }) => {
-  const response = await adminAxiosInstance.get("/admin/category", { params });
+  const response = await axiosInstance.get(ADMIN_ROUTES.CATEGORY, { params });
   return response.data;
 };
 
@@ -141,7 +142,7 @@ export const getAllCategories = async (params: { limit?: number; page?: number; 
 
 export const updateCategoryStatus = async (id: string, status: string) => {
   try {
-	const response = await adminAxiosInstance.patch(`/admin/category/${id}`, { status });
+	const response = await axiosInstance.patch(ADMIN_ROUTES.CATEGORY_BY_ID(id), { status });
 	return response.data;
   } catch (error) {
     console.log('error while updating category status',error)
@@ -152,7 +153,7 @@ export const updateCategoryStatus = async (id: string, status: string) => {
 
 export const editCategory = async ({data,categoryId}: {data: ICategory,categoryId: string}) => {
 	try {
-		const response = await adminAxiosInstance.put(`/admin/category/${categoryId}`, data);
+		const response = await axiosInstance.put(ADMIN_ROUTES.CATEGORY_BY_ID(categoryId), data);
 		return response.data;
 	} catch (error) {
 		console.log(error);
@@ -163,7 +164,7 @@ export const editCategory = async ({data,categoryId}: {data: ICategory,categoryI
 
 export const getAdminWalletById = async ({page = 1,limit = 10}:IPaginationParams) => {
 	try {
-		const response = await adminAxiosInstance.get('/admin/wallet',{
+		const response = await axiosInstance.get(ADMIN_ROUTES.WALLET,{
 			params:{
 				page,
 				limit,
@@ -179,7 +180,7 @@ export const getAdminWalletById = async ({page = 1,limit = 10}:IPaginationParams
 
 export const getAllBookings = async ({page = 1,limit = 10}:IPaginationParams) => {
 	try {
-		const response = await adminAxiosInstance.get('/admin/bookings', {
+		const response = await axiosInstance.get(ADMIN_ROUTES.BOOKINGS, {
 			params:{
 				page,
 				limit,
@@ -196,7 +197,7 @@ export const getAllBookings = async ({page = 1,limit = 10}:IPaginationParams) =>
 
 export const getAllEvents = async ({page = 1,limit = 10}:IPaginationParams) => {
 	try {
-		const response = await adminAxiosInstance.get('/admin/events', {
+		const response = await axiosInstance.get(ADMIN_ROUTES.EVENTS, {
 			params:{
 				page,
 				limit,
@@ -214,7 +215,7 @@ export const getAllEvents = async ({page = 1,limit = 10}:IPaginationParams) => {
 
 export const getAllDashboardData = async (period:string) => {
     try {
-        const response = await adminAxiosInstance.get('/admin/dashboard', {
+        const response = await axiosInstance.get(ADMIN_ROUTES.DASHBOARD, {
             params:{
                 period
             }
@@ -232,7 +233,7 @@ export const getAllDashboardData = async (period:string) => {
 
 export const logoutAdmin = async (): Promise<IAxiosResponse> => {
 	try {
-	const response = await adminAxiosInstance.post("/admin/logout");
+	const response = await axiosInstance.post(ADMIN_ROUTES.LOGOUT);
 	return response.data;
 } catch (error) {
 	console.log('error while admin logout',error)

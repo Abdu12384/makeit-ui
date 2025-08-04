@@ -155,9 +155,9 @@ export default function MyTickets() {
                   </div>
                 )}                </div>
                 <div className="text-sm text-gray-600">
-                  <span>{formatTo12Hour(ticket?.eventDetails?.startTime || "")}</span>
+                  <span>{formatTo12Hour(ticket?.eventDetails?.date?.map((entry) => entry.startTime).join(', ') || "")}</span>
                   <span> - </span>
-                  <span>{formatTo12Hour(ticket?.eventDetails?.endTime || "")}</span>
+                  <span>{formatTo12Hour(ticket?.eventDetails?.date?.map((entry) => entry.endTime).join(', ') || "")}</span>
                 </div>
                 <div className="mt-3">
                   <div className="text-sm text-gray-500">Ticket Price</div>

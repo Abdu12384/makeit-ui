@@ -47,7 +47,7 @@ const generateTicketCanvas = async (ticket: ITicket): Promise<HTMLCanvasElement>
   // Event Details
   ctx.font = "16px Arial, sans-serif"
   ctx.fillText(`Date: ${ticket.eventDetails?.date || "N/A"}`, 20, 70)
-  ctx.fillText(`Time: ${ticket.eventDetails?.startTime || "N/A"}`, 20, 95)
+  ctx.fillText(`Time: ${ticket.eventDetails?.date?.map((entry) => entry.startTime).join(', ') || "N/A"}`, 20, 95)
   ctx.fillText(`Venue: ${truncateText(ticket.eventDetails?.venueName || "N/A", 25)}`, 20, 120)
 
   // Ticket Details
@@ -140,7 +140,7 @@ TICKET DETAILS
 
 Event: ${ticket.eventDetails?.title || "N/A"}
 Date: ${ticket.eventDetails?.date || "N/A"}
-Time: ${ticket.eventDetails?.startTime || "N/A"}
+Time: ${ticket.eventDetails?.date?.map((entry) => entry.startTime).join(', ') || "N/A"}
 Venue: ${ticket.eventDetails?.venueName || "N/A"}
 Ticket Type: ${ticket.ticketType || "N/A"}
 Total Amount: $${ticket.totalAmount || "N/A"}
@@ -474,7 +474,7 @@ export const DownloadTicket: React.FC<DownloadTicketProps> = ({ ticket, classNam
                   <div className="text-center">
                     <h4 className="font-semibold text-gray-800 mb-1">{ticket.eventDetails?.title}</h4>
                     <p className="text-sm text-gray-600">
-                    {ticket.eventDetails?.date[0].date ? new Date(ticket.eventDetails.date[0].date).toLocaleDateString() : "Date not available"} • {ticket.eventDetails?.startTime}
+                    {ticket.eventDetails?.date[0].date ? new Date(ticket.eventDetails.date[0].date).toLocaleDateString() : "Date not available"} • {ticket.eventDetails?.date[0].startTime}
                     </p>
                     <div className="mt-3 bg-white rounded-lg p-2 inline-block">
                       <img

@@ -1,3 +1,4 @@
+import { BookingStatus, PaymentStatus, VendorApprovalStatus } from "./enum/staus.enum";
 import { IService } from "./service";
 import { IClient, IVendor } from "./User";
 
@@ -9,13 +10,13 @@ export interface IBooking {
   date: string[];
   email: string;
   phone: string;
-  paymentStatus: "Paid" | "Pending" | "Failed" | string;
+  paymentStatus: PaymentStatus;
   serviceId: string;
   service: IService;
-  vendorApproval: "Approved" | "Pending" | "Rejected" | string;
+  vendorApproval: VendorApprovalStatus;
   vendorId: string;
   vendor?: IVendor;
-  status: "Confirmed" | "Pending" | "Cancelled" | "Rejected" | string;
+  status: BookingStatus;
   createdAt: string;
   updatedAt: string;
   isComplete: boolean;

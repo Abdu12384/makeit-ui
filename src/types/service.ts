@@ -8,7 +8,6 @@ export interface GetAllServicesParams {
 
 export interface IService {
   _id?: string;
-  id?: string; 
   serviceId?: string;
   serviceTitle: string;
   title?: string; 
@@ -23,10 +22,5 @@ export interface IService {
   termsAndCondition: string;
   status?: "active" | "blocked" | string;
   imageUrl?: string;
-  rating?: number;
-  reviewCount?: number;
   gallery?: string[];
-  providerName?: string;
-  providerImage?: string;
-  providerRating?: number;
 }
