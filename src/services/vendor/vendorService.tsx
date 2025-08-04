@@ -1,5 +1,7 @@
 import authAxiosInstance from "@/api/auth.axios";
-import { VendorAxiosInstance } from "@/api/vendor.axios";
+import { axiosInstance } from "@/api/privet.axios";
+import { AUTH_ROUTES } from "@/constants/auth.route";
+import { CLOUDINARY_URL, VENDOR_ROUTES } from "@/constants/vendor.route";
 import {  IEvent } from "@/types/event";
 import { IAuthResponse, IAxiosResponse } from "@/types/response";
 import { GetAllServicesParams, IService } from "@/types/service";
@@ -11,8 +13,8 @@ import clodAxios, { isAxiosError } from 'axios'
 
 
 export const refreshVendorSession = async (): Promise<IAuthResponse> => {
-   const response = await VendorAxiosInstance.get<IAuthResponse>(
-     "/vendor/refresh-session"
+   const response = await axiosInstance.get<IAuthResponse>(
+     VENDOR_ROUTES.REFRESH_SESSION
    );
    return response.data;
  };
@@ -20,7 +22,7 @@ export const refreshVendorSession = async (): Promise<IAuthResponse> => {
 
  export const getVendorBookedDates = async () => {
    try {
-   const response = await VendorAxiosInstance.get("/vendor/booked-dates");
+   const response = await axiosInstance.get(VENDOR_ROUTES.BOOKED_DATES);
    return response.data;
  } catch (error) {
    console.log(error)
@@ -31,7 +33,7 @@ export const refreshVendorSession = async (): Promise<IAuthResponse> => {
 
  export const  saveVendorFCMToken = async (token:string) => {
    try {
-      const response = await VendorAxiosInstance.post("/vendor/fcm-token", { token });
+      const response = await axiosInstance.post(VENDOR_ROUTES.SAVE_FCM_TOKEN, { token });
       return response.data;
     } catch (error) {
       console.log(error);
@@ -41,7 +43,6 @@ export const refreshVendorSession = async (): Promise<IAuthResponse> => {
 
 
 
-const CLOUDINARY_URL = "https://api.cloudinary.com/v1_1/dujuwqvz5/image/upload";
 
 export const uploadImageCloudinary = async (formdata: FormData) => {
   try {
@@ -56,7 +57,7 @@ export const uploadImageCloudinary = async (formdata: FormData) => {
 
 export const getVendorNotifications = async () => {
    try {
-   const response = await VendorAxiosInstance.get("/vendor/notifications");
+   const response = await axiosInstance.get(VENDOR_ROUTES.NOTIFICATIONS);
    return response.data;
  } catch (error) {
    console.log(error)
@@ -66,7 +67,7 @@ export const getVendorNotifications = async () => {
 
 export const markVendorNotificationAsRead = async () => {
    try {
-   const response = await VendorAxiosInstance.put(`/vendor/notifications/read`);
+   const response = await axiosInstance.put(VENDOR_ROUTES.MARK_NOTIFICATION_READ);
    return response.data;
  } catch (error) {
    console.log(error)
@@ -77,7 +78,7 @@ export const markVendorNotificationAsRead = async () => {
 
 export const vendorSignup  = async (formdata: IVendorData) =>{
    try {
-     const response = await authAxiosInstance.post('/send-otp',formdata)
+     const response = await authAxiosInstance.post(AUTH_ROUTES.SEND_OTP,formdata)
     return  response.data
    } catch (error) {
      console.log('error wihle singup vendor', error)
@@ -88,7 +89,7 @@ export const vendorSignup  = async (formdata: IVendorData) =>{
 
 export  const vendorCreateAccount = async ({formdata, otpString}:{formdata:IVendorData;otpString:string}) =>{
     try {
-       const response = await authAxiosInstance.post('/signup',{formdata,otpString})
+       const response = await authAxiosInstance.post(AUTH_ROUTES.SIGNUP,{formdata,otpString})
        return response.data
     } catch (error) {
       console.log(error)
@@ -99,7 +100,7 @@ export  const vendorCreateAccount = async ({formdata, otpString}:{formdata:IVend
 
 export const VendorLogin = async (user: ILoginData) =>{
     try {
-       const response = await authAxiosInstance.post('/login',user)
+       const response = await authAxiosInstance.post(AUTH_ROUTES.LOGIN,user)
       return  response.data
     } catch (error) {
        console.log(error)
@@ -113,7 +114,7 @@ export const VendorLogin = async (user: ILoginData) =>{
 
 export const updateVendorProfile = async ({data}:{data: Record<string, string | number | boolean>}) =>{
      try {
-       const response = await VendorAxiosInstance.put("/vendor/details",data)
+       const response = await axiosInstance.put(VENDOR_ROUTES.UPDATE_PROFILE,data)
        return response
      } catch (error) {
         console.log(error)
@@ -126,7 +127,7 @@ export const updateVendorProfile = async ({data}:{data: Record<string, string | 
 
 export const vendorChangePassword = async (data:Record<string, string | number | boolean>) => {
    try {
-      const response = await VendorAxiosInstance.put("/vendor/change-password",data)
+      const response = await axiosInstance.put(VENDOR_ROUTES.CHANGE_PASSWORD,data)
       return response.data
    } catch (error) {
       console.log(error)
@@ -141,7 +142,7 @@ export const vendorChangePassword = async (data:Record<string, string | number |
 
 export const createService = async (data:IService) => {
   try {
-     const response = await VendorAxiosInstance.post("/vendor/service",data);
+     const response = await axiosInstance.post(VENDOR_ROUTES.SERVICE,data);
      return response.data
    
   } catch (error) {
@@ -160,7 +161,7 @@ export const getAllServicesByVendorId = async ({
    sortOrder = "asc" 
  }: GetAllServicesParams) => {
    try {
-     const response = await VendorAxiosInstance.get("/vendor/service", {
+     const response = await axiosInstance.get(VENDOR_ROUTES.SERVICE, {
        params: {
          page,
          limit,
@@ -184,7 +185,7 @@ export const getAllServicesByVendorId = async ({
 
 export const updateService = async ({serviceId,data}: {serviceId:string,data:IService}) => {
   try {
-     const response = await VendorAxiosInstance.put(`/vendor/service/${serviceId}`,
+     const response = await axiosInstance.put(VENDOR_ROUTES.SERVICE_BY_ID(serviceId),
       data
    );
      return response.data
@@ -197,7 +198,7 @@ export const updateService = async ({serviceId,data}: {serviceId:string,data:ISe
 
 export const blockService = async (serviceId:string) => {
    try {
-   const response = await VendorAxiosInstance.patch(`/vendor/service/block/${serviceId}`);
+   const response = await axiosInstance.patch(VENDOR_ROUTES.BLOCK_SERVICE(serviceId));
    return response.data;
  } catch (error) {
    console.log(error)
@@ -210,7 +211,7 @@ export const blockService = async (serviceId:string) => {
 
 export const getAllCategories = async () => {
    try {
-   const response = await VendorAxiosInstance.get("/vendor/categories");
+   const response = await axiosInstance.get(VENDOR_ROUTES.CATEGORIES);
    return response.data;
  } catch (error) {
    console.log(error)
@@ -231,7 +232,7 @@ export const changeBookingStatus = async ({
   reason?: string;
 }) => {
   try {
-    const response = await VendorAxiosInstance.patch(`/vendor/bookings/${bookingId}`, {
+    const response = await axiosInstance.patch(VENDOR_ROUTES.BOOKING_BY_ID(bookingId), {
       status,
       reason,
     });
@@ -246,7 +247,7 @@ export const changeBookingStatus = async ({
 
 export const getAllBookings = async (page:number,limit:number,status:string) => {
    try {
-   const response = await VendorAxiosInstance.get("/vendor/bookings",{
+   const response = await axiosInstance.get(VENDOR_ROUTES.BOOKINGS,{
       params:{
          page,
          limit,
@@ -263,7 +264,7 @@ export const getAllBookings = async (page:number,limit:number,status:string) => 
 
 export const vendorCancelBooking = async ({bookingId,status,reason}: {bookingId:string,status:string,reason?:string}) => {
    try {
-      const response = await VendorAxiosInstance.patch(`/vendor/bookings/${bookingId}`,{
+      const response = await axiosInstance.patch(VENDOR_ROUTES.BOOKING_BY_ID(bookingId),{
         status,
         reason
       });
@@ -277,7 +278,7 @@ export const vendorCancelBooking = async ({bookingId,status,reason}: {bookingId:
 
 export const createEvent = async (data:IEvent)=>{
    try {
-     const response = await VendorAxiosInstance.post("/vendor/event",data)
+     const response = await axiosInstance.post(VENDOR_ROUTES.EVENT,data)
      return response.data
    } catch (error) {
     console.log(error)
@@ -288,7 +289,7 @@ export const createEvent = async (data:IEvent)=>{
 
 export const getAllEventsByVendorId = async (page:number,limit:number) => {
    try {
-   const response = await VendorAxiosInstance.get("/vendor/event",{
+   const response = await axiosInstance.get(VENDOR_ROUTES.EVENT,{
       params:{
          page,
          limit
@@ -304,7 +305,7 @@ export const getAllEventsByVendorId = async (page:number,limit:number) => {
 
 export const editEvent = async ({data,eventId}: {data:IEvent,eventId:string})=>{
    try {
-     const response = await VendorAxiosInstance.put(`/vendor/event/${eventId}`,data)
+     const response = await axiosInstance.put(VENDOR_ROUTES.EVENT_BY_ID(eventId),data)
      return response.data
    } catch (error) {
     console.log(error) 
@@ -314,7 +315,7 @@ export const editEvent = async ({data,eventId}: {data:IEvent,eventId:string})=>{
 
 export const blockEvent = async (eventId:string) => {
    try {
-   const response = await VendorAxiosInstance.patch(`/vendor/event/block/${eventId}`);
+   const response = await axiosInstance.patch(VENDOR_ROUTES.BLOCK_EVENT(eventId));
    return response.data;
  } catch (error) {
    console.log(error)
@@ -325,7 +326,7 @@ export const blockEvent = async (eventId:string) => {
 
 export const RescheduleBooking = async ({bookingId,selectedDate,rescheduleReason}: {bookingId:string,selectedDate:string,rescheduleReason:string}) => {
    try {
-      const response = await VendorAxiosInstance.patch(`/vendor/bookings/${bookingId}/reschedule`,{
+      const response = await axiosInstance.patch(VENDOR_ROUTES.RESCHEDULE_BOOKING(bookingId),{
         selectedDate,
         rescheduleReason
       });
@@ -342,7 +343,7 @@ export const RescheduleBooking = async ({bookingId,selectedDate,rescheduleReason
 
 export const getWalletById = async ({page,limit}: {page:number,limit:number}) => {
    try {
-   const response = await VendorAxiosInstance.get("/vendor/wallet",{
+   const response = await axiosInstance.get(VENDOR_ROUTES.WALLET,{
       params:{
          page,
          limit
@@ -361,7 +362,7 @@ export const getWalletById = async ({page,limit}: {page:number,limit:number}) =>
 
 export const verifyTicket = async ({ticketId,eventId,status}: {ticketId:string,eventId:string,status:string}) => {
    try {
-   const response = await VendorAxiosInstance.get(`/vendor/verify-ticket/${ticketId}/${eventId}`,{
+   const response = await axiosInstance.get(VENDOR_ROUTES.VERIFY_TICKET(ticketId,eventId),{
     params:{
       status
     }
@@ -378,7 +379,7 @@ export const verifyTicket = async ({ticketId,eventId,status}: {ticketId:string,e
 
 export const getAttendeesById = async ({eventId,page,limit}:{eventId:string,page:number,limit:number}) => {
    try {
-   const response = await VendorAxiosInstance.get(`/vendor/events/attendees/${eventId}`,{
+   const response = await axiosInstance.get(VENDOR_ROUTES.ATTENDEES_BY_EVENT(eventId),{
       params:{
          page,
          limit
@@ -396,7 +397,7 @@ export const getAttendeesById = async ({eventId,page,limit}:{eventId:string,page
 
 export const getAllWorkSamplesByVendorId = async ({page,limit}: {page:number,limit:number}) => {
    try {
-   const response = await VendorAxiosInstance.get("/vendor/work-sample",{
+   const response = await axiosInstance.get(VENDOR_ROUTES.WORK_SAMPLES,{
       params:{
          page,
          limit
@@ -415,7 +416,7 @@ export const getAllWorkSamplesByVendorId = async ({page,limit}: {page:number,lim
 
 export const createWorkSample = async (data:WorkSample) => {
    try {
-   const response = await VendorAxiosInstance.post("/vendor/work-sample",data);
+   const response = await axiosInstance.post(VENDOR_ROUTES.WORK_SAMPLES,data);
    return response.data;
  } catch (error) {
    console.log(error)
@@ -427,7 +428,7 @@ export const createWorkSample = async (data:WorkSample) => {
 
 export const updateWorkSample = async ({data,workSampleId}: {data:WorkSample,workSampleId:string}) => {
    try {
-   const response = await VendorAxiosInstance.put(`/vendor/work-sample/${workSampleId}`,data);
+   const response = await axiosInstance.put(VENDOR_ROUTES.WORK_SAMPLE_BY_ID(workSampleId),data);
    return response.data;
  } catch (error) {
    console.log(error)
@@ -438,7 +439,7 @@ export const updateWorkSample = async ({data,workSampleId}: {data:WorkSample,wor
 
 export const getDashboardData = async (period:string) => {
    try {
-   const response = await VendorAxiosInstance.get("/vendor/dashboard",{
+   const response = await axiosInstance.get(VENDOR_ROUTES.DASHBOARD,{
       params:{
          period
       }
@@ -454,7 +455,7 @@ export const getDashboardData = async (period:string) => {
 
 export const logoutVendor = async (): Promise<IAxiosResponse> => {
    try {
-   const response = await VendorAxiosInstance.post("/vendor/logout");
+   const response = await axiosInstance.post(VENDOR_ROUTES.LOGOUT);
    return response.data;
 } catch (error) {
    console.log(error)

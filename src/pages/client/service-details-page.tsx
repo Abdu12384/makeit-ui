@@ -121,11 +121,11 @@ useEffect(() => {
           </div>
           <div className="flex items-center mt-2">
             <div className="flex items-center text-yellow-500">
-              <Star className="h-5 w-5 fill-current" />
-              <span className="ml-1 font-medium">{service.rating}</span>
+              {/* <Star className="h-5 w-5 fill-current" />
+              <span className="ml-1 font-medium">{service.rating}</span> */}
             </div>
             <span className="mx-2 text-gray-400">•</span>
-            <span className="text-gray-600">{service.reviewCount} reviews</span>
+            {/* <span className="text-gray-600">{service.reviewCount} reviews</span> */}
             <span className="mx-2 text-gray-400">•</span>
             <span className="text-gray-600">{service?.category}</span>
           </div>

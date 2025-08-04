@@ -226,7 +226,7 @@ export default function NearbyEventsPage() {
                         <div className="flex items-center">
                           <Clock className="h-4 w-4 mr-2 text-[#124E66]" />
                           <span>
-                            {event.startTime} - {event.endTime}
+                            {event.date?.map((entry) => entry.startTime).join(', ')} - {event.date?.map((entry) => entry.endTime).join(', ')}
                           </span>
                         </div>
                         <div className="flex items-center">

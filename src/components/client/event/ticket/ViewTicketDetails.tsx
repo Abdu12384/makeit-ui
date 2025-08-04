@@ -57,7 +57,7 @@ export const TicketDetailsModal: React.FC<{
       ctx.font = '18px Arial'
       ctx.fillStyle = '#374151'
       ctx.fillText(`📅 ${ticket?.eventDetails?.date ? ticket.eventDetails.date.map((entry) => entry.date).join(', ') : ''}  `, 30, 100)
-      ctx.fillText(`🕐 ${formatTo12Hour(ticket?.eventDetails?.startTime || "")}`, 30, 130)
+      ctx.fillText(`🕐 ${formatTo12Hour(ticket?.eventDetails?.date?.map((entry) => entry.startTime).join(', ') || "")}`, 30, 130)
       ctx.fillText(`🎫 ${ticket.ticketType || 'General Admission'}`, 30, 160)
       
       // Price section
@@ -191,7 +191,7 @@ TICKET DETAILS
 
 Event: ${ticket.eventDetails?.title || 'N/A'}
 Date:  ${ticket.eventDetails?.date?.map((entry) => entry.date).join(', ') || 'N/A'}
-Time: ${ticket.eventDetails?.startTime || 'N/A'}
+Time: ${ticket.eventDetails?.date?.map((entry) => entry.startTime).join(', ') || 'N/A'}
 Ticket Type: ${ticket.ticketType || 'N/A'}
 Total Amount: ₹${ticket.totalAmount || 'N/A'}
 Ticket Count: ${ticket.ticketCount || 1}

@@ -1,5 +1,4 @@
 import { FormikTouched } from "formik";
-import { IReview } from "./review";
 import { IVendor } from "./User";
 import { CloudinaryUploadResponse } from "./cloudinary";
 
@@ -17,8 +16,6 @@ export interface IEvent {
   maxTicketsPerUser: number;
   status: "upcoming" | "completed" | "cancelled";
   date: IDateTimeEntry[];
-  startTime: string;
-  endTime: string;
   eventId?: string;
   _id?: string;
   ticketPurchased?: number;
@@ -30,10 +27,6 @@ export interface IEvent {
   createdAt?: string;
   updatedAt?: string;
   vendorDetails?: IVendor;
-  amenities?: string[];
-  faq?: Array<{ question: string; answer: string }>;
-  reviews?: IReview[];
-  __v?: number;
 }
 
 

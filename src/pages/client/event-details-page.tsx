@@ -206,7 +206,7 @@ export default function EventDetailsPage() {
               <div className="flex items-center">
                 <Clock className="h-4 w-4 mr-1.5 text-[#D3D9D4]" />
                 <span>
-                  {event.startTime} - {event.endTime}
+                  {event.date[0].startTime} - {event.date[0].endTime}
                 </span>
               </div>
               <div className="flex items-center">
