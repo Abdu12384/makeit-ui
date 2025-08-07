@@ -36,30 +36,10 @@ import {
 import { Textarea } from "@/components/ui/textarea"
 import toast from "react-hot-toast"
 import { useRescheduleBookingMutation, useVendorCancelBookingMutation } from "@/hooks/VendorCustomHooks"
-
-interface Booking {
-  _id: string
-  bookingId: string
-  serviceName: string
-  clientName: string
-  clientId: string
-  email: string
-  phone: string
-  date: string[]
-  status: string
-  service: {
-    _id: string
-    serviceTitle: string
-  }
-  paymentStatus: string
-  vendorApproval: string
-  isComplete: boolean
-  createdAt: string
-  updatedAt: string
-}
+import { IBooking } from "@/types/bookings"
 
 interface BookingDetailsProps {
-  booking: Booking
+  booking: IBooking
   onBack?: () => void
   onCancel?: () => void
   onComplete?: (bookingId: string) => void
@@ -263,13 +243,13 @@ const BookingDetails = ({ booking, onBack,onCancel, onComplete, onChat }: Bookin
                   <div className="space-y-3">
                     <div>
                       <p className="text-sm font-medium text-slate-500">Service Name</p>
-                      <p className="text-lg font-bold text-slate-800">{booking.service.serviceTitle}</p>
+                      <p className="text-lg font-bold text-slate-800">{booking?.service?.serviceTitle}</p>
                     </div>
                     <div>
                       <p className="text-sm font-medium text-slate-500">Appointment Date</p>
                       <p className="text-base font-semibold text-slate-800 flex items-center">
                         <Calendar className="mr-2 h-4 w-4 text-emerald-600" />
-                        {booking.date[0] ? formatDate(booking.date[0]) : "Not scheduled"}
+                        {booking?.date[0] ? formatDate(booking.date[0]) : "Not scheduled"}
                       </p>
                     </div>
                   </div>
@@ -278,7 +258,7 @@ const BookingDetails = ({ booking, onBack,onCancel, onComplete, onChat }: Bookin
                       <p className="text-sm font-medium text-slate-500">Created</p>
                       <p className="text-base font-semibold text-slate-800 flex items-center">
                         <Clock className="mr-2 h-4 w-4 text-slate-400" />
-                        {formatShortDate(booking.createdAt)}
+                        {formatShortDate(booking?.createdAt)}
                       </p>
                     </div>
                     <div>
@@ -291,12 +271,12 @@ const BookingDetails = ({ booking, onBack,onCancel, onComplete, onChat }: Bookin
                         } font-medium px-3 py-1 flex items-center text-sm w-fit`}
                         variant="outline"
                       >
-                        {booking.isComplete ? (
+                        {booking?.isComplete ? (
                           <CheckCircle className="w-4 h-4 mr-2" />
                         ) : (
                           <Clock className="w-4 h-4 mr-2" />
                         )}
-                        {booking.isComplete ? "Completed" : "In Progress"}
+                        {booking?.isComplete ? "Completed" : "In Progress"}
                       </Badge>
                     </div>
                   </div>

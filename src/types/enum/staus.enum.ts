@@ -2,6 +2,7 @@ export enum BookingStatus {
   Confirmed = "Confirmed",
   Pending = "Pending",
   Cancelled = "Cancelled",
+  Completed = "Completed",
   Rejected = "Rejected",
 }
 
@@ -17,6 +18,7 @@ export enum PaymentStatus {
 export enum VendorApprovalStatus {
   Approved = "Approved",
   Pending = "Pending",
+  Confirmed = "Confirmed",
   Rejected = "Rejected",
 }
 

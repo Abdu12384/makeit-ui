@@ -24,3 +24,4 @@ export interface IBooking {
   clientName?: string;
   serviceName?: string;
 }
+

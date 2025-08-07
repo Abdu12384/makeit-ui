@@ -1,5 +1,3 @@
-"use client"
-
 import { useEffect, useState } from "react"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -33,28 +31,9 @@ import RejectReasonDialog from "./RejectResonBox"
 import toast from "react-hot-toast"
 import { Link } from "react-router-dom"
 import BookedDatesCalendar from "./BookedDates"
+import { IBooking } from "@/types/bookings"
 
-interface Booking {
-  _id: string
-  bookingId: string
-  serviceName: string
-  clientName: string
-  clientId: string
-  email: string
-  phone: string
-  date: string[]
-  status: string
-  service: {
-    _id: string
-    serviceTitle: string
-  }
-  paymentStatus: string
-  vendorApproval: string
-  isComplete: boolean
-  createdAt: string
-  updatedAt: string
-  client?: { name: string }
-}
+
 
 const StatusBadge = ({ status }: { status: string }) => {
   const colors = {
@@ -111,8 +90,8 @@ const BookingSkeleton = () => (
 )
 
 const BookingList = ({ isLoading = false }: { isLoading?: boolean }) => {
-  const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null)
-  const [localBookings, setLocalBookings] = useState<Booking[]>([])
+  const [selectedBooking, setSelectedBooking] = useState<IBooking | null>(null)
+  const [localBookings, setLocalBookings] = useState<IBooking[]>([])
   const [showRejectDialog, setShowRejectDialog] = useState(false)
   const [rejectingBookingId, setRejectingBookingId] = useState("")
   const [showBookedDates, setShowBookedDates] = useState(false)
@@ -164,8 +143,9 @@ const BookingList = ({ isLoading = false }: { isLoading?: boolean }) => {
         onSuccess: (response) => {
           toast.success(response.message)
           setLocalBookings((prev) =>
-            prev.map((booking) =>
-              booking.bookingId === bookingId ? { ...booking, vendorApproval: newStatus } : booking,
+            prev?.map((booking) =>
+              booking?.bookingId === bookingId ? { ...booking, vendorApproval: newStatus } as IBooking
+             : booking,
             ),
           )
         },
@@ -184,7 +164,8 @@ const BookingList = ({ isLoading = false }: { isLoading?: boolean }) => {
           toast.success(response.message)
           setLocalBookings((prev) =>
             prev.map((booking) =>
-              booking.bookingId === rejectingBookingId ? { ...booking, vendorApproval: "Rejected" } : booking,
+              booking.bookingId === rejectingBookingId ? { ...booking, vendorApproval: "Rejected" } as IBooking
+             : booking,
             ),
           )
           setShowRejectDialog(false)
@@ -206,7 +187,8 @@ const BookingList = ({ isLoading = false }: { isLoading?: boolean }) => {
           toast.success(response.message)
           setLocalBookings((prev) =>
             prev.map((booking) =>
-              booking.bookingId === bookingId ? { ...booking, isComplete: true, status: "Completed" } : booking,
+              booking.bookingId === bookingId ? { ...booking, isComplete: true, status: "Completed" } as IBooking
+             : booking,
             ),
           )
         },
