@@ -51,7 +51,7 @@ export default function CategoryManagement() {
     page: currentPage,
     limit,
   });
- console.log('categories',data)
+
   useEffect(() => {
     if (data) {
       setCategories(data.categories.items);
@@ -140,6 +140,7 @@ export default function CategoryManagement() {
         imageUrl = uniquePath;      }
 
       if (isEditing && editingCategoryId) {
+        console.log('editingCategoryId',editingCategoryId)
         editCategoryMutation.mutate(
           {
             id: editingCategoryId,
@@ -221,13 +222,13 @@ export default function CategoryManagement() {
 
   const handleOpenEditModal = (category: ICategory) => {
     setIsEditing(true);
-    setEditingCategoryId(category._id!);
+    setEditingCategoryId(category.categoryId!);
     setNewCategory({
       title: category.title,
       description: category.description,
       image: category.image || "",
     });
-    setPreviewImage(category.image || null);
+    setPreviewImage(CLOUDINARY_BASE_URL + category.image || null);
     setCroppedImageBlob(null);
     setIsAddModalOpen(true);
   };
