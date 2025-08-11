@@ -117,13 +117,8 @@ export const useUpdateCategoryStatusMutation = () => {
 
 
 export const useEditCategoryMutation = () => {
-	const queryClient = useQueryClient();
-
 	 return useMutation<IAxiosResponse, Error, { id: string; description: string; title: string; image?: string }>({
 		mutationFn: ({ id, description,title,image}) => editCategory({data:{description,title,image},categoryId:id}),
-		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: ["categories"] });
-		},
 	});   
 };
 

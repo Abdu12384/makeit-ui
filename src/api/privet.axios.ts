@@ -20,7 +20,7 @@ axiosInstance.interceptors.response.use(
 	async (error) => {
 		const originalRequest = error.config;
 
-		// Detect role from URL path (e.g., /client/xyz)
+
 		const urlPart = originalRequest.url?.split("/")[1];
 		let role = "";
 
