@@ -37,6 +37,7 @@ export interface ITicket {
   djs?: string[];
   client?: IClient;
   paymentIntentId?: string;
+  paymentMethod?: "wallet" | "stripe";
 }
 
 

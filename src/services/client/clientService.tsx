@@ -12,6 +12,7 @@ import { isAxiosError } from "axios";
 import { axiosInstance } from "@/api/privet.axios";
 import { CLIENT_ROUTES } from "@/constants/client.route";
 import { AUTH_ROUTES } from "@/constants/auth.route";
+import { IEvent } from "@/types/event";
 
 interface SignupPayload{
   name: string,
@@ -333,13 +334,15 @@ export const cancelBooking = async (bookingId:string) => {
 }
 
 
-
+ 
 
 
 export const getAllEvents = async ({
   page = 1,
   limit = 10,
   search = "",
+  lat,
+  lng,
 }: IPaginationParams) => {
   try {
     const response = await axiosInstance.get(CLIENT_ROUTES.EVENTS,{
@@ -347,6 +350,8 @@ export const getAllEvents = async ({
         page,
         limit,
         search,
+        lat,
+        lng,
       }
     })
     return response.data
@@ -433,6 +438,34 @@ export const confirmTicketAndPayment = async (ticket: ITicket,paymentIntentId:st
 }
 
 
+export const purchaseTicketWithWallet = async (
+  amount: number,
+  event: IEvent,
+  ticket: ITicket,
+  type: string,
+  totalTicketCount: number,
+  vendorId: string,
+  paymentMethod: string
+) => {
+  try {
+    const respose = await axiosInstance.post(CLIENT_ROUTES.PURCHASE_TICKET_WITH_WALLET, {
+    amount,
+    eventId: event.eventId,
+    ticket,
+    type,
+    totalTicketCount,
+    vendorId,
+    paymentMethod,
+  });
+
+  return respose; 
+  } catch (error) {
+    console.log('error while client purchase ticket with wallet',error)
+    throw new Error(isAxiosError(error) ? error.response?.data.message : 'error while purchase ticket with wallet')	
+  }
+};
+
+
 export const  getAllTickets = async ({page = 1,limit = 10,status}:IPaginationParams) => {
   try {
     const response = await axiosInstance.get(CLIENT_ROUTES.TICKETS,{
@@ -479,6 +512,16 @@ export const getWalletById = async ({page = 1,limit = 10}:IPaginationParams) => 
 }
 
 
+export const getWalletAmount = async () => {
+     try {
+       const response = await axiosInstance.get(CLIENT_ROUTES.WALLET_AMOUNT)
+       return response.data
+     }catch (error) {
+      console.log('error while client get wallet amount',error)
+      throw error
+    
+    }
+}
 
 
 export const addReview = async (review: IReview) => {
@@ -538,4 +581,6 @@ export const getAllWorkSamplesByVendorId = async ({vendorId,page,limit}: {vendor
       throw new Error(isAxiosError(error) ? error.response?.data.message : 'error while logging out')	
     }
   };
+
+
   
