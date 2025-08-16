@@ -5,6 +5,8 @@ export interface IPaginationParams {
   targetId?: string;
   targetType?: string;
   status?:string;
+  lat?: number;
+  lng?: number;
 }
 
 

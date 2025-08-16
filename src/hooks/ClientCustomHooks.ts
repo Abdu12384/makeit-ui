@@ -1,5 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
-import { addReview, cancelBooking, cancelTicket, clientBookingService, clientChangePassword, clientCreateAccount, clientForgotPassword, clientGetAllServices, clientGetServiceById, clientGoogleLogin, clientLogin, clientProfileEdit, clientResendOtp, clientResetPassword, clientSignup, confirmBookingPayment, confirmTicketAndPayment, createBookingPayment, createTicket, getAllEvents, getAllReviews, getAllTickets, getAllWorkSamplesByVendorId, getBookings, getEventById, getWalletById, logoutClient, saveClientFCMToken, getClientNotifications, markNotificationAsRead, checkEventBookingAvailability, rescheduleBookingApproval, getAllLocationBasedEvents, clientGetAllCategories   } from '@/services/client/clientService';
+import { addReview, cancelBooking, cancelTicket, clientBookingService, clientChangePassword, clientCreateAccount, clientForgotPassword, clientGetAllServices, clientGetServiceById, clientGoogleLogin, clientLogin, clientProfileEdit, clientResendOtp, clientResetPassword, clientSignup, confirmBookingPayment, confirmTicketAndPayment, createBookingPayment, createTicket, getAllEvents, getAllReviews, getAllTickets, getAllWorkSamplesByVendorId, getBookings, getEventById, getWalletById, logoutClient, saveClientFCMToken, getClientNotifications, markNotificationAsRead, checkEventBookingAvailability, rescheduleBookingApproval, getAllLocationBasedEvents, clientGetAllCategories, getWalletAmount, purchaseTicketWithWallet   } from '@/services/client/clientService';
 import { ILoginData } from '@/types/User';
 import { IGetAllBookingsParams, ILocationEventParams, IPaginationParams } from '@/types/params';
 import { ITicket } from '@/types/ticket';
@@ -7,6 +7,7 @@ import { IReview } from '@/types/review';
 import { GetAllServicesParams } from '@/types/service';
 import { IBooking } from '@/types/bookings';
 import { FormData } from '@/utils/validationForms/validationForms';
+import { IEvent } from '@/types/event';
 
 
 interface FormValues {
@@ -216,6 +217,30 @@ export const useCreateTicketMutation = () => {
   })
 } 
 
+export const usePurchaseTicketWithWallet = () => {
+  return useMutation({
+    mutationFn: (
+      data: {
+        amount: number;
+        event: IEvent;
+        ticket: ITicket;
+        type: string;
+        totalTicketCount: number;
+        vendorId: string;
+        paymentMethod: string;
+      }
+    ) => purchaseTicketWithWallet(
+      data.amount,
+      data.event,
+      data.ticket,
+      data.type,
+      data.totalTicketCount,
+      data.vendorId,
+      data.paymentMethod
+    )
+  });
+};
+
 
 export const useGetAllTicketsMutation = () => {
   return useMutation({
@@ -244,6 +269,11 @@ export const useGetWalletByIdMutation = () => {
   })
 }
 
+export const useGetWalletAmountMutation = () => {
+  return useMutation({
+    mutationFn: () => getWalletAmount()
+  })
+}
 
 export const useAddReviewMutation = () => {
   return useMutation({

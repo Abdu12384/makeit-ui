@@ -1,157 +1,440 @@
 
-import type React from "react"
-import { useEffect, useState, useRef } from "react"
-import type { Socket } from "socket.io-client"
-import type { Chat } from "@/types/chat"
-import { motion } from "framer-motion"
-import { Search, MessageSquare } from "lucide-react"
-import { CLOUDINARY_BASE_URL } from "@/types/config/config"
+// import type React from "react"
+// import { useEffect, useState, useRef } from "react"
+// import type { Socket } from "socket.io-client"
+// import type { Chat } from "@/types/chat"
+// import { motion } from "framer-motion"
+// import { Search, MessageSquare } from "lucide-react"
+// import { CLOUDINARY_BASE_URL } from "@/types/config/config"
+
+// interface ChatListProps {
+//   userId: string
+//   userModel: "client" | "vendor"
+//   onSelectChat: (chatId: string) => void
+//   socket: Socket
+//   receiverId: string
+// }
+
+// const ChatList: React.FC<ChatListProps> = ({ userId, userModel, onSelectChat, socket, receiverId }) => {
+//   const [chats, setChats] = useState<Chat[]>([])
+//   const receiverModel = userModel === "client" ? "vendor" : "client"
+//   const [error, setError] = useState<string | null>(null)
+//   const [loading, setLoading] = useState(false)
+//   const [searchTerm, setSearchTerm] = useState("")
+//   const [selectedChatId, setSelectedChatId] = useState<string | null>(null)
+//   const [isCreatingChat, setIsCreatingChat] = useState(false)
+
+//   // Use refs to track chat creation to prevent duplicate requests
+//   const chatCreationAttempted = useRef<Set<string>>(new Set())
+//   const initialLoadCompleted = useRef(false)
+
+//   const fetchChats = () => {
+//     setLoading(true)
+//     socket.emit("get-chats", { userId }, (response: { status: string; data: Chat[]; message?: string }) => {
+//       setLoading(false)
+//       if (response.status === "success") {
+
+//         const sortedChats = response.data.sort((a, b) => {
+//           const timeA = a.lastMessageAt ? new Date(a.lastMessageAt).getTime() : 0
+//           const timeB = b.lastMessageAt ? new Date(b.lastMessageAt).getTime() : 0
+//           return timeB - timeA
+//         })
+//         setChats(sortedChats)
+
+//         if (!initialLoadCompleted.current && receiverId) {
+//           initialLoadCompleted.current = true
+
+//           const existingChat = sortedChats.find((chat) =>
+//             chat.senderId === receiverId || chat.receiverId === receiverId
+//           )
+
+//           if (existingChat) {
+//             onSelectChat(existingChat.chatId)
+//             setSelectedChatId(existingChat.chatId)
+//             setError(null)
+//           } else {
+//             const chatKey = `${userId}-${receiverId}`
+//             if (!chatCreationAttempted.current.has(chatKey) && !isCreatingChat) {
+//               chatCreationAttempted.current.add(chatKey)
+//               createNewChat(receiverId)
+//             }
+//           }
+//         }
+//       } else {
+//         setError(response.message || "Failed to fetch chats")
+//       }
+//     })
+//   }
+
+//   const createNewChat = (targetReceiverId: string) => {
+//     if (isCreatingChat) return
+
+//     setIsCreatingChat(true)
+//     setError(null)
+
+//     socket.emit(
+//       "start-chat",
+//       { senderId: userId, senderModel: userModel, receiverId: targetReceiverId, receiverModel },
+//       (startResponse: { status: string; chatId?: string; message?: string }) => {
+//         if (startResponse.status === "success" && startResponse.chatId) {
+//           onSelectChat(startResponse.chatId)
+//           setSelectedChatId(startResponse.chatId)
+
+
+//           socket.emit("get-chats", { userId }, (chatResponse: { status: string; data: Chat[] }) => {
+//             if (chatResponse.status === "success") {
+//               const sortedChatResponse = chatResponse.data.sort((a, b) => {
+//                 const timeA = a.lastMessageAt ? new Date(a.lastMessageAt).getTime() : 0
+//                 const timeB = b.lastMessageAt ? new Date(b.lastMessageAt).getTime() : 0
+//                 return timeB - timeA
+//               })
+//               setChats(sortedChatResponse)
+//             }
+//             setIsCreatingChat(false)
+//           })
+//         } else {
+//           setError(startResponse.message || "Failed to start chat")
+//           setIsCreatingChat(false)
+//           const chatKey = `${userId}-${targetReceiverId}`
+//           chatCreationAttempted.current.delete(chatKey)
+//         }
+//       }
+//     )
+//   }
+
+  
+//   useEffect(() => {
+//     chatCreationAttempted.current.clear()
+//     initialLoadCompleted.current = false
+
+//     fetchChats()
+
+//     const handleNotification = () => {
+//       socket.emit("get-chats", { userId }, (response: { status: string; data: Chat[] }) => {
+//         if (response.status === "success") {
+//           const sortedChats = response.data.sort((a, b) => {
+//             const timeA = a.lastMessageAt ? new Date(a.lastMessageAt).getTime() : 0
+//             const timeB = b.lastMessageAt ? new Date(b.lastMessageAt).getTime() : 0
+//             return timeB - timeA
+//           })
+//           setChats(sortedChats)
+//         }
+//       })
+//     }
+
+//     socket.on("notification", handleNotification)
+
+//     return () => {
+//       socket.off("notification", handleNotification)
+//     }
+//   }, [userId, receiverId, socket, userModel, receiverModel, onSelectChat])
+
+
+
+//   const filteredChats = chats.filter((chat) => {
+//     const otherUserId = chat.senderId === userId ? chat.receiverId : chat.senderId
+//     const otherUserName = chat.receiverName || otherUserId
+//     return otherUserName.toLowerCase().includes(searchTerm.toLowerCase())
+//   })
+
+//   const formatTime = (dateString?: string) => {
+//     if (!dateString) return ""
+
+//     const date = new Date(dateString)
+//     const now = new Date()
+//     const yesterday = new Date(now)
+//     yesterday.setDate(yesterday.getDate() - 1)
+
+//     if (date.toDateString() === now.toDateString()) {
+//       return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+//     } else if (date.toDateString() === yesterday.toDateString()) {
+//       return "Yesterday"
+//     } else {
+//       return date.toLocaleDateString([], { month: "short", day: "numeric" })
+//     }
+//   }
+
+//   return (
+//     <div className="flex flex-col h-full">
+//       <div className="p-4 border-b border-gray-100">
+//         <div className="flex items-center justify-between mb-4">
+//           <h2 className="text-xl font-semibold text-gray-800">Messages</h2>
+//         </div>
+//         <div className="relative">
+//           <Search size={18} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+//           <input
+//             type="text"
+//             placeholder="Search conversations..."
+//             value={searchTerm}
+//             onChange={(e) => setSearchTerm(e.target.value)}
+//             className="w-full pl-10 pr-4 py-2.5 bg-gray-100 rounded-full focus:outline-none focus:ring-2 focus:ring-purple-500 focus:bg-white transition-all"
+//           />
+//         </div>
+//       </div>
+
+//       <div className="flex-1 overflow-y-auto">
+//         {loading ? (
+//           <div className="flex justify-center py-8">
+//             <motion.div
+//               animate={{ rotate: 360 }}
+//               transition={{ duration: 1, repeat: Number.POSITIVE_INFINITY, ease: "linear" }}
+//               className="w-8 h-8 border-2 border-purple-500 border-t-transparent rounded-full"
+//             ></motion.div>
+//           </div>
+//         ) : error ? (
+//           <div className="p-4 text-red-500 text-center">{error}</div>
+//         ) : filteredChats.length === 0 ? (
+//           <div className="flex flex-col items-center justify-center h-full p-4 text-center">
+//             <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mb-4">
+//               <MessageSquare size={24} className="text-purple-600" />
+//             </div>
+//             <h3 className="text-lg font-medium text-gray-800 mb-1">
+//               {isCreatingChat ? "Creating conversation..." : "No conversations yet"}
+//             </h3>
+//             <p className="text-gray-500 text-sm mb-4">
+//               {isCreatingChat
+//                 ? "Please wait while we set up your chat"
+//                 : "Start chatting with vendors to discuss your requirements"
+//               }
+//             </p>
+//           </div>
+//         ) : (
+//           <ul className="divide-y divide-gray-100">
+//             {filteredChats.map((chat) => {
+//               const otherUserId = chat.senderId === userId ? chat.receiverId : chat.senderId
+//               const otherUserName = chat.receiverName || otherUserId
+//               const otherUserProfilePicture = chat.receiverProfileImage || undefined
+//               const isSelected = chat.chatId === selectedChatId
+//               const hasUnread = !chat.seen
+
+//               return (
+//                 <motion.li
+//                   key={chat._id}
+//                   whileHover={{ backgroundColor: "rgba(243, 244, 246, 0.7)" }}
+//                   onClick={() => {
+//                     onSelectChat(chat.chatId)
+//                     setSelectedChatId(chat.chatId)
+//                   }}
+//                   className={`p-4 cursor-pointer transition-colors ${isSelected ? "bg-purple-50" : ""
+//                     } ${hasUnread ? "bg-purple-50/50" : ""}`}
+//                 >
+//                   <div className="flex items-center gap-3">
+//                     <div className="relative">
+//                       {otherUserProfilePicture ? (
+//                         <img
+//                           src={ CLOUDINARY_BASE_URL + otherUserProfilePicture || "/placeholder.svg"}
+//                           alt={otherUserName}
+//                           className="w-12 h-12 rounded-full object-cover"
+//                         />
+//                       ) : (
+//                         <div className="w-12 h-12 rounded-full bg-gradient-to-r from-purple-500 to-purple-700 flex items-center justify-center text-white font-medium">
+//                           {otherUserName.charAt(0).toUpperCase()}
+//                         </div>
+//                       )}
+//                       {/* <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></span> */}
+//                     </div>
+//                     <div className="flex-1 min-w-0">
+//                       <div className="flex justify-between items-center">
+//                         <h3 className="font-medium text-gray-900 truncate">{otherUserName}</h3>
+//                         <span className="text-xs text-gray-500">{formatTime(chat.lastMessageAt)}</span>
+//                       </div>
+//                       <div className="flex items-center justify-between">
+//                         <p className="text-sm text-gray-600 truncate max-w-[180px]">
+//                           {chat.lastMessage || "No messages yet"}
+//                         </p>
+//                       </div>
+//                     </div>
+//                   </div>
+//                 </motion.li>
+//               )
+//             })}
+//           </ul>
+//         )}
+//       </div>
+
+//     </div>
+//   )
+// }
+
+// export default ChatList
+
+
+import type React from "react";
+import { useEffect, useState, useRef } from "react";
+import type { Socket } from "socket.io-client";
+import type { Chat } from "@/types/chat";
+import { motion } from "framer-motion";
+import { Search, MessageSquare } from "lucide-react";
+import { CLOUDINARY_BASE_URL } from "@/types/config/config";
 
 interface ChatListProps {
-  userId: string
-  userModel: "client" | "vendor"
-  onSelectChat: (chatId: string) => void
-  socket: Socket
-  receiverId: string
+  userId: string;
+  userModel: "client" | "vendor";
+  onSelectChat: (chatId: string) => void;
+  socket: Socket;
+  receiverId: string;
 }
 
 const ChatList: React.FC<ChatListProps> = ({ userId, userModel, onSelectChat, socket, receiverId }) => {
-  const [chats, setChats] = useState<Chat[]>([])
-  const receiverModel = userModel === "client" ? "vendor" : "client"
-  const [error, setError] = useState<string | null>(null)
-  const [loading, setLoading] = useState(false)
-  const [searchTerm, setSearchTerm] = useState("")
-  const [selectedChatId, setSelectedChatId] = useState<string | null>(null)
-  const [isCreatingChat, setIsCreatingChat] = useState(false)
+  const [chats, setChats] = useState<Chat[]>([]);
+  const receiverModel = userModel === "client" ? "vendor" : "client";
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedChatId, setSelectedChatId] = useState<string | null>(null);
+  const [isCreatingChat, setIsCreatingChat] = useState(false);
 
   // Use refs to track chat creation to prevent duplicate requests
-  const chatCreationAttempted = useRef<Set<string>>(new Set())
-  const initialLoadCompleted = useRef(false)
+  const chatCreationAttempted = useRef<Set<string>>(new Set());
+  const initialLoadCompleted = useRef(false);
 
   const fetchChats = () => {
-    setLoading(true)
+    setLoading(true);
     socket.emit("get-chats", { userId }, (response: { status: string; data: Chat[]; message?: string }) => {
-      setLoading(false)
+      setLoading(false);
       if (response.status === "success") {
-
         const sortedChats = response.data.sort((a, b) => {
-          const timeA = a.lastMessageAt ? new Date(a.lastMessageAt).getTime() : 0
-          const timeB = b.lastMessageAt ? new Date(b.lastMessageAt).getTime() : 0
-          return timeB - timeA
-        })
-        setChats(sortedChats)
+          const timeA = a.lastMessageAt ? new Date(a.lastMessageAt).getTime() : 0;
+          const timeB = b.lastMessageAt ? new Date(b.lastMessageAt).getTime() : 0;
+          return timeB - timeA;
+        });
+        setChats(sortedChats);
 
         if (!initialLoadCompleted.current && receiverId) {
-          initialLoadCompleted.current = true
+          initialLoadCompleted.current = true;
 
-          const existingChat = sortedChats.find((chat) =>
-            chat.senderId === receiverId || chat.receiverId === receiverId
-          )
+          const existingChat = sortedChats.find(
+            (chat) => chat.senderId === receiverId || chat.receiverId === receiverId
+          );
 
           if (existingChat) {
-            onSelectChat(existingChat.chatId)
-            setSelectedChatId(existingChat.chatId)
-            setError(null)
+            onSelectChat(existingChat.chatId);
+            setSelectedChatId(existingChat.chatId);
+            setError(null);
           } else {
-            const chatKey = `${userId}-${receiverId}`
+            const chatKey = `${userId}-${receiverId}`;
             if (!chatCreationAttempted.current.has(chatKey) && !isCreatingChat) {
-              chatCreationAttempted.current.add(chatKey)
-              createNewChat(receiverId)
+              chatCreationAttempted.current.add(chatKey);
+              createNewChat(receiverId);
             }
           }
         }
       } else {
-        setError(response.message || "Failed to fetch chats")
+        setError(response.message || "Failed to fetch chats");
       }
-    })
-  }
+    });
+  };
 
   const createNewChat = (targetReceiverId: string) => {
-    if (isCreatingChat) return
+    if (isCreatingChat) return;
 
-    setIsCreatingChat(true)
-    setError(null)
+    setIsCreatingChat(true);
+    setError(null);
 
     socket.emit(
       "start-chat",
       { senderId: userId, senderModel: userModel, receiverId: targetReceiverId, receiverModel },
       (startResponse: { status: string; chatId?: string; message?: string }) => {
         if (startResponse.status === "success" && startResponse.chatId) {
-          onSelectChat(startResponse.chatId)
-          setSelectedChatId(startResponse.chatId)
-
+          onSelectChat(startResponse.chatId);
+          setSelectedChatId(startResponse.chatId);
 
           socket.emit("get-chats", { userId }, (chatResponse: { status: string; data: Chat[] }) => {
             if (chatResponse.status === "success") {
               const sortedChatResponse = chatResponse.data.sort((a, b) => {
-                const timeA = a.lastMessageAt ? new Date(a.lastMessageAt).getTime() : 0
-                const timeB = b.lastMessageAt ? new Date(b.lastMessageAt).getTime() : 0
-                return timeB - timeA
-              })
-              setChats(sortedChatResponse)
+                const timeA = a.lastMessageAt ? new Date(a.lastMessageAt).getTime() : 0;
+                const timeB = b.lastMessageAt ? new Date(b.lastMessageAt).getTime() : 0;
+                return timeB - timeA;
+              });
+              setChats(sortedChatResponse);
             }
-            setIsCreatingChat(false)
-          })
+            setIsCreatingChat(false);
+          });
         } else {
-          setError(startResponse.message || "Failed to start chat")
-          setIsCreatingChat(false)
-          const chatKey = `${userId}-${targetReceiverId}`
-          chatCreationAttempted.current.delete(chatKey)
+          setError(startResponse.message || "Failed to start chat");
+          setIsCreatingChat(false);
+          const chatKey = `${userId}-${targetReceiverId}`;
+          chatCreationAttempted.current.delete(chatKey);
         }
       }
-    )
-  }
+    );
+  };
 
   useEffect(() => {
-    chatCreationAttempted.current.clear()
-    initialLoadCompleted.current = false
+    chatCreationAttempted.current.clear();
+    initialLoadCompleted.current = false;
 
-    fetchChats()
+    fetchChats();
 
     const handleNotification = () => {
       socket.emit("get-chats", { userId }, (response: { status: string; data: Chat[] }) => {
         if (response.status === "success") {
           const sortedChats = response.data.sort((a, b) => {
-            const timeA = a.lastMessageAt ? new Date(a.lastMessageAt).getTime() : 0
-            const timeB = b.lastMessageAt ? new Date(b.lastMessageAt).getTime() : 0
-            return timeB - timeA
-          })
-          setChats(sortedChats)
+            const timeA = a.lastMessageAt ? new Date(a.lastMessageAt).getTime() : 0;
+            const timeB = b.lastMessageAt ? new Date(b.lastMessageAt).getTime() : 0;
+            return timeB - timeA;
+          });
+          setChats(sortedChats);
         }
-      })
-    }
+      });
+    };
 
-    socket.on("notification", handleNotification)
+    const handleReceiveMessage = (data: { chatId: string;  senderId: string; sendedTime: string; messageContent: string } ) => {
+      console.log("Received message in ChatList:", data); 
+      setChats((prevChats) => {
+        const existingChatIndex = prevChats.findIndex((chat) => chat.chatId === data.chatId);
+        const updatedChat = {
+          ...prevChats[existingChatIndex],
+          lastMessageAt: data.sendedTime,
+          lastMessageSenderId: data.senderId,
+          lastMessage: data.messageContent,
+        };
+
+        let newChats = [...prevChats];
+        if (existingChatIndex !== -1) {
+          newChats.splice(existingChatIndex, 1); // Remove old chat
+        }
+        newChats.unshift(updatedChat); // Add updated chat to top
+
+        return newChats.sort((a, b) => {
+          const timeA = a.lastMessageAt ? new Date(a.lastMessageAt).getTime() : 0;
+          const timeB = b.lastMessageAt ? new Date(b.lastMessageAt).getTime() : 0;
+          return timeB - timeA;
+        });
+      });
+    };
+
+    socket.on("notification", handleNotification);
+    socket.on("receive-message", handleReceiveMessage); // Listen for receive-message event
 
     return () => {
-      socket.off("notification", handleNotification)
-    }
-  }, [userId, receiverId, socket, userModel, receiverModel, onSelectChat])
-
-
+      socket.off("notification", handleNotification);
+      socket.off("receive-message", handleReceiveMessage);
+    };
+  }, [userId, receiverId, socket, userModel, receiverModel, onSelectChat]);
 
   const filteredChats = chats.filter((chat) => {
-    const otherUserId = chat.senderId === userId ? chat.receiverId : chat.senderId
-    const otherUserName = chat.receiverName || otherUserId
-    return otherUserName.toLowerCase().includes(searchTerm.toLowerCase())
-  })
+    const otherUserId = chat.senderId === userId ? chat.receiverId : chat.senderId;
+    const otherUserName = chat.receiverName || otherUserId;
+    return otherUserName.toLowerCase().includes(searchTerm.toLowerCase());
+  });
 
   const formatTime = (dateString?: string) => {
-    if (!dateString) return ""
+    if (!dateString) return "";
 
-    const date = new Date(dateString)
-    const now = new Date()
-    const yesterday = new Date(now)
-    yesterday.setDate(yesterday.getDate() - 1)
+    const date = new Date(dateString);
+    const now = new Date();
+    const yesterday = new Date(now);
+    yesterday.setDate(yesterday.getDate() - 1);
 
     if (date.toDateString() === now.toDateString()) {
-      return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+      return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
     } else if (date.toDateString() === yesterday.toDateString()) {
-      return "Yesterday"
+      return "Yesterday";
     } else {
-      return date.toLocaleDateString([], { month: "short", day: "numeric" })
+      return date.toLocaleDateString([], { month: "short", day: "numeric" });
     }
-  }
+  };
 
   return (
     <div className="flex flex-col h-full">
@@ -193,35 +476,35 @@ const ChatList: React.FC<ChatListProps> = ({ userId, userModel, onSelectChat, so
             <p className="text-gray-500 text-sm mb-4">
               {isCreatingChat
                 ? "Please wait while we set up your chat"
-                : "Start chatting with vendors to discuss your requirements"
-              }
+                : "Start chatting with vendors to discuss your requirements"}
             </p>
           </div>
         ) : (
           <ul className="divide-y divide-gray-100">
             {filteredChats.map((chat) => {
-              const otherUserId = chat.senderId === userId ? chat.receiverId : chat.senderId
-              const otherUserName = chat.receiverName || otherUserId
-              const otherUserProfilePicture = chat.receiverProfileImage || undefined
-              const isSelected = chat.chatId === selectedChatId
-              const hasUnread = !chat.seen
+              const otherUserId = chat.senderId === userId ? chat.receiverId : chat.senderId;
+              const otherUserName = chat.receiverName || otherUserId;
+              const otherUserProfilePicture = chat.receiverProfileImage || undefined;
+              const isSelected = chat.chatId === selectedChatId;
+              const hasUnread = !chat.seen;
 
               return (
                 <motion.li
                   key={chat._id}
                   whileHover={{ backgroundColor: "rgba(243, 244, 246, 0.7)" }}
                   onClick={() => {
-                    onSelectChat(chat.chatId)
-                    setSelectedChatId(chat.chatId)
+                    onSelectChat(chat.chatId);
+                    setSelectedChatId(chat.chatId);
                   }}
-                  className={`p-4 cursor-pointer transition-colors ${isSelected ? "bg-purple-50" : ""
-                    } ${hasUnread ? "bg-purple-50/50" : ""}`}
+                  className={`p-4 cursor-pointer transition-colors ${isSelected ? "bg-purple-50" : ""} ${
+                    hasUnread ? "bg-purple-50/50" : ""
+                  }`}
                 >
                   <div className="flex items-center gap-3">
                     <div className="relative">
                       {otherUserProfilePicture ? (
                         <img
-                          src={ CLOUDINARY_BASE_URL + otherUserProfilePicture || "/placeholder.svg"}
+                          src={CLOUDINARY_BASE_URL + otherUserProfilePicture || "/placeholder.svg"}
                           alt={otherUserName}
                           className="w-12 h-12 rounded-full object-cover"
                         />
@@ -230,7 +513,6 @@ const ChatList: React.FC<ChatListProps> = ({ userId, userModel, onSelectChat, so
                           {otherUserName.charAt(0).toUpperCase()}
                         </div>
                       )}
-                      {/* <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></span> */}
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex justify-between items-center">
@@ -245,14 +527,13 @@ const ChatList: React.FC<ChatListProps> = ({ userId, userModel, onSelectChat, so
                     </div>
                   </div>
                 </motion.li>
-              )
+              );
             })}
           </ul>
         )}
       </div>
-
     </div>
-  )
-}
+  );
+};
 
-export default ChatList
+export default ChatList;
